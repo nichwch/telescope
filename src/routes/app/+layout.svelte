@@ -88,3 +88,4 @@
 <div class="lg:ml-72 h-full">
 	<slot />
 </div>
+<svelte:body class="bg-green-100" />
