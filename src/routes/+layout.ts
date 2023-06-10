@@ -5,7 +5,6 @@ import type { Database } from '../DatabaseDefinitions';
 
 export const load = async ({ fetch, data, depends }: any) => {
 	depends('supabase:auth');
-	console.log('layout.ts');
 	const supabase = createSupabaseLoadClient<Database>({
 		supabaseUrl: PUBLIC_SUPABASE_URL,
 		supabaseKey: PUBLIC_SUPABASE_ANON_KEY,
@@ -16,6 +15,5 @@ export const load = async ({ fetch, data, depends }: any) => {
 	const {
 		data: { session }
 	} = await supabase.auth.getSession();
-	console.log({ supabase, session });
 	return { supabase, session };
 };

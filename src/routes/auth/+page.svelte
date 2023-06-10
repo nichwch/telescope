@@ -1,8 +1,16 @@
 <!-- // src/routes/auth/+page.svelte -->
 <script lang="ts">
+	import { goto } from '$app/navigation';
+	import { redirect } from '@sveltejs/kit';
+
 	export let data;
 	let { supabase } = data;
 	$: ({ supabase } = data);
+
+	$: if (data.session) {
+		console.log(data.session);
+		goto('app');
+	}
 
 	let email: string;
 	let password: string;
@@ -22,10 +30,12 @@
 			email,
 			password
 		});
+		goto('/app');
 	};
 
 	const handleSignOut = async () => {
 		await supabase.auth.signOut();
+		goto('/');
 	};
 </script>
 
