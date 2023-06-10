@@ -14,6 +14,7 @@ export interface Database {
           created_date: string | null
           id: string
           last_edited_date: string | null
+          name: string | null
           owner: string
           strategic_goal: string | null
           tasks_blob: Json | null
@@ -22,6 +23,7 @@ export interface Database {
           created_date?: string | null
           id?: string
           last_edited_date?: string | null
+          name?: string | null
           owner: string
           strategic_goal?: string | null
           tasks_blob?: Json | null
@@ -30,6 +32,7 @@ export interface Database {
           created_date?: string | null
           id?: string
           last_edited_date?: string | null
+          name?: string | null
           owner?: string
           strategic_goal?: string | null
           tasks_blob?: Json | null
