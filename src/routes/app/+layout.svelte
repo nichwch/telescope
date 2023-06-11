@@ -8,12 +8,12 @@
 	<h1 class="p-4 text-2xl">
 		lists
 		<form method="POST">
-			<input type="button" value= />
+			<input type="submit" />
 		</form>
 	</h1>
 	<ul class="p-4 overflow-y-auto">
 		{#each data?.lists || [] as list}
-			<li>{list.name}</li>
+			<li>{list.name || 'untitled'}</li>
 		{/each}
 	</ul>
 </div>
