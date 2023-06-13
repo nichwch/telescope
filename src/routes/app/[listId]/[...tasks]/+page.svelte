@@ -5,14 +5,40 @@
 	import { fade, fly } from 'svelte/transition';
 	import { page } from '$app/stores';
 	import Todo from '../../../../components/Todo.svelte';
+	import type { TODO } from '../../../../utils/types';
 
-	let items: any[] = [];
+	export let data;
+	$: console.log({ data });
+	const { supabase } = data;
+
+	const updateList = async () => {
+		await supabase
+			.from('lists')
+			.update({
+				tasks_blob: items
+			})
+			.eq('id', $page.params.listId);
+	};
+
+	let items = data.listContent?.[0].tasks_blob as TODO[];
 	const flipDurationMs = 300;
+
+	const createTODO = () => {
+		items = [
+			...items,
+			{
+				id: nanoid(),
+				name: 'new todo'
+			}
+		];
+		updateList();
+	};
 	function handleDndConsider(e: any) {
 		items = e.detail.items;
 	}
 	function handleDndFinalize(e: any) {
 		items = e.detail.items;
+		updateList();
 	}
 
 	let focusedElement: string | undefined = undefined;
@@ -32,15 +58,7 @@
 		<div class="pr-10 flex border-b border-b-gray-500">
 			<button
 				class="w-10 border-r border-r-gray-500 py-2 bg-green-100 hover:bg-green-200 transition-all"
-				on:click={() => {
-					items = [
-						...items,
-						{
-							id: nanoid(),
-							name: 'new todo'
-						}
-					];
-				}}>+</button
+				on:click={createTODO}>+</button
 			><span class="py-2 pl-4">
 				<!-- TODO: make this the list name -->
 				<a href={`/app/${$page.params.listId}`}>listname</a>
