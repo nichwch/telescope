@@ -7,7 +7,7 @@
 >
 	<h1 class="p-4 text-2xl">
 		lists
-		<form method="POST">
+		<form method="POST" action="/app">
 			<input type="submit" value="create new list" />
 		</form>
 	</h1>
