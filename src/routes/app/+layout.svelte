@@ -8,12 +8,12 @@
 	<h1 class="p-4 text-2xl">
 		lists
 		<form method="POST">
-			<input type="submit" />
+			<input type="submit" value="create new list" />
 		</form>
 	</h1>
 	<ul class="p-4 overflow-y-auto">
 		{#each data?.lists || [] as list}
-			<li>{list.name || 'untitled'}</li>
+			<a class="block" href="/app/{list.id}">{list.name || 'untitled'}</a>
 		{/each}
 	</ul>
 </div>
