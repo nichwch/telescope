@@ -1,5 +1,5 @@
 export const actions = {
-	default: async ({ locals, params }) => {
+	default: async ({ locals }) => {
 		const { supabase } = locals;
 		const session = await locals.getSession();
 		if (session?.user.id) {
