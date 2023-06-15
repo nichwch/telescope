@@ -6,23 +6,48 @@
 	import { page } from '$app/stores';
 	import Todo from '../../../../components/Todo.svelte';
 	import type { TODO } from '../../../../utils/types';
+	import { getUpdateListFunction } from '../../../../utils/updateHook';
+	import { onDestroy } from 'svelte';
 
 	export let data;
 	$: console.log({ data });
 	const { supabase } = data;
 
-	const updateList = async () => {
-		await supabase
-			.from('lists')
-			.update({
-				tasks_blob: items
-			})
-			.eq('id', $page.params.listId);
+	// remove dnd attributes
+	const cleanData = (arr: any[]) => {
+		return arr.map((item) => {
+			const newItem = { ...item };
+			delete newItem.isDndShadowItem;
+			return newItem;
+		});
 	};
 
-	let items = data.listContent?.[0].tasks_blob as TODO[];
-	const flipDurationMs = 300;
+	const updateList = getUpdateListFunction(supabase);
+	$: listId = $page.params.listId;
 
+	let items = data.listContent?.[0].tasks_blob as TODO[];
+	let lastFlushedItems = [...items];
+	let isFlushing = false;
+	const updateInterval = setInterval(async () => {
+		console.log(isFlushing);
+		if (JSON.stringify(cleanData(lastFlushedItems)) === JSON.stringify(cleanData(items))) return;
+		if (isFlushing) return;
+		isFlushing = true;
+		updateList(items, listId)
+			.then(() => {
+				isFlushing = false;
+				lastFlushedItems = [...items];
+			})
+			.catch((e) => {
+				console.error('error while flushing', e);
+			});
+	}, 300);
+
+	onDestroy(() => {
+		clearInterval(updateInterval);
+	});
+
+	const flipDurationMs = 300;
 	const createTODO = () => {
 		items = [
 			...items,
@@ -31,14 +56,12 @@
 				name: 'new todo'
 			}
 		];
-		updateList();
 	};
 	function handleDndConsider(e: any) {
 		items = e.detail.items;
 	}
 	function handleDndFinalize(e: any) {
 		items = e.detail.items;
-		updateList();
 	}
 
 	let focusedElement: string | undefined = undefined;
