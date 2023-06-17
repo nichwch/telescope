@@ -15,7 +15,7 @@
 
 	// remove dnd attributes
 	const cleanData = (arr: any[]) => {
-		return arr.map((item) => {
+		return arr?.map((item) => {
 			const newItem = { ...item };
 			delete newItem.isDndShadowItem;
 			return newItem;
@@ -25,7 +25,7 @@
 	const updateList = getUpdateListFunction(supabase);
 	$: listId = $page.params.listId;
 
-	let items = data.listContent?.[0].tasks_blob as TODO[];
+	let items = cleanData((data.listContent?.[0].tasks_blob as TODO[]) || []);
 	let lastFlushedItems = [...items];
 	let isFlushing = false;
 	const updateInterval = setInterval(async () => {
