@@ -6,7 +6,6 @@
 	import { page } from '$app/stores';
 	import Todo from '../../../../components/Todo.svelte';
 	import type { TODO } from '../../../../utils/types';
-	import { getUpdateListFunction } from '../../../../utils/updateHook';
 	import { onDestroy } from 'svelte';
 
 	export let data;
@@ -21,7 +20,14 @@
 		});
 	};
 
-	const updateList = getUpdateListFunction(supabase);
+	const updateList = async (items: TODO[], listId: string) => {
+		return await supabase
+			.from('lists')
+			.update({
+				tasks_blob: items
+			})
+			.eq('id', listId);
+	};
 	$: listId = $page.params.listId;
 
 	let items = cleanData((data.listContent?.[0].tasks_blob as TODO[]) || []);
