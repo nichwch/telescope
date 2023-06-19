@@ -4,6 +4,7 @@ export const actions = {
 		const session = await locals.getSession();
 		if (session?.user.id) {
 			const res = await supabase.from('lists').insert({ owner: session.user.id });
+			return { res };
 		}
 	}
 };
