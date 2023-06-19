@@ -10,6 +10,20 @@
 
 	export let data;
 	const { supabase } = data;
+	const {
+		params: { listId, tasks }
+	} = $page;
+	$: console.log('tasks', tasks, $page.params);
+
+	let currentNestedList = data.listContent?.[0].tasks_blob as TODO[];
+	for (let nestedTask of tasks.split('/')) {
+		if (currentNestedList) {
+			const foundTask = currentNestedList?.find((task) => task.id === nestedTask);
+			if (foundTask) {
+				currentNestedList = foundTask.children || [];
+			}
+		}
+	}
 
 	// remove dnd attributes
 	const cleanData = (arr: any[]) => {
@@ -28,7 +42,6 @@
 			})
 			.eq('id', listId);
 	};
-	$: listId = $page.params.listId;
 
 	let items = cleanData((data.listContent?.[0].tasks_blob as TODO[]) || []);
 	let lastFlushedItems: string = JSON.stringify(cleanData([...items]));
