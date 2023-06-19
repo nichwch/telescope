@@ -4,7 +4,6 @@ import type { TODO } from './types';
 
 export const getUpdateListFunction = (supabase: SupabaseClient<Database>) => {
 	const func = async (items: TODO[], listId: string) => {
-		console.log('updating...', items, listId);
 		return await supabase
 			.from('lists')
 			.update({

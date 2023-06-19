@@ -10,7 +10,6 @@
 	import { onDestroy } from 'svelte';
 
 	export let data;
-	$: console.log({ data });
 	const { supabase } = data;
 
 	// remove dnd attributes
@@ -26,17 +25,18 @@
 	$: listId = $page.params.listId;
 
 	let items = cleanData((data.listContent?.[0].tasks_blob as TODO[]) || []);
-	let lastFlushedItems = [...items];
+	let lastFlushedItems: string = JSON.stringify(cleanData([...items]));
 	let isFlushing = false;
+
 	const updateInterval = setInterval(async () => {
-		console.log(isFlushing);
-		if (JSON.stringify(cleanData(lastFlushedItems)) === JSON.stringify(cleanData(items))) return;
+		const currentString = JSON.stringify(cleanData(items));
+		if (lastFlushedItems === currentString) return;
 		if (isFlushing) return;
 		isFlushing = true;
 		updateList(items, listId)
 			.then(() => {
 				isFlushing = false;
-				lastFlushedItems = [...items];
+				lastFlushedItems = JSON.stringify(cleanData([...items]));
 			})
 			.catch((e) => {
 				console.error('error while flushing', e);
@@ -68,12 +68,10 @@
 	function transformDraggedElement(element: HTMLElement | undefined) {
 		focusedElement = element?.id;
 	}
-	$: console.log({ focusedElement });
 
 	$: history = $page.params.tasks;
 	$: segments = history.split('/');
 	$: latestTask = segments?.[segments.length - 1];
-	$: console.log({ history, latestTask, segments });
 </script>
 
 {#key $page.params.tasks}

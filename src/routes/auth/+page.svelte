@@ -8,7 +8,6 @@
 	$: ({ supabase } = data);
 
 	$: if (data.session) {
-		console.log(data.session);
 		goto('app');
 	}
 
