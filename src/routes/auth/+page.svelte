@@ -14,15 +14,15 @@
 	let email: string;
 	let password: string;
 
-	const handleSignUp = async () => {
-		await supabase.auth.signUp({
-			email,
-			password,
-			options: {
-				emailRedirectTo: `${location.origin}/auth/callback`
-			}
-		});
-	};
+	// const handleSignUp = async () => {
+	// 	await supabase.auth.signUp({
+	// 		email,
+	// 		password,
+	// 		options: {
+	// 			emailRedirectTo: `${location.origin}/auth/callback`
+	// 		}
+	// 	});
+	// };
 
 	const handleSignIn = async () => {
 		await supabase.auth.signInWithPassword({
@@ -38,11 +38,14 @@
 	};
 </script>
 
-<form on:submit={handleSignUp}>
-	<input name="email" bind:value={email} />
-	<input type="password" name="password" bind:value={password} />
-	<button>Sign up</button>
-</form>
-
+<svelte:window
+	on:keydown={(e) => {
+		if (e.key === 'Enter') {
+			handleSignIn();
+		}
+	}}
+/>
+<input name="email" bind:value={email} />
+<input type="password" name="password" bind:value={password} />
 <button on:click={handleSignIn}>Sign in</button>
 <button on:click={handleSignOut}>Sign out</button>
