@@ -46,6 +46,8 @@
 			</div>
 			<div class="mt-2 border border-gray-500 bg-green-100 flex-grow w-80" />
 		</div>
-		<slot />
+		{#key $page.params.tasks}
+			<slot />
+		{/key}
 	</div>
 {/key}
