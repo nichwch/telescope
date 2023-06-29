@@ -15,12 +15,14 @@
 		params: { listId, tasks }
 	} = $page;
 
+	const taskArray = tasks?.split('/').filter((str) => str.length > 0) || [];
+
 	let items = (data.listContent?.[0].tasks_blob || []) as TODO[];
 
 	let isFlushing = false;
 	const flipDurationMs = 300;
 	let focusedItems: TODO[] = cleanData(items);
-	for (let nestedTask of tasks.split('/')) {
+	for (let nestedTask of taskArray || []) {
 		const foundTask = focusedItems.find((task) => task.id === nestedTask);
 		if (foundTask) {
 			focusedItems = cleanData(foundTask.children || []);
@@ -55,12 +57,7 @@
 		if (isFlushing) return;
 		console.log(lastFlushedItems);
 		isFlushing = true;
-		updateList(
-			items,
-			focusedItems,
-			tasks.split('/').filter((str) => str.length > 0),
-			listId
-		)
+		updateList(items, focusedItems, taskArray, listId)
 			.then(() => {
 				isFlushing = false;
 				lastFlushedItems = JSON.stringify(cleanData([...focusedItems]));
@@ -96,24 +93,22 @@
 	}
 
 	$: history = $page.params.tasks;
-	$: segments = history.split('/');
+	$: segments = history?.split('/');
 	$: latestTask = segments?.[segments.length - 1];
 </script>
 
-<div class="md:ml-4 h-full border border-gray-500 flex-grow bg-green-100 flex flex-col">
-	<div class="pr-10 flex border-b border-b-gray-500">
-		<button
-			class="w-10 border-r border-r-gray-500 py-2 bg-green-100 hover:bg-green-200 transition-all"
-			on:click={createTODO}>+</button
-		><span class="py-2 pl-4">
+<div class="md:ml-4 h-full flex-grow flex flex-col">
+	<div class="pr-10 flex">
+		<button class="w-10 py-2 transition-all" on:click={createTODO}>+</button>
+		<span class="py-2 pl-4">
 			<!-- TODO: make this the list name -->
-			<a href={`/app/${$page.params.listId}`}>listname</a>
-			{#each segments.slice(0, -1) as segment, index}
+			<!-- <a href={`/app/${$page.params.listId}`}>listname</a>
+			{#each segments?.slice(0, -1) as segment, index}
 				<a href={`/app/${$page.params.listId}/${segments.slice(0, index + 1).join('/')}`}
 					>{segment}</a
 				> /
-			{/each}</span
-		>
+			{/each} -->
+		</span>
 	</div>
 
 	<section
