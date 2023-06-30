@@ -122,7 +122,7 @@
 					{/each}
 				</section>
 			{:else}
-				<div in:fade class="p-4 w-full">No tasks. Add one by pressing +</div>
+				<div in:fade class="p-4 pl-0 w-full">No tasks. Add one by pressing +</div>
 			{/if}
 		</div>
 	</div>
