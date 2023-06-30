@@ -71,7 +71,7 @@
 		clearInterval(updateInterval);
 	});
 
-	const createTODO = () => {
+	const createTODOAtTop = () => {
 		focusedItems = [
 			{
 				id: nanoid(),
@@ -80,6 +80,17 @@
 				children: []
 			},
 			...focusedItems
+		];
+	};
+	const createTODOAtBottom = () => {
+		focusedItems = [
+			...focusedItems,
+			{
+				id: nanoid(),
+				name: 'new todo',
+				done: false,
+				children: []
+			}
 		];
 	};
 	function handleDndConsider(e: any) {
@@ -103,7 +114,7 @@
 	<div class="h-full">
 		<div>
 			<div class="py-1 text-sm text-green-700 flex align-center">
-				<button class="h-5 transition-all hover:underline" on:click={createTODO}
+				<button class="h-5 transition-all hover:underline" on:click={createTODOAtTop}
 					>+ create new task
 				</button>
 			</div>
@@ -120,6 +131,13 @@
 							<Todo {item} />
 						</div>
 					{/each}
+					<div
+						class="py-1 text-sm text-green-700 flex align-center opacity-50 hover:opacity-100 transition-all"
+					>
+						<button class="h-5 transition-all hover:underline" on:click={createTODOAtBottom}
+							>+ insert task at bottom
+						</button>
+					</div>
 				</section>
 			{:else}
 				<div in:fade class="p-4 pl-0 w-full">No tasks. Add one by pressing +</div>
