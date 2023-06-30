@@ -6,13 +6,9 @@ export const updateAtPath = (list: TODO[], newList: TODO[], paths: string[]): TO
 		children: topLevelList
 	};
 	for (const path of paths) {
-		if (listPtr.children) {
-			const currentItem = listPtr.children.find((item) => item.id === path);
-			if (currentItem) {
-				listPtr = currentItem;
-			}
-		} else {
-			return [];
+		const currentItem = listPtr.children.find((item) => item.id === path);
+		if (currentItem) {
+			listPtr = currentItem;
 		}
 	}
 	listPtr.children = newList;

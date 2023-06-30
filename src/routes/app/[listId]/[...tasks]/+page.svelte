@@ -25,7 +25,7 @@
 	for (let nestedTask of taskArray || []) {
 		const foundTask = focusedItems.find((task) => task.id === nestedTask);
 		if (foundTask) {
-			focusedItems = cleanData(foundTask.children || []);
+			focusedItems = cleanData(foundTask.children);
 		}
 	}
 	let lastFlushedItems: string = JSON.stringify(cleanData([...focusedItems]));
@@ -75,7 +75,9 @@
 		focusedItems = [
 			{
 				id: nanoid(),
-				name: 'new todo'
+				name: 'new todo',
+				done: false,
+				children: []
 			},
 			...focusedItems
 		];
