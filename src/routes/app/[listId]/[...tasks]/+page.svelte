@@ -8,8 +8,6 @@
 	import { onDestroy } from 'svelte';
 	import Todo from '../../../../components/Todo.svelte';
 	import { updateAtPath, cleanData } from '../../../../utils';
-	import { Icon, Plus } from 'svelte-hero-icons';
-	import PlusIcon from '../../../../components/Icons/PlusIcon.svelte';
 
 	export let data;
 	const { supabase } = data;
