@@ -8,6 +8,8 @@
 	import { onDestroy } from 'svelte';
 	import Todo from '../../../../components/Todo.svelte';
 	import { updateAtPath, cleanData } from '../../../../utils';
+	import { Icon, Plus } from 'svelte-hero-icons';
+	import PlusIcon from '../../../../components/Icons/PlusIcon.svelte';
 
 	export let data;
 	const { supabase } = data;
@@ -73,11 +75,11 @@
 
 	const createTODO = () => {
 		focusedItems = [
-			...focusedItems,
 			{
 				id: nanoid(),
 				name: 'new todo'
-			}
+			},
+			...focusedItems
 		];
 	};
 	function handleDndConsider(e: any) {
@@ -97,30 +99,31 @@
 	$: latestTask = segments?.[segments.length - 1];
 </script>
 
-<div class="md:ml-4 h-full flex-grow flex flex-col">
-	<div class="pr-10 flex">
-		<button class="w-10 py-2 transition-all" on:click={createTODO}>+</button>
-		<span class="py-2 pl-4">
-			<!-- TODO: make this the list name -->
-			<!-- <a href={`/app/${$page.params.listId}`}>listname</a>
-			{#each segments?.slice(0, -1) as segment, index}
-				<a href={`/app/${$page.params.listId}/${segments.slice(0, index + 1).join('/')}`}
-					>{segment}</a
-				> /
-			{/each} -->
-		</span>
-	</div>
-
-	<section
-		use:dndzone={{ items: focusedItems, flipDurationMs, transformDraggedElement }}
-		on:consider={handleDndConsider}
-		on:finalize={handleDndFinalize}
-		class="overflow-y-auto flex-grow"
-	>
-		{#each focusedItems as item (item.id)}
-			<div animate:flip={{ duration: flipDurationMs }} in:fly>
-				<Todo {item} />
+<div class="h-full flex-grow flex flex-col">
+	<div class="h-full">
+		<div>
+			<div class="py-1 text-sm text-green-700 flex align-center">
+				<button class="h-5 transition-all hover:underline" on:click={createTODO}
+					>+ create new task
+				</button>
 			</div>
-		{/each}
-	</section>
+			{#if focusedItems.length > 0}
+				<section
+					in:fade
+					use:dndzone={{ items: focusedItems, flipDurationMs, transformDraggedElement }}
+					on:consider={handleDndConsider}
+					on:finalize={handleDndFinalize}
+					class="overflow-y-auto flex-grow block w-full"
+				>
+					{#each focusedItems as item (item.id)}
+						<div animate:flip={{ duration: flipDurationMs }} in:fly>
+							<Todo {item} />
+						</div>
+					{/each}
+				</section>
+			{:else}
+				<div in:fade class="p-4 w-full">No tasks. Add one by pressing +</div>
+			{/if}
+		</div>
+	</div>
 </div>

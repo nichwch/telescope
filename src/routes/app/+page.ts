@@ -1,5 +1,5 @@
 // src/routes/profile/+page.ts
-import { error, redirect } from '@sveltejs/kit';
+import { error } from '@sveltejs/kit';
 
 export const load = async ({ parent }) => {
 	const { supabase, session } = await parent();

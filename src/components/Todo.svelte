@@ -1,16 +1,22 @@
 <script lang="ts">
 	import { page } from '$app/stores';
+	import DoubleBarIcon from './Icons/DoubleBarIcon.svelte';
+	import DragHandle from './Icons/DragHandle.svelte';
+	import ExpandIcon from './Icons/ExpandIcon.svelte';
 
 	export let item: any;
 	export let focusedElement: string | undefined = undefined;
 </script>
 
-<div id={item.id} class="flex">
-	<div class="w-10 h-10 bg-slate-200 border border-black inline-block" />
+<div id={item.id} class="flex items-center pb-4">
+	<!-- <DoubleBarIcon /> -->
+	<DragHandle />
 	<textarea
-		class="h-10 resize-none whitespace-nowrap flex-grow px-4 py-2"
+		class="h-6 resize-none whitespace-nowrap flex-grow px-4 focus:outline-none"
 		placeholder="untitled task"
 		bind:value={item.name}
 	/>
-	<a href={`${$page.url}/${item.id}`}>expand</a>
+	<a href={`${$page.url}/${item.id}`}>
+		<ExpandIcon />
+	</a>
 </div>

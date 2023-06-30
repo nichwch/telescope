@@ -30,7 +30,7 @@ export const handle: Handle = async ({ event, resolve }) => {
 		}
 	}
 
-	if (event.url.pathname.startsWith('/auth')) {
+	if (event.url.pathname.startsWith('/signin')) {
 		const session = await event.locals.getSession();
 		if (session) {
 			// the user is not signed in
