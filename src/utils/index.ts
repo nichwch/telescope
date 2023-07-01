@@ -17,7 +17,6 @@ export const updateAtPath = (list: TODO[], newList: TODO[], paths: string[]): TO
 		}
 	}
 	listPtr.children = newList;
-	console.log({ list, newList, paths, topLevelList });
 	return topLevelList;
 };
 
