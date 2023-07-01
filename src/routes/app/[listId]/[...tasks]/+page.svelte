@@ -119,10 +119,8 @@
 <div class="h-full flex-grow flex flex-col">
 	<div class="h-full">
 		<div>
-			<div class="py-1 text-sm text-green-700 flex align-center">
-				<button class="h-5 transition-all hover:underline" on:click={createTODOAtTop}
-					>+ create new task
-				</button>
+			<div class="py-1 text-sm text-green-700">
+				<button class="h-5 hover:underline" on:click={createTODOAtTop}>+ create new task </button>
 			</div>
 			{#if focusedItems.length > 0}
 				<section
@@ -137,9 +135,7 @@
 							<Todo {item} />
 						</div>
 					{/each}
-					<div
-						class="py-1 text-sm text-green-700 flex align-center opacity-50 hover:opacity-100 transition-all"
-					>
+					<div class="py-1 text-sm text-green-700 opacity-50 hover:opacity-100 transition-all">
 						<button class="h-5 transition-all hover:underline" on:click={createTODOAtBottom}
 							>+ insert task at bottom
 						</button>

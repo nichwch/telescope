@@ -49,7 +49,7 @@
 	};
 </script>
 
-<div class="max-w-4xl mx-auto py-20 flex flex-col h-full">
+<div class="max-w-4xl mx-5 lg:mx-auto py-5 md:py-20 flex flex-col h-full">
 	<!-- TODO show actual name, allow editing -->
 	<a href="/app" class="underline block text-gray-500 text-sm">back to menu</a>
 	<input
@@ -58,7 +58,7 @@
 		class="w-full mb-3 focus:outline-none"
 		placeholder="untitled list"
 	/>
-	<div class="flex h-full" transition:fade>
+	<div class="flex h-full" in:fade>
 		{#key $page.params.tasks}
 			<slot />
 		{/key}
