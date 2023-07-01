@@ -12,6 +12,7 @@
 	<!-- <DoubleBarIcon /> -->
 	<DragHandle />
 	<textarea
+		id="input {item.id}"
 		class="h-6 resize-none whitespace-nowrap flex-grow px-4 focus:outline-none"
 		placeholder="untitled task"
 		bind:value={item.name}

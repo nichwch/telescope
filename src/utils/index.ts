@@ -2,6 +2,11 @@ import type { TODO } from './types';
 
 export const updateAtPath = (list: TODO[], newList: TODO[], paths: string[]): TODO[] => {
 	const topLevelList = [...list];
+	// the rest of this approach does not generalize for empty paths
+	// so we hardcode it here
+	if (paths.length === 0) {
+		return newList;
+	}
 	let listPtr: Partial<TODO> & Pick<TODO, 'children'> = {
 		children: topLevelList
 	};
@@ -12,6 +17,7 @@ export const updateAtPath = (list: TODO[], newList: TODO[], paths: string[]): TO
 		}
 	}
 	listPtr.children = newList;
+	console.log({ list, newList, paths, topLevelList });
 	return topLevelList;
 };
 

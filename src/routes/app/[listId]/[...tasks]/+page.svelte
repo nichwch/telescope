@@ -8,6 +8,7 @@
 	import { onDestroy } from 'svelte';
 	import Todo from '../../../../components/Todo.svelte';
 	import { updateAtPath, cleanData } from '../../../../utils';
+	import { tick } from 'svelte';
 
 	export let data;
 	const { supabase } = data;
@@ -29,7 +30,6 @@
 		}
 	}
 	let lastFlushedItems: string = JSON.stringify(cleanData([...focusedItems]));
-	console.log({ focusedItems, items });
 
 	const updateList = async (
 		// top level items object
@@ -42,7 +42,6 @@
 		// maintain reference to top level object
 		const topLevelAllItems = cleanData(updateAtPath(allItems, focusedItems, pathToUpdate));
 		items = topLevelAllItems;
-		console.log({ allItems, focusedItems, pathToUpdate, topLevelAllItems, items });
 		return await supabase
 			.from('lists')
 			.update({
@@ -55,7 +54,6 @@
 		const currentString = JSON.stringify(cleanData(focusedItems));
 		if (lastFlushedItems === currentString) return;
 		if (isFlushing) return;
-		console.log(lastFlushedItems);
 		isFlushing = true;
 		updateList(items, focusedItems, taskArray, listId)
 			.then(() => {
@@ -71,27 +69,35 @@
 		clearInterval(updateInterval);
 	});
 
-	const createTODOAtTop = () => {
+	const createTODOAtTop = async () => {
+		const newId = nanoid();
 		focusedItems = [
 			{
-				id: nanoid(),
+				id: newId,
 				name: 'new todo',
 				done: false,
 				children: []
 			},
 			...focusedItems
 		];
+		await tick();
+		const newTodo = document.getElementById(`input ${newId}`);
+		newTodo?.focus();
 	};
-	const createTODOAtBottom = () => {
+	const createTODOAtBottom = async () => {
+		const newId = nanoid();
 		focusedItems = [
 			...focusedItems,
 			{
-				id: nanoid(),
+				id: newId,
 				name: 'new todo',
 				done: false,
 				children: []
 			}
 		];
+		await tick();
+		const newTodo = document.getElementById(`input ${newId}`);
+		newTodo?.focus();
 	};
 	function handleDndConsider(e: any) {
 		focusedItems = e.detail.items;
