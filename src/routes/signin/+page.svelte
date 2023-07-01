@@ -22,11 +22,6 @@
 		if (res.error) error = res.error.message;
 		else goto('/app');
 	};
-
-	const handleSignOut = async () => {
-		await supabase.auth.signOut();
-		goto('/');
-	};
 </script>
 
 <svelte:window
