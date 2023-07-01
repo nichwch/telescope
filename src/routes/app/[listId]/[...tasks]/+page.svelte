@@ -74,7 +74,7 @@
 		focusedItems = [
 			{
 				id: newId,
-				name: 'new todo',
+				name: '',
 				done: false,
 				children: []
 			},
@@ -90,7 +90,7 @@
 			...focusedItems,
 			{
 				id: newId,
-				name: 'new todo',
+				name: '',
 				done: false,
 				children: []
 			}
