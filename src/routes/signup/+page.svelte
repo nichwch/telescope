@@ -21,7 +21,6 @@
 				emailRedirectTo: `${location.origin}/auth/callback`
 			}
 		});
-		console.log(res.error);
 		if (res.error) error = res.error.message;
 		else goto('/signup/email-link');
 	};
