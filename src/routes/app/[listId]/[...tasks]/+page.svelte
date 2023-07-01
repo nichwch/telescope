@@ -16,16 +16,20 @@
 		params: { listId, tasks }
 	} = $page;
 
+	const FLIP_DURATION_MS = 300;
+
 	const taskArray = tasks?.split('/').filter((str) => str.length > 0) || [];
 
 	let items = (data.listContent?.[0].tasks_blob || []) as TODO[];
 
 	let isFlushing = false;
-	const flipDurationMs = 300;
+
 	let focusedItems: TODO[] = cleanData(items);
+	let parentItems: TODO[] = [];
 	for (let nestedTask of taskArray || []) {
 		const foundTask = focusedItems.find((task) => task.id === nestedTask);
 		if (foundTask) {
+			parentItems.push(foundTask);
 			focusedItems = cleanData(foundTask.children);
 		}
 	}
@@ -119,31 +123,46 @@
 <div class="h-full flex-grow flex flex-col">
 	<div class="h-full">
 		<div>
-			<div class="py-1 text-sm text-green-700">
-				<button class="h-5 hover:underline" on:click={createTODOAtTop}>+ create new task </button>
-			</div>
-			{#if focusedItems.length > 0}
-				<section
-					in:fade
-					use:dndzone={{ items: focusedItems, flipDurationMs, transformDraggedElement }}
-					on:consider={handleDndConsider}
-					on:finalize={handleDndFinalize}
-					class="overflow-y-auto flex-grow block w-full"
-				>
-					{#each focusedItems as item (item.id)}
-						<div animate:flip={{ duration: flipDurationMs }} in:fly>
-							<Todo {item} />
+			{#each parentItems as parentItem, index (parentItem.id)}
+				<div style:margin-left="{index}rem">
+					<a
+						href="/app/{listId}/{segments.slice(0, segments.length - 1).join('/')}"
+						class="p-0.5 mt-0.5 border border-black inline-block hover:bg-gray-200 cursor-pointer"
+						>{parentItem.name}</a
+					>
+				</div>
+			{/each}
+			<div style:margin-left="{parentItems.length}rem">
+				<div class="py-1 text-sm text-green-700">
+					<button class="h-5 hover:underline" on:click={createTODOAtTop}>+ create new task </button>
+				</div>
+				{#if focusedItems.length > 0}
+					<section
+						in:fade
+						use:dndzone={{
+							items: focusedItems,
+							flipDurationMs: FLIP_DURATION_MS,
+							transformDraggedElement
+						}}
+						on:consider={handleDndConsider}
+						on:finalize={handleDndFinalize}
+						class="overflow-y-auto flex-grow block w-full"
+					>
+						{#each focusedItems as item (item.id)}
+							<div animate:flip={{ duration: FLIP_DURATION_MS }} in:fly>
+								<Todo {item} />
+							</div>
+						{/each}
+						<div class="py-1 text-sm text-green-700 opacity-50 hover:opacity-100 transition-all">
+							<button class="h-5 transition-all hover:underline" on:click={createTODOAtBottom}
+								>+ insert task at bottom
+							</button>
 						</div>
-					{/each}
-					<div class="py-1 text-sm text-green-700 opacity-50 hover:opacity-100 transition-all">
-						<button class="h-5 transition-all hover:underline" on:click={createTODOAtBottom}
-							>+ insert task at bottom
-						</button>
-					</div>
-				</section>
-			{:else}
-				<div in:fade class="p-4 pl-0 w-full">No tasks. Add one by pressing +</div>
-			{/if}
+					</section>
+				{:else}
+					<div in:fade class="p-4 pl-0 w-full">No tasks. Add one by pressing +</div>
+				{/if}
+			</div>
 		</div>
 	</div>
 </div>
