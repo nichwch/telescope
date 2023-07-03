@@ -124,10 +124,14 @@
 	<div class="h-full">
 		<div>
 			{#each parentItems as parentItem, index (parentItem.id)}
-				<div style:margin-left="{index}rem">
+				<div>
 					<a
+						style:margin-left="{index}rem"
 						href="/app/{listId}/{segments.slice(0, segments.length - 1).join('/')}"
-						class="p-0.5 mt-0.5 border border-black inline-block hover:bg-gray-200 cursor-pointer"
+						class:text-xs={index !== parentItems.length - 1}
+						class:text-gray-500={index !== parentItems.length - 1}
+						class:border-gray-500={index !== parentItems.length - 1}
+						class="px-0.5 mt-0.5 border border-black inline-block hover:bg-gray-200 cursor-pointer transition-all"
 						>{parentItem.name}</a
 					>
 				</div>
