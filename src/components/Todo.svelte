@@ -10,12 +10,16 @@
 
 <div id={item.id} class="flex items-center pb-4">
 	<DragHandle />
-	<textarea
+	<span
+		contenteditable
 		id="input {item.id}"
-		class="h-6 resize-none whitespace-nowrap flex-grow px-4 focus:outline-none"
+		role="textbox"
+		class="inline-block resize-none break-word overflow-x-hidden flex-grow px-4 focus:outline-none cursor-text"
 		placeholder="untitled task"
-		bind:value={item.name}
-	/>
+		bind:innerText={item.name}
+	>
+		{item.name}
+	</span>
 	<div class="flex items-center">
 		<a
 			class:text-green-700={item.children.length > 0}
