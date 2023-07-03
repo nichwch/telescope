@@ -138,7 +138,9 @@
 			{/each}
 			<div style:margin-left="{parentItems.length}rem">
 				<div class="py-1 text-sm text-green-700">
-					<button class="h-5 hover:underline" on:click={createTODOAtTop}>+ create new task </button>
+					<button class="h-5 hover:underline" on:click={createTODOAtTop}
+						>+ create new {parentItems.length > 0 ? 'sub' : ''}task
+					</button>
 				</div>
 				{#if focusedItems.length > 0}
 					<section
@@ -159,7 +161,7 @@
 						{/each}
 						<div class="py-1 text-sm text-green-700 opacity-50 hover:opacity-100 transition-all">
 							<button class="h-5 transition-all hover:underline" on:click={createTODOAtBottom}
-								>+ insert task at bottom
+								>+ insert {parentItems.length > 0 ? 'sub' : ''}task at bottom
 							</button>
 						</div>
 					</section>
