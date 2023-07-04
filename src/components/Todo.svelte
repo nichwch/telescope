@@ -14,8 +14,7 @@
 		contenteditable
 		id="input {item.id}"
 		role="textbox"
-		class="inline-block resize-none break-word overflow-x-hidden flex-grow px-4 focus:outline-none cursor-text"
-		placeholder="untitled task"
+		class="textarea inline-block resize-none break-word overflow-x-hidden flex-grow px-4 focus:outline-none cursor-text"
 		bind:innerText={item.name}
 	>
 		{item.name}
@@ -36,3 +35,10 @@
 		</a>
 	</div>
 </div>
+
+<style>
+	.textarea[contenteditable]:empty::before {
+		content: 'untitled task';
+		color: gray;
+	}
+</style>
