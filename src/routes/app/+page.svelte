@@ -19,11 +19,15 @@
 			<form method="POST" action="/app" class="py-1 text-sm text-green-700">
 				<input type="submit" value="create new list" class="h-5 hover:underline" />
 			</form>
-			<ul class="overflow-y-auto">
-				{#each data?.lists || [] as list}
-					<a class="block hover:underline" href="/app/{list.id}">{list.name || 'untitled'}</a>
-				{/each}
-			</ul>
+			{#if data?.lists && data.lists.length > 0}
+				<ul class="overflow-y-auto">
+					{#each data?.lists || [] as list}
+						<a class="block hover:underline" href="/app/{list.id}">{list.name || 'untitled'}</a>
+					{/each}
+				</ul>
+			{:else}
+				<div>No todo lists yet. Create one by clicking the button above.</div>
+			{/if}
 		</div>
 		<div class="hidden md:flex flex-col h-full ml-6">
 			<div class="py-1 text-sm">
