@@ -80,6 +80,7 @@
 				id: newId,
 				name: '',
 				done: false,
+				description: '',
 				children: []
 			},
 			...focusedItems
@@ -96,6 +97,7 @@
 				id: newId,
 				name: '',
 				done: false,
+				description: '',
 				children: []
 			}
 		];

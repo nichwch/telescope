@@ -4,6 +4,7 @@ export type TODO = {
 	id: string;
 	name: string;
 	done: boolean;
+	description: string;
 	children: TODO[];
 };
 
