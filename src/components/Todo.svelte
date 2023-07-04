@@ -8,7 +8,7 @@
 	export let focusedElement: string | undefined = undefined;
 </script>
 
-<div id={item.id} class="flex items-center pb-4">
+<div id={item.id} class="flex items-center pb-4 border-b border-b-gray-300 mb-3 bg-white">
 	<DragHandle />
 	<span
 		contenteditable
