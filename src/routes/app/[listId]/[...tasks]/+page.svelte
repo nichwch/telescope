@@ -114,6 +114,8 @@
 
 	let focusedElement: string | undefined = undefined;
 	function transformDraggedElement(element: HTMLElement | undefined) {
+		element?.classList.add('border', 'border-black');
+		console.log({ element });
 		focusedElement = element?.id;
 	}
 
