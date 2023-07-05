@@ -2,6 +2,8 @@
 	import { fade } from 'svelte/transition';
 	import { page } from '$app/stores';
 	import { onDestroy } from 'svelte';
+	import { fetchAITaskSuggestions } from '$lib/fetchers.js';
+	import type { TODO } from '$lib/types.js';
 
 	export let data;
 	const { supabase } = data;
@@ -12,6 +14,8 @@
 	let last_flushed_name_input = name_input;
 
 	let isFlushing = false;
+	let ai_completion;
+
 	const updateInterval = setInterval(async () => {
 		if (
 			strategic_goal_input === last_flushed_strategic_goal_input &&
@@ -47,6 +51,15 @@
 	const nameChangeHandler = (e: Event & { currentTarget: EventTarget & HTMLInputElement }) => {
 		name_input = (e?.target as HTMLInputElement)?.value || '';
 	};
+
+	const getAISuggestions = async () => {
+		ai_completion = await fetchAITaskSuggestions(
+			data.listContent?.[0].strategic_goal || '',
+			(data.listContent?.[0].tasks_blob || []) as TODO[],
+			//@ts-ignore
+			{}
+		);
+	};
 </script>
 
 <div class="max-w-4xl mx-5 lg:mx-auto py-5 md:py-20 flex flex-col h-full">
@@ -74,6 +87,7 @@
 			</div>
 			<div class="mt-2 flex-grow w-80">
 				<!-- A summary of what you are currently doing. -->
+				<button on:click={getAISuggestions}>fetch AI generated tasks</button>
 			</div>
 		</div>
 	</div>

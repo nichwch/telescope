@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { page } from '$app/stores';
-	import type { TODO } from '../utils/types';
+	import type { TODO } from '$lib/types';
 	import DragHandle from './Icons/DragHandle.svelte';
 	import ExpandIcon from './Icons/ExpandIcon.svelte';
 

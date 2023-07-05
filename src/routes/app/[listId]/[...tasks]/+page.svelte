@@ -4,10 +4,10 @@
 	import { nanoid } from 'nanoid';
 	import { fade, fly } from 'svelte/transition';
 	import { page } from '$app/stores';
-	import type { TODO } from '../../../../utils/types';
+	import type { TODO } from '../../../../lib/types';
 	import { onDestroy } from 'svelte';
 	import Todo from '../../../../components/Todo.svelte';
-	import { updateAtPath, cleanData } from '../../../../utils';
+	import { updateAtPath, cleanData } from '$lib';
 	import { tick } from 'svelte';
 
 	export let data;
