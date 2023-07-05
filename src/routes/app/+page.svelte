@@ -29,11 +29,11 @@
 				<div>No todo lists yet. Create one by clicking the button above.</div>
 			{/if}
 		</div>
-		<div class="hidden md:flex flex-col h-full ml-6">
+		<div class="hidden md:flex flex-col h-full ml-6 w-80">
 			<div class="py-1 text-sm">
 				<h1 class="text-gray-500 h-5">settings</h1>
 			</div>
-			<button class="hover:underline block" on:click={handleSignOut}>sign out</button>
+			<button class="hover:underline block text-left" on:click={handleSignOut}>sign out</button>
 		</div>
 	</div>
 </div>
