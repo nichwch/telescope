@@ -16,7 +16,7 @@
 			id="input {item.id}"
 			role="textbox"
 			class="name_textarea inline-block resize-none break-word overflow-x-hidden flex-grow px-4 focus:outline-none cursor-text"
-			bind:textContent={item.name}
+			bind:innerText={item.name}
 		>
 			{item.name}
 		</span>
@@ -43,7 +43,7 @@
 		class="ml-[14px] description_textarea inline-block resize-none
 		break-word overflow-x-hidden flex-grow px-4 focus:outline-none cursor-text
 		text-gray-500"
-		bind:textContent={item.description}
+		bind:innerText={item.description}
 	>
 		{item.description}
 	</span>
