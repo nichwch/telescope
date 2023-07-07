@@ -74,9 +74,17 @@
 		clearInterval(updateInterval);
 	});
 
-	const createNewTodo = (id: string) => ({
+	const createNewTodoWId = (id: string): TODO => ({
 		id,
 		name: '',
+		done: false,
+		description: '',
+		children: []
+	});
+
+	const createNewTodoWName = (name: string): TODO => ({
+		id: nanoid(),
+		name,
 		done: false,
 		description: '',
 		children: []
@@ -91,7 +99,7 @@
 			);
 		} else {
 			const newId = nanoid();
-			focusedItems = [createNewTodo(newId), ...focusedItems];
+			focusedItems = [createNewTodoWId(newId), ...focusedItems];
 			await tick();
 			const newTodo = document.getElementById(`input ${newId}`);
 			newTodo?.focus();
@@ -107,7 +115,7 @@
 			);
 		} else {
 			const newId = nanoid();
-			focusedItems = [...focusedItems, createNewTodo(newId)];
+			focusedItems = [...focusedItems, createNewTodoWId(newId)];
 			await tick();
 			const newTodo = document.getElementById(`input ${newId}`);
 			newTodo?.focus();
@@ -143,9 +151,7 @@
 	on:keyup={(e) => {
 		if (e.key === 'Meta') cmdKey = false;
 	}}
-	on:blur={(e) => {
-		cmdKey = false;
-	}}
+	on:blur={(e) => (cmdKey = false)}
 />
 <div class="h-full flex-grow flex flex-col">
 	<div class="h-full">
@@ -164,22 +170,34 @@
 				</div>
 			{/each}
 			<div style:margin-left="{parentItems.length}rem">
-				<div
-					class:text-green-700={!cmdKey}
-					class:text-amber-600={cmdKey}
-					class="py-1 text-sm flex items-center"
-				>
-					<button class="h-5 hover:underline" on:click={createTODOAtTop}>
-						{#if cmdKey}
-							+ generate new {parentItems.length > 0 ? 'sub' : ''}tasks
-						{:else}
-							+ create new {parentItems.length > 0 ? 'sub' : ''}task
-							<span class="text-gray-500">(⌘ to use AI)</span>
-						{/if}
-					</button>
-				</div>
-				{#if topAISuggestions}
-					<AiGeneratedTaskDisplay generatedTasks={topAISuggestions} />
+				{#if topAISuggestions !== null}
+					<AiGeneratedTaskDisplay
+						generatedTasks={topAISuggestions}
+						on:add_task={(evt) => {
+							if (topAISuggestions) {
+								focusedItems = [createNewTodoWName(evt.detail.task), ...focusedItems];
+								topAISuggestions = topAISuggestions?.filter((task) => task !== evt.detail.task);
+							}
+						}}
+						on:add_all={() => {
+							if (topAISuggestions) {
+								focusedItems = [...topAISuggestions.map(createNewTodoWName), ...focusedItems];
+								topAISuggestions = null;
+							}
+						}}
+						on:dismiss={() => (topAISuggestions = null)}
+					/>
+				{:else}
+					<div class:text-green-700={!cmdKey} class:text-amber-600={cmdKey} class="py-1 text-sm">
+						<button class="h-5 hover:underline" on:click={createTODOAtTop}>
+							{#if cmdKey}
+								+ generate new {parentItems.length > 0 ? 'sub' : ''}tasks
+							{:else}
+								+ create new {parentItems.length > 0 ? 'sub' : ''}task
+								<span class="text-gray-500">(⌘ to use AI)</span>
+							{/if}
+						</button>
+					</div>
 				{/if}
 				{#if focusedItems.length > 0}
 					<section
@@ -199,25 +217,41 @@
 							</div>
 						{/each}
 					</section>
-					<div
-						class:text-green-700={!cmdKey}
-						class:text-amber-600={cmdKey}
-						class="py-1 text-sm opacity-50 hover:opacity-100 transition-opacity flex items-center"
-					>
-						<button class="h-5 hover:underline" on:click={createTODOAtBottom}>
-							{#if cmdKey}
-								+ generate new {parentItems.length > 0 ? 'sub' : ''}tasks at bottom
-							{:else}
-								+ insert {parentItems.length > 0 ? 'sub' : ''}task at bottom
-								<span class="text-gray-500">(⌘ to use AI)</span>
-							{/if}
-						</button>
-					</div>
+					{#if bottomAISuggestions}
+						<AiGeneratedTaskDisplay
+							generatedTasks={bottomAISuggestions}
+							on:add_task={(evt) => {
+								if (bottomAISuggestions) {
+									focusedItems = [...focusedItems, createNewTodoWName(evt.detail.task)];
+									bottomAISuggestions = bottomAISuggestions?.filter((task) => task !== evt.detail.task);
+								}
+							}}
+							on:add_all={() => {
+								if (bottomAISuggestions) {
+									focusedItems = [...focusedItems, ...bottomAISuggestions.map(createNewTodoWName)];
+									bottomAISuggestions = null;
+								}
+							}}
+							on:dismiss={() => (bottomAISuggestions = null)}
+						/>
+					{:else}
+						<div
+							class:text-green-700={!cmdKey}
+							class:text-amber-600={cmdKey}
+							class="py-1 text-sm opacity-50 hover:opacity-100 transition-opacity"
+						>
+							<button class="h-5 hover:underline" on:click={createTODOAtBottom}>
+								{#if cmdKey}
+									+ generate new {parentItems.length > 0 ? 'sub' : ''}tasks at bottom
+								{:else}
+									+ insert {parentItems.length > 0 ? 'sub' : ''}task at bottom
+									<span class="text-gray-500">(⌘ to use AI)</span>
+								{/if}
+							</button>
+						</div>
+					{/if}
 				{:else}
 					<div in:fade class="p-4 pl-0 w-full">No tasks. Add one by pressing the button above</div>
-				{/if}
-				{#if bottomAISuggestions}
-					<AiGeneratedTaskDisplay generatedTasks={bottomAISuggestions} />
 				{/if}
 			</div>
 		</div>

@@ -6,6 +6,7 @@ export type TODO = {
 	done: boolean;
 	description: string;
 	children: TODO[];
+	aiGenerated?: boolean;
 };
 
 export type TODOList = Database['public']['Tables']['lists']['Row'] & {

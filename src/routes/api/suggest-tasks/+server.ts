@@ -43,7 +43,7 @@ ${
 		description: current_task.description
 	};
 	const current_task_subtasks = current_task.children?.map(flat_cleaning_function);
-	const template = `You are a personal assistant helping a client complete a project. The overall goal of the client's project is: {strategic_goal}
+	const template = `You are a personal assistant helping someone complete a project. The overall goal of your client's project is: {strategic_goal}
 They have created a nested todo list of the tasks they will work on. The children field specifies subtasks that tasks are broken down into.
 Here are the tasks they have finished: 
 {cleaned_finished_tasks} 
@@ -55,8 +55,8 @@ They are currently focusing on the following task: {cleaned_current_task}
 
 They have split the task into the following subtasks: {current_task_subtasks}
 
-List some subtasks this task could be broken down into. Try not to repeat any tasks that have been suggested already. Make sure you addressing the current task 
-they are focusing on, not the entire todo list. Do not preface your response with anything, just give the subtasks. {formatInstructions}
+List some subtasks this task could be broken down into. Do not repeat any tasks that are already listed. Make sure you addressing the current task 
+they are focusing on, not the entire todo list. Do not preface your response with anything, just give the subtasks. If there are no more suitable tasks, simply output nothing instead of repeating tasks. Aim to provide around 4-7 items. {formatInstructions}
 	`;
 
 	const parser = new CommaSeparatedListOutputParser();
