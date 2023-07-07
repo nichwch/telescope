@@ -163,12 +163,12 @@
 								<Todo {item} />
 							</div>
 						{/each}
-						<div class="py-1 text-sm text-green-700 opacity-50 hover:opacity-100 transition-all">
-							<button class="h-5 transition-all hover:underline" on:click={createTODOAtBottom}
-								>+ insert {parentItems.length > 0 ? 'sub' : ''}task at bottom
-							</button>
-						</div>
 					</section>
+					<div class="py-1 text-sm text-green-700 opacity-50 hover:opacity-100 transition-all">
+						<button class="h-5 transition-all hover:underline" on:click={createTODOAtBottom}
+							>+ insert {parentItems.length > 0 ? 'sub' : ''}task at bottom
+						</button>
+					</div>
 				{:else}
 					<div in:fade class="p-4 pl-0 w-full">No tasks. Add one by pressing the button above</div>
 				{/if}
