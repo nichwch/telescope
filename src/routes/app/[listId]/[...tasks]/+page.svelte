@@ -9,23 +9,21 @@
 	import Todo from '../../../../components/Todo.svelte';
 	import { updateAtPath, cleanData } from '$lib';
 	import { tick } from 'svelte';
+	import { fetchAITaskSuggestions } from '../../../../lib/fetchers';
 
 	export let data;
 	const { supabase } = data;
 	const {
 		params: { listId, tasks }
 	} = $page;
-
 	const FLIP_DURATION_MS = 300;
 
 	const taskArray = tasks?.split('/').filter((str) => str.length > 0) || [];
-
 	let items = (data.listContent?.[0].tasks_blob || []) as TODO[];
-
 	let isFlushing = false;
-
 	let focusedItems: TODO[] = cleanData(items);
 	let parentItems: TODO[] = [];
+	let cmdKey = false;
 	for (let nestedTask of taskArray || []) {
 		const foundTask = focusedItems.find((task) => task.id === nestedTask);
 		if (foundTask) {
@@ -74,40 +72,54 @@
 	});
 
 	const createTODOAtTop = async () => {
-		const newId = nanoid();
-		focusedItems = [
-			{
-				id: newId,
-				name: '',
-				done: false,
-				description: '',
-				children: []
-			},
-			...focusedItems
-		];
-		await tick();
-		const newTodo = document.getElementById(`input ${newId}`);
-		newTodo?.focus();
+		if (cmdKey) {
+			fetchAITaskSuggestions(
+				data.listContent?.[0].strategic_goal,
+				items,
+				parentItems[parentItems.length - 1]
+			);
+		} else {
+			const newId = nanoid();
+			focusedItems = [
+				{
+					id: newId,
+					name: '',
+					done: false,
+					description: '',
+					children: []
+				},
+				...focusedItems
+			];
+			await tick();
+			const newTodo = document.getElementById(`input ${newId}`);
+			newTodo?.focus();
+		}
 	};
+
 	const createTODOAtBottom = async () => {
-		const newId = nanoid();
-		focusedItems = [
-			...focusedItems,
-			{
-				id: newId,
-				name: '',
-				done: false,
-				description: '',
-				children: []
-			}
-		];
-		await tick();
-		const newTodo = document.getElementById(`input ${newId}`);
-		newTodo?.focus();
+		if (cmdKey) {
+		} else {
+			const newId = nanoid();
+			focusedItems = [
+				...focusedItems,
+				{
+					id: newId,
+					name: '',
+					done: false,
+					description: '',
+					children: []
+				}
+			];
+			await tick();
+			const newTodo = document.getElementById(`input ${newId}`);
+			newTodo?.focus();
+		}
 	};
+
 	function handleDndConsider(e: any) {
 		focusedItems = e.detail.items;
 	}
+
 	function handleDndFinalize(e: any) {
 		focusedItems = e.detail.items;
 	}
@@ -122,8 +134,21 @@
 	$: history = $page.params.tasks;
 	$: segments = history?.split('/');
 	$: latestTask = segments?.[segments.length - 1];
+
+	$: console.log({ cmdKey });
 </script>
 
+<svelte:window
+	on:keydown={(e) => {
+		if (e.key === 'Meta') cmdKey = true;
+	}}
+	on:keyup={(e) => {
+		if (e.key === 'Meta') cmdKey = false;
+	}}
+	on:blur={(e) => {
+		cmdKey = false;
+	}}
+/>
 <div class="h-full flex-grow flex flex-col">
 	<div class="h-full">
 		<div>
@@ -141,9 +166,18 @@
 				</div>
 			{/each}
 			<div style:margin-left="{parentItems.length}rem">
-				<div class="py-1 text-sm text-green-700">
-					<button class="h-5 hover:underline" on:click={createTODOAtTop}
-						>+ create new {parentItems.length > 0 ? 'sub' : ''}task
+				<div
+					class:text-green-700={!cmdKey}
+					class:text-amber-600={cmdKey}
+					class="py-1 text-sm flex items-center"
+				>
+					<button class="h-5 hover:underline" on:click={createTODOAtTop}>
+						{#if cmdKey}
+							+ generate new {parentItems.length > 0 ? 'sub' : ''}task
+						{:else}
+							+ create new {parentItems.length > 0 ? 'sub' : ''}task
+							<span class="text-gray-500">(⌘ to use AI)</span>
+						{/if}
 					</button>
 				</div>
 				{#if focusedItems.length > 0}
@@ -164,9 +198,18 @@
 							</div>
 						{/each}
 					</section>
-					<div class="py-1 text-sm text-green-700 opacity-50 hover:opacity-100 transition-all">
-						<button class="h-5 transition-all hover:underline" on:click={createTODOAtBottom}
-							>+ insert {parentItems.length > 0 ? 'sub' : ''}task at bottom
+					<div
+						class:text-green-700={!cmdKey}
+						class:text-amber-600={cmdKey}
+						class="py-1 text-sm opacity-50 hover:opacity-100 transition-opacity flex items-center"
+					>
+						<button class="h-5 hover:underline" on:click={createTODOAtBottom}>
+							{#if cmdKey}
+								+ generate new {parentItems.length > 0 ? 'sub' : ''}task
+							{:else}
+								+ insert {parentItems.length > 0 ? 'sub' : ''}task at bottom
+								<span class="text-gray-500">(⌘ to use AI)</span>
+							{/if}
 						</button>
 					</div>
 				{:else}
