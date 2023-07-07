@@ -24,7 +24,6 @@
 	let isFlushing = false;
 	let focusedItems: TODO[] = cleanData(items);
 	let parentItems: TODO[] = [];
-	let cmdKey = false;
 	for (let nestedTask of taskArray || []) {
 		const foundTask = focusedItems.find((task) => task.id === nestedTask);
 		if (foundTask) {
@@ -91,35 +90,35 @@
 	});
 
 	const createTODOAtTop = async () => {
-		if (cmdKey) {
-			topAISuggestions = await fetchAITaskSuggestions(
-				data.listContent?.[0].strategic_goal || '',
-				items,
-				parentItems[parentItems.length - 1] || []
-			);
-		} else {
-			const newId = nanoid();
-			focusedItems = [createNewTodoWId(newId), ...focusedItems];
-			await tick();
-			const newTodo = document.getElementById(`input ${newId}`);
-			newTodo?.focus();
-		}
+		const newId = nanoid();
+		focusedItems = [createNewTodoWId(newId), ...focusedItems];
+		await tick();
+		const newTodo = document.getElementById(`input ${newId}`);
+		newTodo?.focus();
+	};
+
+	const generateTODOatTop = async () => {
+		topAISuggestions = await fetchAITaskSuggestions(
+			data.listContent?.[0].strategic_goal || '',
+			items,
+			parentItems[parentItems.length - 1] || []
+		);
 	};
 
 	const createTODOAtBottom = async () => {
-		if (cmdKey) {
-			bottomAISuggestions = await fetchAITaskSuggestions(
-				data.listContent?.[0].strategic_goal || '',
-				items,
-				parentItems[parentItems.length - 1] || []
-			);
-		} else {
-			const newId = nanoid();
-			focusedItems = [...focusedItems, createNewTodoWId(newId)];
-			await tick();
-			const newTodo = document.getElementById(`input ${newId}`);
-			newTodo?.focus();
-		}
+		const newId = nanoid();
+		focusedItems = [...focusedItems, createNewTodoWId(newId)];
+		await tick();
+		const newTodo = document.getElementById(`input ${newId}`);
+		newTodo?.focus();
+	};
+
+	const generateTODOatBottom = async () => {
+		bottomAISuggestions = await fetchAITaskSuggestions(
+			data.listContent?.[0].strategic_goal || '',
+			items,
+			parentItems[parentItems.length - 1] || []
+		);
 	};
 
 	function handleDndConsider(e: any) {
@@ -139,20 +138,11 @@
 
 	$: history = $page.params.tasks;
 	$: segments = history?.split('/');
-	$: latestTask = segments?.[segments.length - 1];
-
-	$: console.log({ cmdKey });
+	$: if (topAISuggestions?.length === 0) topAISuggestions = null;
+	$: if (bottomAISuggestions?.length === 0) bottomAISuggestions = null;
 </script>
 
-<svelte:window
-	on:keydown={(e) => {
-		if (e.key === 'Meta') cmdKey = true;
-	}}
-	on:keyup={(e) => {
-		if (e.key === 'Meta') cmdKey = false;
-	}}
-	on:blur={(e) => (cmdKey = false)}
-/>
+<svelte:window />
 <div class="h-full flex-grow flex flex-col">
 	<div class="h-full">
 		<div>
@@ -188,14 +178,12 @@
 						on:dismiss={() => (topAISuggestions = null)}
 					/>
 				{:else}
-					<div class:text-green-700={!cmdKey} class:text-amber-600={cmdKey} class="py-1 text-sm">
-						<button class="h-5 hover:underline" on:click={createTODOAtTop}>
-							{#if cmdKey}
-								+ generate new {parentItems.length > 0 ? 'sub' : ''}tasks
-							{:else}
-								+ create new {parentItems.length > 0 ? 'sub' : ''}task
-								<span class="text-gray-500">(⌘ to use AI)</span>
-							{/if}
+					<div class="py-1 text-sm">
+						<button class="text-green-700 h-5 hover:underline" on:click={createTODOAtTop}>
+							+ create new {parentItems.length > 0 ? 'sub' : ''}task
+						</button>
+						<button class="text-orange-700 h-5 hover:underline" on:click={generateTODOatTop}>
+							+ generate new {parentItems.length > 0 ? 'sub' : ''}tasks
 						</button>
 					</div>
 				{/if}
@@ -223,7 +211,9 @@
 							on:add_task={(evt) => {
 								if (bottomAISuggestions) {
 									focusedItems = [...focusedItems, createNewTodoWName(evt.detail.task)];
-									bottomAISuggestions = bottomAISuggestions?.filter((task) => task !== evt.detail.task);
+									bottomAISuggestions = bottomAISuggestions?.filter(
+										(task) => task !== evt.detail.task
+									);
 								}
 							}}
 							on:add_all={() => {
@@ -235,22 +225,22 @@
 							on:dismiss={() => (bottomAISuggestions = null)}
 						/>
 					{:else}
-						<div
-							class:text-green-700={!cmdKey}
-							class:text-amber-600={cmdKey}
-							class="py-1 text-sm opacity-50 hover:opacity-100 transition-opacity"
-						>
-							<button class="h-5 hover:underline" on:click={createTODOAtBottom}>
-								{#if cmdKey}
-									+ generate new {parentItems.length > 0 ? 'sub' : ''}tasks at bottom
-								{:else}
-									+ insert {parentItems.length > 0 ? 'sub' : ''}task at bottom
-									<span class="text-gray-500">(⌘ to use AI)</span>
-								{/if}
+						<div class="py-1 text-sm">
+							<button
+								class="text-green-700 h-5 hover:underline opacity-50 hover:opacity-100 transition-opacity"
+								on:click={createTODOAtBottom}
+							>
+								+ insert {parentItems.length > 0 ? 'sub' : ''}task at bottom
+							</button>
+							<button
+								class="text-orange-700 h-5 hover:underline opacity-50 hover:opacity-100 transition-opacity"
+								on:click={generateTODOatBottom}
+							>
+								+ generate new {parentItems.length > 0 ? 'sub' : ''}tasks at bottom
 							</button>
 						</div>
 					{/if}
-				{:else}
+				{:else if topAISuggestions === null && bottomAISuggestions === null}
 					<div in:fade class="p-4 pl-0 w-full">No tasks. Add one by pressing the button above</div>
 				{/if}
 			</div>
