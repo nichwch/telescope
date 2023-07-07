@@ -77,7 +77,7 @@
 		{/key}
 		<div class="hidden md:flex flex-col h-full ml-6">
 			<div class="mb-2 flex-grow w-80 flex flex-col">
-				<div class="py-1 text-gray-500 text-sm">strategic goal:</div>
+				<div class="py-1 text-gray-500 text-sm">project goal:</div>
 				<textarea
 					value={$page.data.listContent?.[0].strategic_goal}
 					on:input={strategyChangeHandler}

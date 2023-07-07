@@ -3,6 +3,7 @@ import { CommaSeparatedListOutputParser } from 'langchain/output_parsers';
 import type { RequestHandler } from './$types';
 import { model } from '$lib/server/openai';
 import type { TODO } from '$lib/types';
+import { json } from '@sveltejs/kit';
 
 export const GET = (async ({ url }) => {
 	const strategic_goal = url.searchParams.get('strategic_goal') || '';
@@ -11,7 +12,6 @@ export const GET = (async ({ url }) => {
 	const finished_tasks = todo_list.filter((task: TODO) => task.done);
 	const unfinished_tasks = todo_list.filter((task: TODO) => !task.done);
 	type SimplifiedTODO = Omit<Partial<TODO>, 'children'> & { children?: SimplifiedTODO[] };
-
 	// clean out useless information like id and done fields, to save on tokens
 	const cleaning_function = (task: SimplifiedTODO): SimplifiedTODO => ({
 		name: task.name,
@@ -91,9 +91,8 @@ they are focusing on, not the entire todo list. Do not preface your response wit
 		current_task_subtasks: stringifyTodos(current_task_subtasks)
 	});
 	console.log(`${formattedPrompt}`);
-
 	const res = await model.call(formattedPrompt);
-	console.log(await parser.parse(res));
-	console.dir({ res }, { depth: null });
-	return new Response(res);
+	const formatted_res = await parser.parse(res);
+	console.dir({ res, formatted_res }, { depth: null });
+	return json(formatted_res);
 }) satisfies RequestHandler;

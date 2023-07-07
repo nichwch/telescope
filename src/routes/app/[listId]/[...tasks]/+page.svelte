@@ -10,6 +10,7 @@
 	import { updateAtPath, cleanData } from '$lib';
 	import { tick } from 'svelte';
 	import { fetchAITaskSuggestions } from '../../../../lib/fetchers';
+	import AiGeneratedTaskDisplay from './AIGeneratedTaskDisplay.svelte';
 
 	export let data;
 	const { supabase } = data;
@@ -32,6 +33,8 @@
 		}
 	}
 	let lastFlushedItems: string = JSON.stringify(cleanData([...focusedItems]));
+	let topAISuggestions: string[] | null = null;
+	let bottomAISuggestions: string[] | null = null;
 
 	const updateList = async (
 		// top level items object
@@ -71,25 +74,24 @@
 		clearInterval(updateInterval);
 	});
 
+	const createNewTodo = (id: string) => ({
+		id,
+		name: '',
+		done: false,
+		description: '',
+		children: []
+	});
+
 	const createTODOAtTop = async () => {
 		if (cmdKey) {
-			fetchAITaskSuggestions(
-				data.listContent?.[0].strategic_goal,
+			topAISuggestions = await fetchAITaskSuggestions(
+				data.listContent?.[0].strategic_goal || '',
 				items,
-				parentItems[parentItems.length - 1]
+				parentItems[parentItems.length - 1] || []
 			);
 		} else {
 			const newId = nanoid();
-			focusedItems = [
-				{
-					id: newId,
-					name: '',
-					done: false,
-					description: '',
-					children: []
-				},
-				...focusedItems
-			];
+			focusedItems = [createNewTodo(newId), ...focusedItems];
 			await tick();
 			const newTodo = document.getElementById(`input ${newId}`);
 			newTodo?.focus();
@@ -98,18 +100,14 @@
 
 	const createTODOAtBottom = async () => {
 		if (cmdKey) {
+			bottomAISuggestions = await fetchAITaskSuggestions(
+				data.listContent?.[0].strategic_goal || '',
+				items,
+				parentItems[parentItems.length - 1] || []
+			);
 		} else {
 			const newId = nanoid();
-			focusedItems = [
-				...focusedItems,
-				{
-					id: newId,
-					name: '',
-					done: false,
-					description: '',
-					children: []
-				}
-			];
+			focusedItems = [...focusedItems, createNewTodo(newId)];
 			await tick();
 			const newTodo = document.getElementById(`input ${newId}`);
 			newTodo?.focus();
@@ -173,13 +171,16 @@
 				>
 					<button class="h-5 hover:underline" on:click={createTODOAtTop}>
 						{#if cmdKey}
-							+ generate new {parentItems.length > 0 ? 'sub' : ''}task
+							+ generate new {parentItems.length > 0 ? 'sub' : ''}tasks
 						{:else}
 							+ create new {parentItems.length > 0 ? 'sub' : ''}task
 							<span class="text-gray-500">(⌘ to use AI)</span>
 						{/if}
 					</button>
 				</div>
+				{#if topAISuggestions}
+					<AiGeneratedTaskDisplay generatedTasks={topAISuggestions} />
+				{/if}
 				{#if focusedItems.length > 0}
 					<section
 						in:fade
@@ -205,7 +206,7 @@
 					>
 						<button class="h-5 hover:underline" on:click={createTODOAtBottom}>
 							{#if cmdKey}
-								+ generate new {parentItems.length > 0 ? 'sub' : ''}task
+								+ generate new {parentItems.length > 0 ? 'sub' : ''}tasks at bottom
 							{:else}
 								+ insert {parentItems.length > 0 ? 'sub' : ''}task at bottom
 								<span class="text-gray-500">(⌘ to use AI)</span>
@@ -214,6 +215,9 @@
 					</div>
 				{:else}
 					<div in:fade class="p-4 pl-0 w-full">No tasks. Add one by pressing the button above</div>
+				{/if}
+				{#if bottomAISuggestions}
+					<AiGeneratedTaskDisplay generatedTasks={bottomAISuggestions} />
 				{/if}
 			</div>
 		</div>
