@@ -4,13 +4,15 @@
 	import { nanoid } from 'nanoid';
 	import { fade, fly } from 'svelte/transition';
 	import { page } from '$app/stores';
-	import type { TODO } from '../../../../lib/types';
+	import type { TODO } from '$lib/types';
 	import { onDestroy } from 'svelte';
 	import Todo from '../../../../components/Todo.svelte';
 	import { updateAtPath, cleanData } from '$lib';
 	import { tick } from 'svelte';
-	import { fetchAITaskSuggestions } from '../../../../lib/fetchers';
+	import { fetchAITaskSuggestions } from '$lib/fetchers';
 	import AiGeneratedTaskDisplay from './AIGeneratedTaskDisplay.svelte';
+	import LoadingSpinner from '../../../../components/Icons/LoadingSpinner.svelte';
+	import LoadingRow from './LoadingRow.svelte';
 
 	export let data;
 	const { supabase } = data;
@@ -33,7 +35,9 @@
 	}
 	let lastFlushedItems: string = JSON.stringify(cleanData([...focusedItems]));
 	let topAISuggestions: string[] | null = null;
+	let topAILoading = false;
 	let bottomAISuggestions: string[] | null = null;
+	let bottomAILoading = false;
 
 	const updateList = async (
 		// top level items object
@@ -98,11 +102,13 @@
 	};
 
 	const generateTODOatTop = async () => {
+		topAILoading = true;
 		topAISuggestions = await fetchAITaskSuggestions(
 			data.listContent?.[0].strategic_goal || '',
 			items,
 			parentItems[parentItems.length - 1] || []
 		);
+		topAILoading = false;
 	};
 
 	const createTODOAtBottom = async () => {
@@ -114,11 +120,13 @@
 	};
 
 	const generateTODOatBottom = async () => {
+		bottomAILoading = true;
 		bottomAISuggestions = await fetchAITaskSuggestions(
 			data.listContent?.[0].strategic_goal || '',
 			items,
 			parentItems[parentItems.length - 1] || []
 		);
+		bottomAILoading = false;
 	};
 
 	function handleDndConsider(e: any) {
@@ -160,7 +168,7 @@
 				</div>
 			{/each}
 			<div style:margin-left="{parentItems.length}rem">
-				{#if topAISuggestions !== null}
+				{#if topAISuggestions && !topAILoading}
 					<AiGeneratedTaskDisplay
 						generatedTasks={topAISuggestions}
 						on:add_task={(evt) => {
@@ -177,14 +185,18 @@
 						}}
 						on:dismiss={() => (topAISuggestions = null)}
 					/>
+				{:else if topAILoading}
+					<LoadingRow />
 				{:else}
 					<div class="py-1 text-sm">
 						<button class="text-green-700 h-5 hover:underline" on:click={createTODOAtTop}>
 							+ create new {parentItems.length > 0 ? 'sub' : ''}task
 						</button>
-						<button class="text-orange-700 h-5 hover:underline" on:click={generateTODOatTop}>
-							+ generate new {parentItems.length > 0 ? 'sub' : ''}tasks
-						</button>
+						{#if !bottomAISuggestions}
+							<button class="text-orange-700 h-5 hover:underline" on:click={generateTODOatTop}>
+								+ generate new {parentItems.length > 0 ? 'sub' : ''}tasks
+							</button>
+						{/if}
 					</div>
 				{/if}
 				{#if focusedItems.length > 0}
@@ -205,7 +217,7 @@
 							</div>
 						{/each}
 					</section>
-					{#if bottomAISuggestions}
+					{#if bottomAISuggestions && !bottomAILoading}
 						<AiGeneratedTaskDisplay
 							generatedTasks={bottomAISuggestions}
 							on:add_task={(evt) => {
@@ -224,6 +236,8 @@
 							}}
 							on:dismiss={() => (bottomAISuggestions = null)}
 						/>
+					{:else if bottomAILoading}
+						<LoadingRow />
 					{:else}
 						<div class="py-1 text-sm">
 							<button
@@ -232,12 +246,14 @@
 							>
 								+ insert {parentItems.length > 0 ? 'sub' : ''}task at bottom
 							</button>
-							<button
-								class="text-orange-700 h-5 hover:underline opacity-50 hover:opacity-100 transition-opacity"
-								on:click={generateTODOatBottom}
-							>
-								+ generate new {parentItems.length > 0 ? 'sub' : ''}tasks at bottom
-							</button>
+							{#if !topAISuggestions}
+								<button
+									class="text-orange-700 h-5 hover:underline opacity-50 hover:opacity-100 transition-opacity"
+									on:click={generateTODOatBottom}
+								>
+									+ generate new {parentItems.length > 0 ? 'sub' : ''}tasks at bottom
+								</button>
+							{/if}
 						</div>
 					{/if}
 				{:else if topAISuggestions === null && bottomAISuggestions === null}
