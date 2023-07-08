@@ -213,7 +213,11 @@
 					>
 						{#each focusedItems as item (item.id)}
 							<div animate:flip={{ duration: FLIP_DURATION_MS }} in:fly>
-								<Todo {item} />
+								<Todo
+									{item}
+									on:delete_item={(e) =>
+										(focusedItems = focusedItems.filter((task) => task.id !== e.detail.id))}
+								/>
 							</div>
 						{/each}
 					</section>

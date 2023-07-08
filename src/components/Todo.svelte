@@ -1,11 +1,17 @@
 <script lang="ts">
 	import { page } from '$app/stores';
 	import type { TODO } from '$lib/types';
+	import { createEventDispatcher } from 'svelte';
+	import { focusedItemStore } from '../routes/app/[listId]/[...tasks]/FocusedItemStore';
 	import DragHandle from './Icons/DragHandle.svelte';
 	import ExpandIcon from './Icons/ExpandIcon.svelte';
+	import { fly } from 'svelte/transition';
 
 	export let item: TODO;
 	export let focusedElement: string | undefined = undefined;
+
+	export const delete_item = 'delete_item';
+	const dispatch = createEventDispatcher();
 </script>
 
 <div id={item.id} class="flex flex-col pb-4 border-b border-b-gray-300 mb-3 bg-white">
@@ -17,6 +23,9 @@
 			role="textbox"
 			class="name_textarea inline-block resize-none break-word overflow-x-hidden flex-grow px-4 focus:outline-none cursor-text"
 			bind:innerText={item.name}
+			on:focus={() => {
+				focusedItemStore.set(item.id);
+			}}
 		>
 			{item.name}
 		</span>
@@ -36,17 +45,32 @@
 			</a>
 		</div>
 	</div>
-	<span
-		contenteditable
-		id="description input {item.id}"
-		role="textbox"
-		class="ml-[14px] description_textarea inline-block resize-none
-		break-word overflow-x-hidden flex-grow px-4 focus:outline-none cursor-text
-		text-gray-500"
-		bind:innerText={item.description}
-	>
-		{item.description}
-	</span>
+	{#if $focusedItemStore === item.id || item.description?.length !== 0}
+		<span
+			in:fly
+			contenteditable
+			id="description input {item.id}"
+			role="textbox"
+			class="ml-[14px] description_textarea inline-block resize-none
+	break-word overflow-x-hidden flex-grow px-4 focus:outline-none cursor-text
+	text-gray-500"
+			bind:innerText={item.description}
+			on:focus={() => {
+				focusedItemStore.set(item.id);
+			}}
+		>
+			{item.description}
+		</span>
+	{/if}
+	{#if $focusedItemStore === item.id}
+		<div>
+			<button
+				in:fly
+				class=" ml-[14px] pl-4 text-red-500 hover:underline text-sm w-auto"
+				on:click={() => dispatch('delete_item', { id: item.id })}>delete</button
+			>
+		</div>
+	{/if}
 </div>
 
 <style>
