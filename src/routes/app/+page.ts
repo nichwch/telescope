@@ -9,7 +9,7 @@ export const load = async ({ parent }) => {
 	const { data: lists } = await supabase
 		.from('lists')
 		.select('*')
-		.order('created_date', { ascending: false });
+		.order('last_edited_date', { ascending: false });
 	return {
 		user: session?.user,
 		lists

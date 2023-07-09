@@ -24,7 +24,8 @@
 			.from('lists')
 			.update({
 				strategic_goal: strategic_goal_input,
-				name: name_input
+				name: name_input,
+				last_edited_date: new Date().toISOString()
 			})
 			.eq('id', $page.params.listId)
 			.then(() => {

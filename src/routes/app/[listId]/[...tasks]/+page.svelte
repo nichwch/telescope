@@ -53,7 +53,8 @@
 		return await supabase
 			.from('lists')
 			.update({
-				tasks_blob: topLevelAllItems
+				tasks_blob: topLevelAllItems,
+				last_edited_date: new Date().toISOString()
 			})
 			.eq('id', listId);
 	};

@@ -66,7 +66,7 @@
 		<div>
 			<button
 				in:fly
-				class=" ml-[14px] pl-4 text-red-500 hover:underline text-sm w-auto"
+				class=" ml-[14px] pl-4 text-red-700 hover:underline text-sm w-auto"
 				on:click={() => dispatch('delete_item', { id: item.id })}>delete</button
 			>
 		</div>

@@ -47,7 +47,7 @@
 		bind:value={password}
 	/>
 	{#if error}
-		<div class="text-red-500">{error}</div>
+		<div class="text-red-700">{error}</div>
 	{/if}
 	<button class="block hover:underline mt-12" on:click={handleSignIn}>sign in</button>
 	<a class="block mt-3 hover:underline" href="/signup">don't have an account yet? sign up here</a>
