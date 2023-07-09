@@ -22,7 +22,10 @@
 			{#if data?.lists && data.lists.length > 0}
 				<ul class="overflow-y-auto">
 					{#each data?.lists || [] as list}
-						<a class="block hover:underline" href="/app/{list.id}">{list.name || 'untitled'}</a>
+						<div class="flex items-center">
+							<a class="block hover:underline" href="/app/{list.id}">{list.name || 'untitled'}</a>
+							<span class="ml-auto text-gray-500"> {list.tasks_blob?.length}</span>
+						</div>
 					{/each}
 				</ul>
 			{:else}
