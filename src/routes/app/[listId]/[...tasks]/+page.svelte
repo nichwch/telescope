@@ -261,7 +261,9 @@
 						</div>
 					{/if}
 				{:else if topAISuggestions === null && bottomAISuggestions === null}
-					<div in:fade class="p-4 pl-0 w-full">No tasks. Add one by pressing the button above</div>
+					<div in:fade class="p-4 pl-0 w-full">
+						No {parentItems.length > 0 ? 'sub' : ''}tasks. Add one by pressing the button above
+					</div>
 				{/if}
 			</div>
 		</div>

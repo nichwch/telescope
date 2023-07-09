@@ -9,7 +9,7 @@
 	const dispatch = createEventDispatcher();
 </script>
 
-<div class="border border-orange-200 text-orange-500 my-2" in:fade>
+<div class="border border-b-0 border-orange-200 text-orange-500 my-2" in:fade>
 	<div class="flex px-2 bg-orange-200 border-b border-b-orange-200">
 		<h1 class="font-semibold inline-block">AI suggested tasks</h1>
 		<button class="hover:underline ml-auto" on:click={() => dispatch(add_all)}>add all</button>
