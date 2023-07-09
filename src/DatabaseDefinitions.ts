@@ -1,4 +1,4 @@
-export type Json = string | number | boolean | null | { [key: string]: Json } | Json[];
+export type Json = string | number | boolean | null | { [key: string]: Json | undefined } | Json[];
 
 export interface Database {
 	public: {
@@ -11,7 +11,7 @@ export interface Database {
 					name: string | null;
 					owner: string;
 					strategic_goal: string | null;
-					tasks_blob: Json | null;
+					tasks_blob: Json;
 				};
 				Insert: {
 					created_date?: string | null;
@@ -20,7 +20,7 @@ export interface Database {
 					name?: string | null;
 					owner: string;
 					strategic_goal?: string | null;
-					tasks_blob?: Json | null;
+					tasks_blob?: Json;
 				};
 				Update: {
 					created_date?: string | null;
@@ -29,46 +29,9 @@ export interface Database {
 					name?: string | null;
 					owner?: string;
 					strategic_goal?: string | null;
-					tasks_blob?: Json | null;
+					tasks_blob?: Json;
 				};
 				Relationships: [];
-			};
-			tasks: {
-				Row: {
-					content: string | null;
-					creation_date: string;
-					finished: boolean;
-					id: string;
-					last_edited_date: string;
-					parent_list: string | null;
-					parent_task: string | null;
-				};
-				Insert: {
-					content?: string | null;
-					creation_date?: string;
-					finished?: boolean;
-					id?: string;
-					last_edited_date?: string;
-					parent_list?: string | null;
-					parent_task?: string | null;
-				};
-				Update: {
-					content?: string | null;
-					creation_date?: string;
-					finished?: boolean;
-					id?: string;
-					last_edited_date?: string;
-					parent_list?: string | null;
-					parent_task?: string | null;
-				};
-				Relationships: [
-					{
-						foreignKeyName: 'tasks_parent_list_fkey';
-						columns: ['parent_list'];
-						referencedRelation: 'lists';
-						referencedColumns: ['id'];
-					}
-				];
 			};
 		};
 		Views: {
