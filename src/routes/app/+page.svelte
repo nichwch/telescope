@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { goto, invalidateAll } from '$app/navigation';
 	import { fade } from 'svelte/transition';
-	import TrashIcon from '../../components/Icons/TrashIcon.svelte';
+	import { enhance } from '$app/forms';
 
 	export let data;
 	let { supabase } = data;
@@ -19,8 +19,8 @@
 	<div class="w-full mb-3 text-sm text-gray-500">all lists</div>
 	<div class="flex h-full" in:fade>
 		<div class="flex-grow">
-			<form method="POST" action="/app" class="py-1 text-sm text-green-700">
-				<input type="submit" value="create new list" class="h-5 hover:underline" />
+			<form method="POST" action="/app" class="py-1 text-sm text-green-700" use:enhance>
+				<input type="submit" value="create new list" class="h-5 hover:underline cursor-pointer" />
 			</form>
 			{#if data?.lists && data.lists.length > 0}
 				<ul class="overflow-y-auto">
