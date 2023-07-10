@@ -89,12 +89,13 @@
 		children: []
 	});
 
-	const createNewTodoWName = (name: string): TODO => ({
+	const createAIGeneratedNewTodoWName = (name: string): TODO => ({
 		id: nanoid(),
 		name,
 		done: false,
 		description: '',
-		children: []
+		children: [],
+		aiGenerated: true
 	});
 
 	const createTODOAtTop = async () => {
@@ -196,14 +197,17 @@
 					generatedTasks={topAISuggestions}
 					on:add_task={(evt) => {
 						if (topAISuggestions) {
-							focusedItems = [createNewTodoWName(evt.detail.task), ...focusedItems];
+							focusedItems = [createAIGeneratedNewTodoWName(evt.detail.task), ...focusedItems];
 							topAISuggestions = topAISuggestions?.filter((task) => task !== evt.detail.task);
 							window.scrollTo({ top: 0, behavior: 'smooth' });
 						}
 					}}
 					on:add_all={() => {
 						if (topAISuggestions) {
-							focusedItems = [...topAISuggestions.map(createNewTodoWName), ...focusedItems];
+							focusedItems = [
+								...topAISuggestions.map(createAIGeneratedNewTodoWName),
+								...focusedItems
+							];
 							topAISuggestions = null;
 							window.scrollTo({ top: 0, behavior: 'smooth' });
 						}
@@ -259,7 +263,7 @@
 							generatedTasks={bottomAISuggestions}
 							on:add_task={(evt) => {
 								if (bottomAISuggestions) {
-									focusedItems = [...focusedItems, createNewTodoWName(evt.detail.task)];
+									focusedItems = [...focusedItems, createAIGeneratedNewTodoWName(evt.detail.task)];
 									bottomAISuggestions = bottomAISuggestions?.filter(
 										(task) => task !== evt.detail.task
 									);
@@ -268,7 +272,10 @@
 							}}
 							on:add_all={() => {
 								if (bottomAISuggestions) {
-									focusedItems = [...focusedItems, ...bottomAISuggestions.map(createNewTodoWName)];
+									focusedItems = [
+										...focusedItems,
+										...bottomAISuggestions.map(createAIGeneratedNewTodoWName)
+									];
 									bottomAISuggestions = null;
 									window.scrollTo({ top: scrollHeight, behavior: 'smooth' });
 								}
