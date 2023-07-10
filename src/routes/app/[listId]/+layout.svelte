@@ -50,21 +50,26 @@
 	};
 </script>
 
-<div class="max-w-4xl mx-5 lg:mx-auto py-5 md:py-20 flex flex-col h-full">
-	<!-- TODO show actual name, allow editing -->
-	<a href="/app" class="underline block text-gray-500 text-sm">back to menu</a>
-	<input
-		value={$page.data.listContent?.[0].name || ''}
-		on:input={nameChangeHandler}
-		class="w-full mb-3 focus:outline-none"
-		placeholder="untitled list"
-	/>
-	<div class="flex h-full" in:fade>
-		{#key $page.params.tasks}
-			<slot />
-		{/key}
-		<div class="hidden md:flex flex-col h-full ml-6">
-			<div class="mb-2 flex-grow w-80 flex flex-col">
+<!-- TODO show actual name, allow editing -->
+<div class="w-[40vw] pr-80 mx-auto pb-5 md:pb-20 box-content">
+	<div class="sticky top-0 bg-white pt-5 md:pt-20">
+		<a href="/app" class="underline block text-gray-500 text-sm">back to menu</a>
+		<input
+			value={$page.data.listContent?.[0].name || ''}
+			on:input={nameChangeHandler}
+			class="w-full mb-3 focus:outline-none"
+			placeholder="untitled list"
+		/>
+	</div>
+	{#key $page.params.tasks}
+		<slot />
+	{/key}
+</div>
+
+<div class="hidden top-20 left-0 w-full fixed md:flex flex-col h-full -z-50" in:fade>
+	<div class="w-80 mx-auto">
+		<div class="mr-[40vw] box-content">
+			<div class="flex flex-col">
 				<div class="py-1 text-gray-500 text-sm">project goal:</div>
 				<textarea
 					value={$page.data.listContent?.[0].strategic_goal}

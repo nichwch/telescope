@@ -153,120 +153,118 @@
 
 <svelte:window />
 <div class="h-full flex-grow flex flex-col">
-	<div class="h-full">
-		<div>
-			{#each parentItems as parentItem, index (parentItem.id)}
-				<div>
-					<a
-						style:margin-left="{index}rem"
-						href="/app/{listId}/{segments.slice(0, segments.length - 1).join('/')}"
-						class:text-xs={index !== parentItems.length - 1}
-						class:text-gray-500={index !== parentItems.length - 1}
-						class:border-gray-500={index !== parentItems.length - 1}
-						class="px-0.5 mt-0.5 border border-black inline-block hover:bg-gray-200 cursor-pointer transition-all"
-						>{parentItem.name}</a
-					>
+	<div class="h-full flex flex-col">
+		{#each parentItems as parentItem, index (parentItem.id)}
+			<div>
+				<a
+					style:margin-left="{index}rem"
+					href="/app/{listId}/{segments.slice(0, segments.length - 1).join('/')}"
+					class:text-xs={index !== parentItems.length - 1}
+					class:text-gray-500={index !== parentItems.length - 1}
+					class:border-gray-500={index !== parentItems.length - 1}
+					class="px-0.5 mt-0.5 border border-black inline-block hover:bg-gray-200 cursor-pointer transition-all"
+					>{parentItem.name}</a
+				>
+			</div>
+		{/each}
+		<div style:margin-left="{parentItems.length}rem" class="h-full flex flex-col">
+			{#if topAISuggestions && !topAILoading}
+				<AiGeneratedTaskDisplay
+					generatedTasks={topAISuggestions}
+					on:add_task={(evt) => {
+						if (topAISuggestions) {
+							focusedItems = [createNewTodoWName(evt.detail.task), ...focusedItems];
+							topAISuggestions = topAISuggestions?.filter((task) => task !== evt.detail.task);
+						}
+					}}
+					on:add_all={() => {
+						if (topAISuggestions) {
+							focusedItems = [...topAISuggestions.map(createNewTodoWName), ...focusedItems];
+							topAISuggestions = null;
+						}
+					}}
+					on:dismiss={() => (topAISuggestions = null)}
+				/>
+			{:else if topAILoading}
+				<LoadingRow />
+			{:else}
+				<div class="py-1 text-sm sticky top-0">
+					<button class="text-green-700 h-5 hover:underline" on:click={createTODOAtTop}>
+						+ create new {parentItems.length > 0 ? 'sub' : ''}task
+					</button>
+					{#if !bottomAISuggestions}
+						<button class="text-orange-700 h-5 hover:underline" on:click={generateTODOatTop}>
+							+ generate new {parentItems.length > 0 ? 'sub' : ''}tasks
+						</button>
+					{/if}
 				</div>
-			{/each}
-			<div style:margin-left="{parentItems.length}rem">
-				{#if topAISuggestions && !topAILoading}
+			{/if}
+			{#if focusedItems.length > 0}
+				<section
+					in:fade
+					use:dndzone={{
+						items: focusedItems,
+						flipDurationMs: FLIP_DURATION_MS,
+						transformDraggedElement
+					}}
+					on:consider={handleDndConsider}
+					on:finalize={handleDndFinalize}
+					class="flex-grow block w-full"
+				>
+					{#each focusedItems as item (item.id)}
+						<div animate:flip={{ duration: FLIP_DURATION_MS }} in:fly>
+							<Todo
+								{item}
+								on:delete_item={(e) =>
+									(focusedItems = focusedItems.filter((task) => task.id !== e.detail.id))}
+							/>
+						</div>
+					{/each}
+				</section>
+				{#if bottomAISuggestions && !bottomAILoading}
 					<AiGeneratedTaskDisplay
-						generatedTasks={topAISuggestions}
+						generatedTasks={bottomAISuggestions}
 						on:add_task={(evt) => {
-							if (topAISuggestions) {
-								focusedItems = [createNewTodoWName(evt.detail.task), ...focusedItems];
-								topAISuggestions = topAISuggestions?.filter((task) => task !== evt.detail.task);
+							if (bottomAISuggestions) {
+								focusedItems = [...focusedItems, createNewTodoWName(evt.detail.task)];
+								bottomAISuggestions = bottomAISuggestions?.filter(
+									(task) => task !== evt.detail.task
+								);
 							}
 						}}
 						on:add_all={() => {
-							if (topAISuggestions) {
-								focusedItems = [...topAISuggestions.map(createNewTodoWName), ...focusedItems];
-								topAISuggestions = null;
+							if (bottomAISuggestions) {
+								focusedItems = [...focusedItems, ...bottomAISuggestions.map(createNewTodoWName)];
+								bottomAISuggestions = null;
 							}
 						}}
-						on:dismiss={() => (topAISuggestions = null)}
+						on:dismiss={() => (bottomAISuggestions = null)}
 					/>
-				{:else if topAILoading}
+				{:else if bottomAILoading}
 					<LoadingRow />
 				{:else}
-					<div class="py-1 text-sm">
-						<button class="text-green-700 h-5 hover:underline" on:click={createTODOAtTop}>
-							+ create new {parentItems.length > 0 ? 'sub' : ''}task
+					<div class="py-1 text-sm sticky bottom-0 bg-white">
+						<button
+							class="text-green-700 h-5 hover:underline opacity-50 hover:opacity-100 transition-opacity"
+							on:click={createTODOAtBottom}
+						>
+							+ insert {parentItems.length > 0 ? 'sub' : ''}task at bottom
 						</button>
-						{#if !bottomAISuggestions}
-							<button class="text-orange-700 h-5 hover:underline" on:click={generateTODOatTop}>
-								+ generate new {parentItems.length > 0 ? 'sub' : ''}tasks
+						{#if !topAISuggestions}
+							<button
+								class="text-orange-700 h-5 hover:underline opacity-50 hover:opacity-100 transition-opacity"
+								on:click={generateTODOatBottom}
+							>
+								+ generate new {parentItems.length > 0 ? 'sub' : ''}tasks at bottom
 							</button>
 						{/if}
 					</div>
 				{/if}
-				{#if focusedItems.length > 0}
-					<section
-						in:fade
-						use:dndzone={{
-							items: focusedItems,
-							flipDurationMs: FLIP_DURATION_MS,
-							transformDraggedElement
-						}}
-						on:consider={handleDndConsider}
-						on:finalize={handleDndFinalize}
-						class="overflow-y-auto flex-grow block w-full"
-					>
-						{#each focusedItems as item (item.id)}
-							<div animate:flip={{ duration: FLIP_DURATION_MS }} in:fly>
-								<Todo
-									{item}
-									on:delete_item={(e) =>
-										(focusedItems = focusedItems.filter((task) => task.id !== e.detail.id))}
-								/>
-							</div>
-						{/each}
-					</section>
-					{#if bottomAISuggestions && !bottomAILoading}
-						<AiGeneratedTaskDisplay
-							generatedTasks={bottomAISuggestions}
-							on:add_task={(evt) => {
-								if (bottomAISuggestions) {
-									focusedItems = [...focusedItems, createNewTodoWName(evt.detail.task)];
-									bottomAISuggestions = bottomAISuggestions?.filter(
-										(task) => task !== evt.detail.task
-									);
-								}
-							}}
-							on:add_all={() => {
-								if (bottomAISuggestions) {
-									focusedItems = [...focusedItems, ...bottomAISuggestions.map(createNewTodoWName)];
-									bottomAISuggestions = null;
-								}
-							}}
-							on:dismiss={() => (bottomAISuggestions = null)}
-						/>
-					{:else if bottomAILoading}
-						<LoadingRow />
-					{:else}
-						<div class="py-1 text-sm">
-							<button
-								class="text-green-700 h-5 hover:underline opacity-50 hover:opacity-100 transition-opacity"
-								on:click={createTODOAtBottom}
-							>
-								+ insert {parentItems.length > 0 ? 'sub' : ''}task at bottom
-							</button>
-							{#if !topAISuggestions}
-								<button
-									class="text-orange-700 h-5 hover:underline opacity-50 hover:opacity-100 transition-opacity"
-									on:click={generateTODOatBottom}
-								>
-									+ generate new {parentItems.length > 0 ? 'sub' : ''}tasks at bottom
-								</button>
-							{/if}
-						</div>
-					{/if}
-				{:else if topAISuggestions === null && bottomAISuggestions === null}
-					<div in:fade class="p-4 pl-0 w-full">
-						No {parentItems.length > 0 ? 'sub' : ''}tasks. Add one by pressing the button above
-					</div>
-				{/if}
-			</div>
+			{:else if topAISuggestions === null && bottomAISuggestions === null}
+				<div in:fade class="p-4 pl-0 w-full">
+					No {parentItems.length > 0 ? 'sub' : ''}tasks. Add one by pressing the button above
+				</div>
+			{/if}
 		</div>
 	</div>
 </div>
