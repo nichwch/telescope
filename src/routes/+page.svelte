@@ -1,4 +1,4 @@
-<div class="max-w-2xl mx-auto py-10">
+<div class="max-w-2xl mx-auto py-5 md:py-20">
 	<h1 class="text-2xl">telescope</h1>
 	<h2>a todo app for focused work</h2>
 	<div class="mt-3">
