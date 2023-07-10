@@ -13,6 +13,7 @@
 	import AiGeneratedTaskDisplay from './AIGeneratedTaskDisplay.svelte';
 	import LoadingRow from './LoadingRow.svelte';
 	import TitleComponent from '../TitleComponent.svelte';
+	import ArrowLeft from '../../../../components/Icons/ArrowLeft.svelte';
 
 	export let data;
 	const { supabase } = data;
@@ -38,6 +39,8 @@
 	let topAILoading = false;
 	let bottomAISuggestions: string[] | null = null;
 	let bottomAILoading = false;
+	let scrollY = 0;
+	let scrollHeight = 0;
 
 	const updateList = async (
 		// top level items object
@@ -145,8 +148,6 @@
 		focusedElement = element?.id;
 	}
 
-	let scrollY = 0;
-	let scrollHeight = 0;
 	const updateScrollHeight = () => {
 		scrollHeight =
 			Math.max(
@@ -160,9 +161,9 @@
 	onMount(() => updateScrollHeight());
 	$: history = $page.params.tasks;
 	$: segments = history?.split('/');
+	$: focusedTask = parentItems.length > 0 ? parentItems[parentItems.length - 1] : null;
 	$: if (topAISuggestions?.length === 0) topAISuggestions = null;
 	$: if (bottomAISuggestions?.length === 0) bottomAISuggestions = null;
-	$: console.log(scrollY, scrollHeight, scrollHeight - scrollY);
 </script>
 
 <!-- <svelte:document bind:offsetHeight={outerHeight} /> -->
@@ -176,6 +177,33 @@
 		>
 			<a href="/app" class="underline block text-gray-500 text-sm">back to menu</a>
 			<TitleComponent {data} />
+			<!-- {#each parentItems as parentItem, index (parentItem.id)}
+				<div>
+					<a
+						style:margin-left="{index}rem"
+						href="/app/{listId}/{segments.slice(0, segments.length - 1).join('/')}"
+						class:text-xs={index !== parentItems.length - 1}
+						class:text-gray-500={index !== parentItems.length - 1}
+						class:border-gray-500={index !== parentItems.length - 1}
+						class="px-0.5 mt-0.5 border border-black inline-block hover:bg-gray-200 cursor-pointer transition-all"
+						>{parentItem.name}</a
+					>
+				</div>
+			{/each} -->
+			{#if focusedTask}
+				<div class="border border-green-700 bg-green-100 text-green-800" in:fly>
+					<div class="px-2 py-0.5">
+						<a
+							href="/app/{listId}/{segments.slice(0, segments.length - 1).join('/')}"
+							class="text-sm opacity-80 underline"
+						>
+							back
+						</a>
+						<h2>{focusedTask.name}</h2>
+						<p class="opacity-80">{focusedTask.description}</p>
+					</div>
+				</div>
+			{/if}
 			{#if topAISuggestions && !topAILoading}
 				<AiGeneratedTaskDisplay
 					generatedTasks={topAISuggestions}
@@ -195,19 +223,6 @@
 					}}
 					on:dismiss={() => (topAISuggestions = null)}
 				/>
-				{#each parentItems as parentItem, index (parentItem.id)}
-					<div>
-						<a
-							style:margin-left="{index}rem"
-							href="/app/{listId}/{segments.slice(0, segments.length - 1).join('/')}"
-							class:text-xs={index !== parentItems.length - 1}
-							class:text-gray-500={index !== parentItems.length - 1}
-							class:border-gray-500={index !== parentItems.length - 1}
-							class="px-0.5 mt-0.5 border border-black inline-block hover:bg-gray-200 cursor-pointer transition-all"
-							>{parentItem.name}</a
-						>
-					</div>
-				{/each}
 			{:else if topAILoading}
 				<LoadingRow />
 			{:else}
@@ -224,7 +239,7 @@
 			{/if}
 		</div>
 
-		<div style:margin-left="{parentItems.length}rem" class="h-full flex flex-col">
+		<div class="h-full flex flex-col">
 			{#if focusedItems.length > 0}
 				<section
 					in:fade
