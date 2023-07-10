@@ -177,19 +177,6 @@
 		>
 			<a href="/app" class="underline block text-gray-500 text-sm">back to menu</a>
 			<TitleComponent {data} />
-			<!-- {#each parentItems as parentItem, index (parentItem.id)}
-				<div>
-					<a
-						style:margin-left="{index}rem"
-						href="/app/{listId}/{segments.slice(0, segments.length - 1).join('/')}"
-						class:text-xs={index !== parentItems.length - 1}
-						class:text-gray-500={index !== parentItems.length - 1}
-						class:border-gray-500={index !== parentItems.length - 1}
-						class="px-0.5 mt-0.5 border border-black inline-block hover:bg-gray-200 cursor-pointer transition-all"
-						>{parentItem.name}</a
-					>
-				</div>
-			{/each} -->
 			{#if focusedTask}
 				<div class="border border-green-700 bg-green-100 text-green-800" in:fly>
 					<div class="px-2 py-0.5">
