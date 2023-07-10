@@ -53,11 +53,15 @@
 </script>
 
 <!-- TODO show actual name, allow editing -->
-<div class="w-[40vw] pr-80 mx-auto pb-5 md:pb-20 box-content relative">
+<div
+	class="w-full px-5 md:w-[50vw] lg:w-[40vw] md:pr-80 md:px-0 md:mx-auto pb-5 md:pb-20 md:box-content relative"
+>
 	{#key $page.params.tasks}
 		<slot />
 	{/key}
-	<div class="fixed top-20 ml-[40vw] pl-6 w-80 pb-40 h-full box-border">
+	<div
+		class="hidden md:block fixed top-20 pt-2 md:ml-[50vw] lg:ml-[40vw] pl-6 w-80 pb-40 h-full box-border"
+	>
 		<div class="flex flex-col h-full" in:fade>
 			<div class="flex-grow flex flex-col">
 				<div class="py-1 text-gray-500 text-sm">project goal:</div>
