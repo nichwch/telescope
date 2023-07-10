@@ -3,9 +3,10 @@
 @tailwind utilities;
 
 html {
-	height: 100vh;
+	min-height: 100vh;
 }
 
 body {
-	height: 100vh;
+	display: block;
+	min-height: 100vh;
 }

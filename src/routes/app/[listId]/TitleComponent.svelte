@@ -1,7 +1,4 @@
 <script lang="ts">
-	import TitleComponent from './TitleComponent.svelte';
-
-	import { fade } from 'svelte/transition';
 	import { page } from '$app/stores';
 	import { onDestroy } from 'svelte';
 	export let data;
@@ -52,23 +49,9 @@
 	};
 </script>
 
-<!-- TODO show actual name, allow editing -->
-<div class="w-[40vw] pr-80 mx-auto pb-5 md:pb-20 box-content relative">
-	{#key $page.params.tasks}
-		<slot />
-	{/key}
-	<div class="fixed top-20 ml-[40vw] pl-6 w-80 pb-40 h-full box-border">
-		<div class="flex flex-col h-full" in:fade>
-			<div class="flex-grow flex flex-col">
-				<div class="py-1 text-gray-500 text-sm">project goal:</div>
-				<textarea
-					value={$page.data.listContent?.[0].strategic_goal || ''}
-					on:input={strategyChangeHandler}
-					class="flex-grow w-full block resize-none focus:outline-none"
-					placeholder="describe your large-level goals for this project..."
-				/>
-			</div>
-			<div class="mt-2 flex-grow w-80" />
-		</div>
-	</div>
-</div>
+<input
+	value={$page.data.listContent?.[0].name || ''}
+	on:input={nameChangeHandler}
+	class="w-full mb-3 focus:outline-none"
+	placeholder="untitled list"
+/>
