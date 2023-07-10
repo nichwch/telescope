@@ -6,13 +6,14 @@ export const fetchAITaskSuggestions = async (
 	current_task: TODO
 ) => {
 	console.log({ strategic_goal, todo_list, current_task });
-	const res = await fetch(
-		`/api/suggest-tasks?${new URLSearchParams({
+	const res = await fetch('/api/suggest-tasks', {
+		method: 'POST',
+		body: JSON.stringify({
 			strategic_goal,
-			todo_list: JSON.stringify(todo_list),
-			current_task: JSON.stringify(current_task)
-		})}`
-	);
+			todo_list: todo_list,
+			current_task: current_task
+		})
+	});
 	const res_data = await res.json();
 	console.log({ res_data });
 	return res_data;

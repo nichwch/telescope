@@ -5,10 +5,12 @@ import { model } from '$lib/server/openai';
 import type { TODO } from '$lib/types';
 import { json } from '@sveltejs/kit';
 
-export const GET = (async ({ url }) => {
-	const strategic_goal = url.searchParams.get('strategic_goal') || '';
-	const todo_list = JSON.parse(url.searchParams.get('todo_list') || '[]') as TODO[];
-	const current_task = JSON.parse(url.searchParams.get('current_task') || '{}');
+export const POST = (async ({ request }) => {
+	const json_body = await request.json();
+	const strategic_goal = json_body.strategic_goal || '';
+	const todo_list = (json_body.todo_list || []) as TODO[];
+	const current_task = json_body.current_task || {};
+
 	const finished_tasks = todo_list.filter((task: TODO) => task.done);
 	const unfinished_tasks = todo_list.filter((task: TODO) => !task.done);
 	type SimplifiedTODO = Omit<Partial<TODO>, 'children'> & { children?: SimplifiedTODO[] };
