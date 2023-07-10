@@ -67,20 +67,18 @@
 </div>
 
 <div class="hidden top-20 left-0 w-full fixed md:flex flex-col h-full -z-50" in:fade>
-	<div class="w-80 mx-auto">
-		<div class="mr-[40vw] box-content">
-			<div class="flex flex-col">
-				<div class="py-1 text-gray-500 text-sm">project goal:</div>
-				<textarea
-					value={$page.data.listContent?.[0].strategic_goal}
-					on:input={strategyChangeHandler}
-					class="flex-grow w-full block resize-none focus:outline-none"
-					placeholder="describe your large-level goals for this project..."
-				/>
-			</div>
-			<div class="mt-2 flex-grow w-80">
-				<!-- A summary of what you are currently doing. -->
-			</div>
+	<div class="pl-[40vw] w-80 mx-auto box-content flex flex-col">
+		<div class="ml-6 flex flex-col">
+			<div class="py-1 text-gray-500 text-sm">project goal:</div>
+			<textarea
+				value={$page.data.listContent?.[0].strategic_goal}
+				on:input={strategyChangeHandler}
+				class="flex-grow w-full block resize-none focus:outline-none"
+				placeholder="describe your large-level goals for this project..."
+			/>
+		</div>
+		<div class="ml-6 mt-2 flex-grow w-80">
+			<!-- A summary of what you are currently doing. -->
 		</div>
 	</div>
 </div>
