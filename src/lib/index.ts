@@ -1,3 +1,4 @@
+import { nanoid } from 'nanoid';
 import type { TODO } from './types';
 
 export const updateAtPath = (list: TODO[], newList: TODO[], paths: string[]): TODO[] => {
@@ -21,10 +22,14 @@ export const updateAtPath = (list: TODO[], newList: TODO[], paths: string[]): TO
 };
 
 // remove dnd attributes
-export const cleanData = (arr: any[]) => {
-	return arr?.map((item) => {
+export const cleanData = (arr: (TODO & { isDndShadowItem?: boolean })[]) => {
+	return arr?.map((item: TODO & { isDndShadowItem?: boolean }) => {
 		const newItem = { ...item };
 		delete newItem.isDndShadowItem;
+		// address failure mode where id is set to id:dnd-shadow-placeholder-0000, might happen after mobile sessions
+		if (newItem.id.includes('dnd-shadow-placeholder')) {
+			newItem.id = nanoid();
+		}
 		return newItem;
 	});
 };
