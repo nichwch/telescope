@@ -30,6 +30,11 @@
 			{item.name}
 		</span>
 		<div class="flex items-center">
+			<input
+				type="checkbox"
+				bind:checked={item.done}
+				class="rounded-full outline-none border border-gray-500 align-middle appearance-none h-4 w-4 bg-white checked:bg-green-500"
+			/>
 			<a
 				class:text-green-700={item.children.length > 0}
 				class:font-semibold={item.children.length > 0}
