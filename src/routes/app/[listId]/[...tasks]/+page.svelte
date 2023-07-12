@@ -7,7 +7,7 @@
 	import type { TODO } from '$lib/types';
 	import { onDestroy, onMount } from 'svelte';
 	import Todo from '../../../../components/Todo.svelte';
-	import { updateAtPath, cleanData } from '$lib';
+	import { updateAtPath, cleanData, FLIP_DURATION_MS } from '$lib';
 	import { tick } from 'svelte';
 	import { fetchAITaskSuggestions } from '$lib/fetchers';
 	import AiGeneratedTaskDisplay from './AIGeneratedTaskDisplay.svelte';
@@ -20,7 +20,6 @@
 	const {
 		params: { listId, tasks }
 	} = $page;
-	const FLIP_DURATION_MS = 300;
 
 	const taskArray = tasks?.split('/').filter((str) => str.length > 0) || [];
 	let items = (data.listContent?.[0].tasks_blob || []) as TODO[];

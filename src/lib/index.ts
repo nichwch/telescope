@@ -33,3 +33,5 @@ export const cleanData = (arr: (TODO & { isDndShadowItem?: boolean })[]) => {
 		return newItem;
 	});
 };
+
+export const FLIP_DURATION_MS = 300;

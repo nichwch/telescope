@@ -2,6 +2,8 @@
 	import { goto, invalidateAll } from '$app/navigation';
 	import { fade } from 'svelte/transition';
 	import { enhance } from '$app/forms';
+	import { flip } from 'svelte/animate';
+	import { FLIP_DURATION_MS } from '../../lib/index.js';
 
 	export let data;
 	let { supabase } = data;
@@ -36,8 +38,9 @@
 	<div class="min-h-full" in:fade>
 		{#if data?.lists && data.lists.length > 0}
 			<ul class="overflow-y-auto">
-				{#each data?.lists || [] as list}
+				{#each data?.lists || [] as list (list.id)}
 					<div
+						animate:flip={{ duration: FLIP_DURATION_MS }}
 						class="flex items-center border-b border-b-gray-200 hover:bg-gray-50 py-1"
 						on:mouseover={() => (hoveredList = list.id)}
 						on:mouseleave={() => (hoveredList = null)}
