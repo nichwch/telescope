@@ -8,75 +8,89 @@
 	import { fly } from 'svelte/transition';
 
 	export let item: TODO;
-	export let focusedElement: string | undefined = undefined;
+
+	let hidden = item.done;
+	let interval: NodeJS.Timeout;
+	$: {
+		if (item.done) {
+			interval = setTimeout(() => {
+				hidden = true;
+			}, 1000);
+		} else {
+			clearTimeout(interval);
+			hidden = false;
+		}
+	}
 
 	export const delete_item = 'delete_item';
 	const dispatch = createEventDispatcher();
 </script>
 
-<div id={item.id} class="flex flex-col pb-4 border-b border-b-gray-300 mb-3 bg-white">
-	<div class="flex items-center">
-		<DragHandle />
-		<span
-			contenteditable
-			id="input {item.id}"
-			role="textbox"
-			class="name_textarea inline-block resize-none break-word overflow-x-hidden flex-grow px-4 focus:outline-none cursor-text"
-			bind:innerText={item.name}
-			on:focus={() => {
-				focusedItemStore.set(item.id);
-			}}
-		>
-			{item.name}
-		</span>
+{#if !hidden}
+	<div class="flex flex-col pb-4 border-b border-b-gray-300 mb-3 bg-white">
 		<div class="flex items-center">
-			<input
-				type="checkbox"
-				bind:checked={item.done}
-				class="rounded-full outline-none border border-gray-500 align-middle appearance-none h-4 w-4 bg-white checked:bg-green-500"
-			/>
-			<a
-				class:text-green-700={item.children.length > 0}
-				class:font-semibold={item.children.length > 0}
-				class:text-gray-500={item.children.length === 0}
-				class="w-6 text-center"
-				href={`${$page.url}/${item.id}`}
+			<DragHandle />
+			<span
+				contenteditable
+				id="input {item.id}"
+				role="textbox"
+				class="name_textarea inline-block resize-none break-word overflow-x-hidden flex-grow px-4 focus:outline-none cursor-text"
+				bind:innerText={item.name}
+				on:focus={() => {
+					focusedItemStore.set(item.id);
+				}}
 			>
-				{#if item.children.length > 0}
-					{item.children.length}
-				{:else}
-					+
-				{/if}
-			</a>
+				{item.name}
+			</span>
+			<div class="flex items-center">
+				<input
+					type="checkbox"
+					bind:checked={item.done}
+					class="rounded-full outline-none border border-gray-500 align-middle appearance-none h-4 w-4 bg-white checked:bg-green-500"
+				/>
+				<a
+					class:text-green-700={item.children.length > 0}
+					class:font-semibold={item.children.length > 0}
+					class:text-gray-500={item.children.length === 0}
+					class="w-6 text-center"
+					href={`${$page.url}/${item.id}`}
+				>
+					{#if item.children.length > 0}
+						{item.children.length}
+					{:else}
+						+
+					{/if}
+				</a>
+			</div>
 		</div>
-	</div>
-	{#if $focusedItemStore === item.id || item.description?.length !== 0}
-		<span
-			in:fly
-			contenteditable
-			id="description input {item.id}"
-			role="textbox"
-			class="ml-[14px] description_textarea inline-block resize-none
+		{#if $focusedItemStore === item.id || item.description?.length !== 0}
+			<span
+				in:fly
+				contenteditable
+				id="description input {item.id}"
+				role="textbox"
+				class="ml-[14px] description_textarea inline-block resize-none
 	break-word overflow-x-hidden flex-grow px-4 focus:outline-none cursor-text
 	text-gray-500"
-			bind:innerText={item.description}
-			on:focus={() => {
-				focusedItemStore.set(item.id);
-			}}
-		>
-			{item.description}
-		</span>
-	{/if}
-	{#if $focusedItemStore === item.id}
-		<div>
-			<button
-				in:fly
-				class=" ml-[14px] pl-4 text-red-700 hover:underline text-sm w-auto"
-				on:click={() => dispatch('delete_item', { id: item.id })}>delete</button
+				bind:innerText={item.description}
+				on:focus={() => {
+					focusedItemStore.set(item.id);
+				}}
 			>
-		</div>
-	{/if}
-</div>
+				{item.description}
+			</span>
+		{/if}
+		{#if $focusedItemStore === item.id}
+			<div>
+				<button
+					in:fly
+					class=" ml-[14px] pl-4 text-red-700 hover:underline text-sm w-auto"
+					on:click={() => dispatch('delete_item', { id: item.id })}>delete</button
+				>
+			</div>
+		{/if}
+	</div>
+{/if}
 
 <style>
 	.name_textarea[contenteditable]:empty::before {

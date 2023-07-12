@@ -14,6 +14,7 @@
 	import LoadingRow from './LoadingRow.svelte';
 	import TitleComponent from '../TitleComponent.svelte';
 	import ArrowLeft from '../../../../components/Icons/ArrowLeft.svelte';
+	import FinishedTodo from '../../../../components/FinishedTodo.svelte';
 
 	export let data;
 	const { supabase } = data;
@@ -45,13 +46,14 @@
 		// top level items object
 		allItems: TODO[],
 		// children to be inserted at pathToUpdate
-		focusedItems: TODO[],
+		_focusedItems: TODO[],
 		pathToUpdate: string[],
 		listId: string
 	) => {
 		// maintain reference to top level object
-		const topLevelAllItems = cleanData(updateAtPath(allItems, focusedItems, pathToUpdate));
+		const topLevelAllItems = cleanData(updateAtPath(allItems, _focusedItems, pathToUpdate));
 		items = topLevelAllItems;
+		focusedItems = [..._focusedItems];
 		return await supabase
 			.from('lists')
 			.update({
@@ -144,7 +146,6 @@
 	let focusedElement: string | undefined = undefined;
 	function transformDraggedElement(element: HTMLElement | undefined) {
 		element?.classList.add('border', 'border-black');
-		console.log({ element });
 		focusedElement = element?.id;
 	}
 
@@ -162,6 +163,7 @@
 	$: history = $page.params.tasks;
 	$: segments = history?.split('/');
 	$: focusedTask = parentItems.length > 0 ? parentItems[parentItems.length - 1] : null;
+	$: finishedTasks = focusedItems.filter((item) => item.done);
 	$: if (topAISuggestions?.length === 0) topAISuggestions = null;
 	$: if (bottomAISuggestions?.length === 0) bottomAISuggestions = null;
 </script>
@@ -252,6 +254,17 @@
 						</div>
 					{/each}
 				</section>
+				<!-- finished tasks -->
+				{#if finishedTasks.length > 0}
+					<div>
+						<h1 class="text-gray-500 text-sm">finished tasks</h1>
+						{#each finishedTasks as finishedTask (finishedTask.id)}
+							<div animate:flip={{ duration: FLIP_DURATION_MS }} in:fly>
+								<FinishedTodo item={finishedTask} />
+							</div>
+						{/each}
+					</div>
+				{/if}
 				<div
 					class:border-t={scrollHeight - scrollY > 75}
 					class:border-t-gray-300={scrollHeight - scrollY > 75}

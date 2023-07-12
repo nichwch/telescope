@@ -5,7 +5,6 @@ export const fetchAITaskSuggestions = async (
 	todo_list: TODO[],
 	current_task: TODO
 ) => {
-	console.log({ strategic_goal, todo_list, current_task });
 	const res = await fetch('/api/suggest-tasks', {
 		method: 'POST',
 		body: JSON.stringify({
@@ -14,7 +13,5 @@ export const fetchAITaskSuggestions = async (
 			current_task: current_task
 		})
 	});
-	const res_data = await res.json();
-	console.log({ res_data });
-	return res_data;
+	return await res.json();
 };
