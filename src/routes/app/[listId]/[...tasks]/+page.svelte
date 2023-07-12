@@ -254,7 +254,7 @@
 				<section
 					in:fade
 					use:dndzone={{
-						items: focusedItems,
+						items: focusedItems.filter((item) => !item.done),
 						flipDurationMs: FLIP_DURATION_MS,
 						transformDraggedElement
 					}}
@@ -262,7 +262,7 @@
 					on:finalize={handleDndFinalize}
 					class="flex-grow block w-full"
 				>
-					{#each focusedItems as item (item.id)}
+					{#each focusedItems.filter((item) => !item.done) as item (item.id)}
 						<div animate:flip={{ duration: FLIP_DURATION_MS }} in:fly>
 							<Todo
 								{item}
