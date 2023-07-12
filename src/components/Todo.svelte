@@ -4,7 +4,6 @@
 	import { createEventDispatcher } from 'svelte';
 	import { focusedItemStore } from '../routes/app/[listId]/[...tasks]/FocusedItemStore';
 	import DragHandle from './Icons/DragHandle.svelte';
-	import ExpandIcon from './Icons/ExpandIcon.svelte';
 	import { fly } from 'svelte/transition';
 
 	export let item: TODO;
