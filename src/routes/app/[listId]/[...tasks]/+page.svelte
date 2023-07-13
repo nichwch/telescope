@@ -1,4 +1,6 @@
 <script lang="ts">
+	import FocusedTaskDisplay from './FocusedTaskDisplay.svelte';
+
 	import { flip } from 'svelte/animate';
 	import { dndzone } from 'svelte-dnd-action';
 	import { nanoid } from 'nanoid';
@@ -22,10 +24,11 @@
 	} = $page;
 
 	const taskArray = tasks?.split('/').filter((str) => str.length > 0) || [];
+
 	let items = (data.listContent?.[0].tasks_blob || []) as TODO[];
 	let isFlushing = false;
 	let focusedItems: TODOWithMetadata[] = cleanData(items);
-	let parentItems: TODO[] = [];
+	const parentItems: TODO[] = [];
 	for (let nestedTask of taskArray || []) {
 		const foundTask = focusedItems.find((task) => task.id === nestedTask);
 		if (foundTask) {
@@ -33,6 +36,8 @@
 			focusedItems = cleanData(foundTask.children);
 		}
 	}
+	const focusedTask = parentItems.length > 0 ? parentItems[parentItems.length - 1] : null;
+
 	let lastFlushedItems: string = JSON.stringify(cleanData([...focusedItems]));
 	let topAISuggestions: string[] | null = null;
 	let topAILoading = false;
@@ -161,10 +166,10 @@
 	onMount(() => updateScrollHeight());
 	$: history = $page.params.tasks;
 	$: segments = history?.split('/');
-	$: focusedTask = parentItems.length > 0 ? parentItems[parentItems.length - 1] : null;
 	$: finishedTasks = focusedItems.filter((item) => item.done);
 	$: if (topAISuggestions?.length === 0) topAISuggestions = null;
 	$: if (bottomAISuggestions?.length === 0) bottomAISuggestions = null;
+	$: console.log('wewww', focusedTask?.name);
 </script>
 
 <!-- <svelte:document bind:offsetHeight={outerHeight} /> -->
@@ -181,33 +186,7 @@
 
 			<!-- Focused Task display -->
 			{#if focusedTask}
-				<div class="border border-green-700 bg-green-100 text-green-800" in:fly>
-					<div class="px-2 py-0.5">
-						<a
-							href="/app/{listId}/{segments.slice(0, segments.length - 1).join('/')}"
-							class="text-sm opacity-80 underline"
-						>
-							back
-						</a>
-						<div
-							contenteditable
-							role="textbox"
-							class="block name_textarea resize-none break-word overflow-x-hidden flex-grow px-4 focus:outline-none cursor-text"
-							bind:innerText={focusedTask.name}
-						>
-							{focusedTask.name}
-						</div>
-						<div
-							contenteditable
-							role="textbox"
-							class="block ml-[14px] description_textarea resize-none
-	break-word overflow-x-hidden flex-grow px-4 focus:outline-none cursor-text"
-							bind:innerText={focusedTask.description}
-						>
-							{focusedTask.description}
-						</div>
-					</div>
-				</div>
+				<FocusedTaskDisplay {focusedTask} />
 			{/if}
 
 			{#if topAISuggestions && !topAILoading}
@@ -277,7 +256,7 @@
 						<h1 class="text-gray-500 text-sm">finished tasks</h1>
 						{#each finishedTasks as finishedTask (finishedTask.id)}
 							<div animate:flip={{ duration: FLIP_DURATION_MS }} in:fly>
-								<FinishedTodo item={finishedTask} />
+								<FinishedTodo item={finishedTask} {items} />
 							</div>
 						{/each}
 					</div>
