@@ -21,7 +21,7 @@ export const updateAtPath = (list: TODO[], newList: TODO[], paths: string[]): TO
 	return topLevelList;
 };
 
-// remove dnd attributes
+// remove dnd attributes and other data inconsistencies that crash the UI
 export const cleanData = (arr: (TODO & { isDndShadowItem?: boolean })[]) => {
 	return arr?.map((item: TODO & { isDndShadowItem?: boolean }) => {
 		const newItem = { ...item };

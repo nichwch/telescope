@@ -1,20 +1,20 @@
 <script lang="ts">
 	import { page } from '$app/stores';
-	import type { TODO } from '$lib/types';
+	import type { TODO, TODOWithMetadata } from '$lib/types';
 	import { createEventDispatcher } from 'svelte';
 	import { focusedItemStore } from '../routes/app/[listId]/[...tasks]/FocusedItemStore';
 	import DragHandle from './Icons/DragHandle.svelte';
 	import { fly } from 'svelte/transition';
 
-	export let item: TODO;
-	let delayedDone = item.done;
+	export let item: TODOWithMetadata;
+	item.queuedDone = Boolean(item.queuedDone);
 	let interval: NodeJS.Timeout;
 	$: {
-		if (delayedDone) {
+		if (item.queuedDone) {
 			interval = setTimeout(() => {
 				item.done = true;
-			}, 2000);
-		} else {
+			}, 1000);
+		} else if (!item.queuedDone) {
 			clearTimeout(interval);
 			item.done = false;
 		}
@@ -42,7 +42,7 @@
 		<div class="flex items-center">
 			<input
 				type="checkbox"
-				bind:checked={delayedDone}
+				bind:checked={item.queuedDone}
 				class="rounded-full outline-none border border-gray-500 align-middle appearance-none h-4 w-4 bg-white checked:bg-green-500"
 			/>
 			<a

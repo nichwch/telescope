@@ -9,6 +9,12 @@ export type TODO = {
 	aiGenerated?: boolean;
 };
 
+export type TODOMetadata = {
+	queuedDone?: boolean;
+};
+
+export type TODOWithMetadata = TODO & TODOMetadata;
+
 export type TODOList = Database['public']['Tables']['lists']['Row'] & {
 	tasks_blob: TODO[];
 };

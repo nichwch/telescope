@@ -4,7 +4,7 @@
 	import { nanoid } from 'nanoid';
 	import { fade, fly } from 'svelte/transition';
 	import { page } from '$app/stores';
-	import type { TODO } from '$lib/types';
+	import type { TODO, TODOWithMetadata } from '$lib/types';
 	import { onDestroy, onMount } from 'svelte';
 	import Todo from '../../../../components/Todo.svelte';
 	import { updateAtPath, cleanData, FLIP_DURATION_MS } from '$lib';
@@ -13,7 +13,6 @@
 	import AiGeneratedTaskDisplay from './AIGeneratedTaskDisplay.svelte';
 	import LoadingRow from './LoadingRow.svelte';
 	import TitleComponent from '../TitleComponent.svelte';
-	import ArrowLeft from '../../../../components/Icons/ArrowLeft.svelte';
 	import FinishedTodo from '../../../../components/FinishedTodo.svelte';
 
 	export let data;
@@ -25,7 +24,7 @@
 	const taskArray = tasks?.split('/').filter((str) => str.length > 0) || [];
 	let items = (data.listContent?.[0].tasks_blob || []) as TODO[];
 	let isFlushing = false;
-	let focusedItems: TODO[] = cleanData(items);
+	let focusedItems: TODOWithMetadata[] = cleanData(items);
 	let parentItems: TODO[] = [];
 	for (let nestedTask of taskArray || []) {
 		const foundTask = focusedItems.find((task) => task.id === nestedTask);

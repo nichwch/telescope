@@ -1,14 +1,14 @@
 <script lang="ts">
 	import { page } from '$app/stores';
-	import type { TODO } from '$lib/types';
+	import type { TODO, TODOWithMetadata } from '$lib/types';
 	import { createEventDispatcher } from 'svelte';
 	import { focusedItemStore } from '../routes/app/[listId]/[...tasks]/FocusedItemStore';
 	import DragHandle from './Icons/DragHandle.svelte';
 	import ExpandIcon from './Icons/ExpandIcon.svelte';
 	import { fly } from 'svelte/transition';
 
-	export let item: TODO;
-
+	export let item: TODOWithMetadata;
+	item.queuedDone = Boolean(item.queuedDone);
 	export const delete_item = 'delete_item';
 	const dispatch = createEventDispatcher();
 </script>
@@ -31,7 +31,11 @@
 		<div class="flex items-center">
 			<input
 				type="checkbox"
-				bind:checked={item.done}
+				checked={item.done}
+				on:click={() => {
+					item.done = false;
+					item.queuedDone = false;
+				}}
 				class="rounded-full outline-none border border-gray-500 align-middle appearance-none h-4 w-4 bg-white checked:bg-green-500"
 			/>
 			<a
