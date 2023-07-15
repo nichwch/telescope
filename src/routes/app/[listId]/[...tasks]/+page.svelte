@@ -27,18 +27,20 @@
 
 	let items = (data.listContent?.[0].tasks_blob || []) as TODO[];
 	let isFlushing = false;
-	let focusedItems: TODOWithMetadata[] = cleanData(items);
-	const parentItems: TODO[] = [];
+	let focusedItems: TODOWithMetadata[] = items;
+	let parentItems: TODO[] = [];
 	for (let nestedTask of taskArray || []) {
 		const foundTask = focusedItems.find((task) => task.id === nestedTask);
 		if (foundTask) {
 			parentItems.push(foundTask);
-			focusedItems = cleanData(foundTask.children);
+			focusedItems = foundTask.children;
 		}
 	}
-	const focusedTask = parentItems.length > 0 ? parentItems[parentItems.length - 1] : null;
+	let focusedTask = parentItems[parentItems.length - 1];
+	// wait until to cleanData to make sure parentItems are references to items
+	focusedItems = cleanData(focusedItems);
 
-	let lastFlushedItems: string = JSON.stringify(cleanData([...focusedItems]));
+	let lastFlushedItems: string = JSON.stringify([...focusedItems]);
 	let topAISuggestions: string[] | null = null;
 	let topAILoading = false;
 	let bottomAISuggestions: string[] | null = null;
@@ -46,6 +48,7 @@
 	let scrollY = 0;
 	let scrollHeight = 0;
 
+	let lastFlushedFocusedTask = JSON.stringify(focusedTask);
 	const updateList = async (
 		// top level items object
 		allItems: TODO[],
@@ -55,27 +58,33 @@
 		listId: string
 	) => {
 		// maintain reference to top level object
-		const topLevelAllItems = cleanData(updateAtPath(allItems, _focusedItems, pathToUpdate));
+		const topLevelAllItems = updateAtPath(allItems, _focusedItems, pathToUpdate);
 		items = topLevelAllItems;
 		focusedItems = [..._focusedItems];
 		return await supabase
 			.from('lists')
 			.update({
-				tasks_blob: topLevelAllItems,
+				tasks_blob: cleanData(topLevelAllItems),
 				last_edited_date: new Date().toISOString()
 			})
 			.eq('id', listId);
 	};
 
 	const updateInterval = setInterval(async () => {
+		// comparison is between cleaned data (to avoid being triggered by drags without drops)
 		const currentString = JSON.stringify(cleanData(focusedItems));
-		if (lastFlushedItems === currentString) return;
+		const currentFocusedString = JSON.stringify(focusedTask);
+		if (lastFlushedItems === currentString && lastFlushedFocusedTask === currentFocusedString)
+			return;
 		if (isFlushing) return;
+		// put non-reactive changes in
+		items = items;
 		isFlushing = true;
 		updateList(items, focusedItems, taskArray, listId)
 			.then(() => {
 				isFlushing = false;
 				lastFlushedItems = JSON.stringify(cleanData([...focusedItems]));
+				lastFlushedFocusedTask = JSON.stringify(focusedTask);
 			})
 			.catch((e) => {
 				console.error('error while flushing', e);
@@ -169,7 +178,6 @@
 	$: finishedTasks = focusedItems.filter((item) => item.done);
 	$: if (topAISuggestions?.length === 0) topAISuggestions = null;
 	$: if (bottomAISuggestions?.length === 0) bottomAISuggestions = null;
-	$: console.log('wewww', focusedTask?.name);
 </script>
 
 <!-- <svelte:document bind:offsetHeight={outerHeight} /> -->
@@ -256,7 +264,7 @@
 						<h1 class="text-gray-500 text-sm">finished tasks</h1>
 						{#each finishedTasks as finishedTask (finishedTask.id)}
 							<div animate:flip={{ duration: FLIP_DURATION_MS }} in:fly>
-								<FinishedTodo item={finishedTask} {items} />
+								<FinishedTodo item={finishedTask} />
 							</div>
 						{/each}
 					</div>
@@ -319,17 +327,3 @@
 		</div>
 	</div>
 </div>
-
-<style>
-	.name_textarea[contenteditable]:empty::before {
-		content: 'untitled task';
-		color: inherit;
-		opacity: 50%;
-	}
-
-	.description_textarea[contenteditable]:empty::before {
-		content: 'add a description...';
-		color: inherit;
-		opacity: 50%;
-	}
-</style>

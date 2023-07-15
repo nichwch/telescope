@@ -10,7 +10,6 @@
 
 	$: history = $page.params.tasks;
 	$: segments = history?.split('/');
-	$: console.log('wewww2', focusedTask?.name);
 </script>
 
 <div class="border border-green-700 bg-green-100 text-green-800" in:fly>
