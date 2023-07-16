@@ -57,7 +57,7 @@
 			contenteditable
 			id="description input {item.id}"
 			role="textbox"
-			class="ml-[14px] description_textarea inline-block resize-none
+			class="description_textarea inline-block resize-none
 	break-word overflow-x-hidden flex-grow px-4 focus:outline-none cursor-text
 	text-gray-500"
 			bind:innerText={item.description}
@@ -72,7 +72,7 @@
 		<div>
 			<button
 				in:fly
-				class=" ml-[14px] pl-4 text-red-700 hover:underline text-sm w-auto"
+				class="pl-4 text-red-700 hover:underline text-sm w-auto"
 				on:click={() => dispatch('delete_item', { id: item.id })}>delete</button
 			>
 		</div>

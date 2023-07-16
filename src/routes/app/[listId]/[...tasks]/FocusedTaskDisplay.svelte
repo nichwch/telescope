@@ -31,7 +31,7 @@
 		<div
 			contenteditable
 			role="textbox"
-			class="block ml-[14px] description_textarea resize-none
+			class="block description_textarea resize-none
 	break-word overflow-x-hidden flex-grow px-4 focus:outline-none cursor-text"
 			bind:innerText={focusedTask.description}
 		>
