@@ -46,20 +46,6 @@
 				bind:checked={item.queuedDone}
 				class="rounded-full outline-none border border-gray-500 align-middle appearance-none h-4 w-4 bg-white checked:bg-green-500"
 			/>
-			<a
-				class:text-green-700={item.children.length > 0}
-				class:font-semibold={item.children.length > 0}
-				class:text-gray-500={item.children.length === 0}
-				class="w-6 text-center"
-				href={`${$page.url}/${item.id}`}
-				on:click={() => invalidateAll()}
-			>
-				{#if item.children.length > 0}
-					{item.children.length}
-				{:else}
-					+
-				{/if}
-			</a>
 		</div>
 	</div>
 	{#if $focusedItemStore === item.id || item.description?.length !== 0}
@@ -79,15 +65,33 @@
 			{item.description}
 		</span>
 	{/if}
-	{#if $focusedItemStore === item.id}
-		<div>
+
+	<div>
+		{#if $focusedItemStore === item.id}
+			<a
+				class="ml-[14px] pl-4 text-sm w-auto hover:underline text-green-700"
+				href={`${$page.url}/${item.id}`}
+				on:click={() => invalidateAll()}
+			>
+				mark as focused
+			</a>
+		{:else if item.children.length > 0}
+			<a
+				class="ml-[14px] pl-4 text-sm w-auto hover:underline text-green-700"
+				href={`${$page.url}/${item.id}`}
+				on:click={() => invalidateAll()}
+			>
+				{item.children.length} subtask{item.children.length > 1 ? 's' : ''}
+			</a>
+		{/if}
+		{#if $focusedItemStore === item.id}
 			<button
 				in:fly
-				class=" ml-[14px] pl-4 text-red-700 hover:underline text-sm w-auto"
+				class="ml-3 text-red-700 hover:underline text-sm w-auto"
 				on:click={() => dispatch('delete_item', { id: item.id })}>delete</button
 			>
-		</div>
-	{/if}
+		{/if}
+	</div>
 </div>
 
 <style>
