@@ -5,6 +5,7 @@
 	import { focusedItemStore } from '../routes/app/[listId]/[...tasks]/FocusedItemStore';
 	import DragHandle from './Icons/DragHandle.svelte';
 	import { fly } from 'svelte/transition';
+	import { invalidateAll } from '$app/navigation';
 
 	export let item: TODOWithMetadata;
 	item.queuedDone = Boolean(item.queuedDone);
@@ -51,6 +52,7 @@
 				class:text-gray-500={item.children.length === 0}
 				class="w-6 text-center"
 				href={`${$page.url}/${item.id}`}
+				on:click={() => invalidateAll()}
 			>
 				{#if item.children.length > 0}
 					{item.children.length}
