@@ -73,7 +73,7 @@
 				href={`${$page.url}/${item.id}`}
 				on:click={() => invalidateAll()}
 			>
-				mark as focused
+				focus on this task
 			</a>
 		{:else if item.children.length > 0}
 			<a
