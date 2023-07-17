@@ -1,6 +1,5 @@
 <script lang="ts">
 	import FocusedTaskDisplay from './FocusedTaskDisplay.svelte';
-
 	import { flip } from 'svelte/animate';
 	import { dndzone } from 'svelte-dnd-action';
 	import { nanoid } from 'nanoid';
@@ -11,11 +10,9 @@
 	import Todo from '../../../../components/Todo.svelte';
 	import { updateAtPath, cleanData, FLIP_DURATION_MS } from '$lib';
 	import { tick } from 'svelte';
-	import { fetchAITaskSuggestions } from '$lib/fetchers';
-	import AiGeneratedTaskDisplay from './AIGeneratedTaskDisplay.svelte';
-	import LoadingRow from './LoadingRow.svelte';
 	import TitleComponent from '../TitleComponent.svelte';
 	import FinishedTodo from '../../../../components/FinishedTodo.svelte';
+	import TaskControls from './TaskControls.svelte';
 
 	export let data;
 	const { supabase } = data;
@@ -41,12 +38,9 @@
 	focusedItems = cleanData(focusedItems);
 
 	let lastFlushedItems: string = JSON.stringify([...focusedItems]);
-	let topAISuggestions: string[] | null = null;
-	let topAILoading = false;
-	let bottomAISuggestions: string[] | null = null;
-	let bottomAILoading = false;
 	let scrollY = 0;
 	let scrollHeight = 0;
+	let topOrBottomSuggestions: 'top' | 'bottom' | null = null;
 
 	let lastFlushedFocusedTask = JSON.stringify(focusedTask);
 	const updateList = async (
@@ -120,16 +114,6 @@
 		newTodo?.focus();
 	};
 
-	const generateTODOatTop = async () => {
-		topAILoading = true;
-		topAISuggestions = await fetchAITaskSuggestions(
-			data.listContent?.[0].strategic_goal || '',
-			items,
-			parentItems[parentItems.length - 1] || []
-		);
-		topAILoading = false;
-	};
-
 	const createTODOAtBottom = async () => {
 		const newId = nanoid();
 		focusedItems = [...focusedItems, createNewTodoWId(newId)];
@@ -138,14 +122,30 @@
 		newTodo?.focus();
 	};
 
-	const generateTODOatBottom = async () => {
-		bottomAILoading = true;
-		bottomAISuggestions = await fetchAITaskSuggestions(
-			data.listContent?.[0].strategic_goal || '',
-			items,
-			parentItems[parentItems.length - 1] || []
-		);
-		bottomAILoading = false;
+	const addGeneratedTodoAtTop = (evt: { detail: { task: string } }) => {
+		focusedItems = [createAIGeneratedNewTodoWName(evt.detail.task), ...focusedItems];
+		window.scrollTo({ top: 0, behavior: 'smooth' });
+	};
+
+	const addAllGeneratedTodosAtTop = (evt: { detail: { aiSuggestions: string[] } }) => {
+		focusedItems = [
+			...evt.detail.aiSuggestions.map(createAIGeneratedNewTodoWName),
+			...focusedItems
+		];
+		window.scrollTo({ top: 0, behavior: 'smooth' });
+	};
+
+	const addGeneratedTodoAtBottom = (evt: { detail: { task: string } }) => {
+		focusedItems = [...focusedItems, createAIGeneratedNewTodoWName(evt.detail.task)];
+		window.scrollTo({ top: scrollHeight, behavior: 'smooth' });
+	};
+
+	const addAllGeneratedTodosAtBottom = (evt: { detail: { aiSuggestions: string[] } }) => {
+		focusedItems = [
+			...focusedItems,
+			...evt.detail.aiSuggestions.map(createAIGeneratedNewTodoWName)
+		];
+		window.scrollTo({ top: scrollHeight, behavior: 'smooth' });
 	};
 
 	function handleDndConsider(e: any) {
@@ -173,11 +173,7 @@
 			) - window.innerHeight;
 	};
 	onMount(() => updateScrollHeight());
-	$: history = $page.params.tasks;
-	$: segments = history?.split('/');
 	$: finishedTasks = focusedItems.filter((item) => item.done);
-	$: if (topAISuggestions?.length === 0) topAISuggestions = null;
-	$: if (bottomAISuggestions?.length === 0) bottomAISuggestions = null;
 </script>
 
 <!-- <svelte:document bind:offsetHeight={outerHeight} /> -->
@@ -197,42 +193,18 @@
 				<FocusedTaskDisplay {focusedTask} />
 			{/if}
 
-			{#if topAISuggestions && !topAILoading}
-				<AiGeneratedTaskDisplay
-					generatedTasks={topAISuggestions}
-					on:add_task={(evt) => {
-						if (topAISuggestions) {
-							focusedItems = [createAIGeneratedNewTodoWName(evt.detail.task), ...focusedItems];
-							topAISuggestions = topAISuggestions?.filter((task) => task !== evt.detail.task);
-							window.scrollTo({ top: 0, behavior: 'smooth' });
-						}
-					}}
-					on:add_all={() => {
-						if (topAISuggestions) {
-							focusedItems = [
-								...topAISuggestions.map(createAIGeneratedNewTodoWName),
-								...focusedItems
-							];
-							topAISuggestions = null;
-							window.scrollTo({ top: 0, behavior: 'smooth' });
-						}
-					}}
-					on:dismiss={() => (topAISuggestions = null)}
-				/>
-			{:else if topAILoading}
-				<LoadingRow />
-			{:else}
-				<div class="py-1 text-sm">
-					<button class="text-green-700 h-5 hover:underline" on:click={createTODOAtTop}>
-						+ create new {parentItems.length > 0 ? 'sub' : ''}task
-					</button>
-					{#if !bottomAISuggestions}
-						<button class="text-orange-700 h-5 hover:underline" on:click={generateTODOatTop}>
-							+ generate new {parentItems.length > 0 ? 'sub' : ''}tasks
-						</button>
-					{/if}
-				</div>
-			{/if}
+			<TaskControls
+				strategic_goal={data.listContent?.[0].strategic_goal || ''}
+				{items}
+				{parentItems}
+				isSubtask={parentItems.length > 0}
+				showAIButton={topOrBottomSuggestions !== 'bottom'}
+				on:add_ai_task={addGeneratedTodoAtTop}
+				on:add_all={addAllGeneratedTodosAtTop}
+				on:create_task={createTODOAtTop}
+				on:dismiss={() => (topOrBottomSuggestions = null)}
+				on:generate={() => (topOrBottomSuggestions = 'top')}
+			/>
 		</div>
 
 		<div class="h-full flex flex-col">
@@ -274,52 +246,21 @@
 					class:border-t-gray-300={scrollHeight - scrollY > 75}
 					class="sticky bottom-0 bg-white py-2 transition-all"
 				>
-					{#if bottomAISuggestions && !bottomAILoading}
-						<AiGeneratedTaskDisplay
-							generatedTasks={bottomAISuggestions}
-							on:add_task={(evt) => {
-								if (bottomAISuggestions) {
-									focusedItems = [...focusedItems, createAIGeneratedNewTodoWName(evt.detail.task)];
-									bottomAISuggestions = bottomAISuggestions?.filter(
-										(task) => task !== evt.detail.task
-									);
-									window.scrollTo({ top: scrollHeight, behavior: 'smooth' });
-								}
-							}}
-							on:add_all={() => {
-								if (bottomAISuggestions) {
-									focusedItems = [
-										...focusedItems,
-										...bottomAISuggestions.map(createAIGeneratedNewTodoWName)
-									];
-									bottomAISuggestions = null;
-									window.scrollTo({ top: scrollHeight, behavior: 'smooth' });
-								}
-							}}
-							on:dismiss={() => (bottomAISuggestions = null)}
-						/>
-					{:else if bottomAILoading}
-						<LoadingRow />
-					{:else}
-						<div class="py-1 text-sm">
-							<button
-								class="text-green-700 h-5 hover:underline transition-opacity"
-								on:click={createTODOAtBottom}
-							>
-								+ insert {parentItems.length > 0 ? 'sub' : ''}task at bottom
-							</button>
-							{#if !topAISuggestions}
-								<button
-									class="text-orange-700 h-5 hover:underline transition-opacity"
-									on:click={generateTODOatBottom}
-								>
-									+ generate new {parentItems.length > 0 ? 'sub' : ''}tasks at bottom
-								</button>
-							{/if}
-						</div>
-					{/if}
+					<TaskControls
+						strategic_goal={data.listContent?.[0].strategic_goal || ''}
+						{items}
+						{parentItems}
+						isSubtask={parentItems.length > 0}
+						showAIButton={topOrBottomSuggestions !== 'top'}
+						on:add_ai_task={addGeneratedTodoAtBottom}
+						on:add_all={addAllGeneratedTodosAtBottom}
+						on:create_task={createTODOAtBottom}
+						on:dismiss={() => (topOrBottomSuggestions = null)}
+						on:generate={() => (topOrBottomSuggestions = 'bottom')}
+						isBottom
+					/>
 				</div>
-			{:else if topAISuggestions === null && bottomAISuggestions === null}
+			{:else if topOrBottomSuggestions === null}
 				<div in:fade class="p-4 pl-0 w-full">
 					No {parentItems.length > 0 ? 'sub' : ''}tasks. Add one by pressing the button above
 				</div>
