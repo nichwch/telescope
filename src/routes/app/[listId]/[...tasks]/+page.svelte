@@ -13,6 +13,8 @@
 	import TitleComponent from '../TitleComponent.svelte';
 	import FinishedTodo from '../../../../components/FinishedTodo.svelte';
 	import TaskControls from './TaskControls.svelte';
+	import { NAME_TEXTAREA_CLASS } from '$lib';
+	import { focusedItemStore } from './FocusedItemStore';
 
 	export let data;
 	const { supabase } = data;
@@ -158,6 +160,22 @@
 		focusedItems = e.detail.items;
 	}
 
+	async function handleEnter(evt: KeyboardEvent) {
+		if (evt.key === 'Enter') {
+			let classes = Array.from(document.activeElement?.classList || []);
+			if (classes.includes(NAME_TEXTAREA_CLASS)) {
+				evt.preventDefault();
+				let index = focusedItems.findIndex((item) => item.id === $focusedItemStore);
+				let newId = nanoid();
+				focusedItems.splice(index + 1, 0, createNewTodoWId(newId));
+				focusedItems = focusedItems;
+				await tick();
+				const newTodo = document.getElementById(`input ${newId}`);
+				newTodo?.focus();
+			}
+		}
+	}
+
 	let focusedElement: string | undefined = undefined;
 	function transformDraggedElement(element: HTMLElement | undefined) {
 		element?.classList.add('border', 'border-black');
@@ -179,7 +197,7 @@
 </script>
 
 <!-- <svelte:document bind:offsetHeight={outerHeight} /> -->
-<svelte:window bind:scrollY on:resize={() => updateScrollHeight()} />
+<svelte:window bind:scrollY on:resize={() => updateScrollHeight()} on:keydown={handleEnter} />
 <div class="h-full flex-grow flex flex-col">
 	<div class="h-full flex flex-col">
 		<div

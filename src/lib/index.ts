@@ -35,3 +35,5 @@ export const cleanData = (arr: (TODO & { isDndShadowItem?: boolean })[]) => {
 };
 
 export const FLIP_DURATION_MS = 300;
+
+export const NAME_TEXTAREA_CLASS = 'name_textarea';

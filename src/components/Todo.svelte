@@ -6,6 +6,7 @@
 	import DragHandle from './Icons/DragHandle.svelte';
 	import { fly } from 'svelte/transition';
 	import { invalidateAll } from '$app/navigation';
+	import { NAME_TEXTAREA_CLASS } from '$lib';
 
 	export let item: TODOWithMetadata;
 	item.queuedDone = Boolean(item.queuedDone);
@@ -32,7 +33,7 @@
 			contenteditable
 			id="input {item.id}"
 			role="textbox"
-			class="name_textarea inline-block resize-none break-word overflow-x-hidden flex-grow px-4 focus:outline-none cursor-text"
+			class="{NAME_TEXTAREA_CLASS} inline-block resize-none break-word overflow-x-hidden flex-grow px-4 focus:outline-none cursor-text"
 			bind:innerText={item.name}
 			on:focus={() => {
 				focusedItemStore.set(item.id);
