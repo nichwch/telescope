@@ -132,11 +132,13 @@
 			...evt.detail.aiSuggestions.map(createAIGeneratedNewTodoWName),
 			...focusedItems
 		];
+		topOrBottomSuggestions = null;
 		window.scrollTo({ top: 0, behavior: 'smooth' });
 	};
 
 	const addGeneratedTodoAtBottom = (evt: { detail: { task: string } }) => {
 		focusedItems = [...focusedItems, createAIGeneratedNewTodoWName(evt.detail.task)];
+		topOrBottomSuggestions = null;
 		window.scrollTo({ top: scrollHeight, behavior: 'smooth' });
 	};
 
