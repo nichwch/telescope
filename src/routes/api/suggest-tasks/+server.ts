@@ -16,8 +16,8 @@ export const POST = (async ({ request }) => {
 	const { formatted_res } = await simple_task_suggestion_chain(
 		strategic_goal,
 		current_task,
-		finished_tasks,
 		unfinished_tasks,
+		finished_tasks,
 		task_prompt
 	);
 	return json(formatted_res);

@@ -35,16 +35,27 @@ export const cleanData = (arr: (TODO & { isDndShadowItem?: boolean })[]) => {
 };
 
 export type SimplifiedTODO = Omit<Partial<TODO>, 'children'> & { children?: SimplifiedTODO[] };
+
+// delete children off a todo
+export const flattenTODO = (task: TODO) => {
+	// eslint-disable-next-line
+	const { children, ...rest } = task;
+	return rest;
+};
 export const stringifyTodos = (task: SimplifiedTODO, prefix = ''): string => {
-	return `${prefix}name: ${task?.name?.trim() || 'untitled'}
-${prefix}description:${task?.description?.trim() || ''}
-${
-	task?.children
-		? prefix +
-		  'subtasks:\n' +
-		  task?.children?.map((child) => stringifyTodos(child, `${prefix}  `)).join('')
-		: ''
-}\n`;
+	const name = task?.name?.trim();
+	const description = task?.description?.trim();
+	const nameSnippet = name ? name : 'untitled task';
+	const descriptionSnippet = description ? `\n${prefix}description: ${description}` : '';
+
+	return `${prefix}${nameSnippet}${descriptionSnippet}${
+		task?.children && task.children.length > 0
+			? '\n' +
+			  prefix +
+			  'subtasks:\n' +
+			  task?.children?.map((child) => stringifyTodos(child, `${prefix}  `)).join('')
+			: ''
+	}\n`;
 };
 
 export const FLIP_DURATION_MS = 300;

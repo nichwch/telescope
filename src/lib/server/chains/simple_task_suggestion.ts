@@ -1,6 +1,6 @@
 import { CommaSeparatedListOutputParser } from 'langchain/output_parsers';
 import { model } from '../openai';
-import { stringifyTodos } from '$lib';
+import { flattenTODO, stringifyTodos } from '$lib';
 import type { TODO } from '$lib/types';
 
 // don't consider entire task tree
@@ -11,8 +11,14 @@ export async function simple_task_suggestion_chain(
 	finished_subtasks: TODO[],
 	task_prompt: string
 ) {
-	const unfinished_subtasks_str = unfinished_subtasks.map((task) => stringifyTodos(task)).join('');
-	const finished_subtasks_str = finished_subtasks.map((task) => stringifyTodos(task)).join('');
+	const unfinished_subtasks_str = unfinished_subtasks
+		.map(flattenTODO)
+		.map((task) => stringifyTodos(task))
+		.join('');
+	const finished_subtasks_str = finished_subtasks
+		.map(flattenTODO)
+		.map((task) => stringifyTodos(task))
+		.join('');
 	const parser = new CommaSeparatedListOutputParser();
 	const formatInstructions = parser.getFormatInstructions();
 	const current_task_str = `${current_task.name}${
@@ -37,8 +43,12 @@ ${
 ${finished_subtasks_str}`
 		: ''
 }
-Help them break down this task into more subtasks.
-${task_prompt ? `Here are more instructions on how to break down this task: ${task_prompt}` : ''}
+Help them break down this task into more subtasks.${
+		task_prompt
+			? `
+Here are more instructions on how to break down this task: ${task_prompt}`
+			: ''
+	}
 Do not repeat any subtasks that are already listed.
 Do not preface your response with anything, just give the subtasks. 
 If there are no more suitable tasks, simply output nothing instead of repeating tasks. 
