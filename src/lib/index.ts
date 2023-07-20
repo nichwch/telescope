@@ -36,7 +36,7 @@ export const cleanData = (arr: (TODO & { isDndShadowItem?: boolean })[]) => {
 
 export type SimplifiedTODO = Omit<Partial<TODO>, 'children'> & { children?: SimplifiedTODO[] };
 export const stringifyTodos = (task: SimplifiedTODO, prefix = ''): string => {
-	return `${prefix}name: ${task?.name || 'untitled'}
+	return `${prefix}name: ${task?.name?.trim() || 'untitled'}
 ${prefix}description:${task?.description?.trim() || ''}
 ${
 	task?.children
