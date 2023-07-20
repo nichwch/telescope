@@ -2,7 +2,6 @@ import type { RequestHandler } from './$types';
 import type { TODO } from '$lib/types';
 import { json } from '@sveltejs/kit';
 import { simple_task_suggestion_chain } from '$lib/server/chains/simple_task_suggestion';
-import { stringifyTodos } from '$lib';
 
 export const POST = (async ({ request }) => {
 	const json_body = await request.json();
@@ -14,16 +13,11 @@ export const POST = (async ({ request }) => {
 	const finished_tasks = focused_tasks.filter((task: TODO) => task.done);
 	const unfinished_tasks = focused_tasks.filter((task: TODO) => !task.done);
 
-	const cleaned_current_task = {
-		name: current_task.name,
-		description: current_task.description
-	};
-
 	const { formatted_res } = await simple_task_suggestion_chain(
 		strategic_goal,
-		stringifyTodos(cleaned_current_task),
-		finished_tasks.map((task) => stringifyTodos(task)).join(''),
-		unfinished_tasks.map((task) => stringifyTodos(task)).join(''),
+		current_task,
+		finished_tasks,
+		unfinished_tasks,
 		task_prompt
 	);
 	return json(formatted_res);
