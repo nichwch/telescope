@@ -22,6 +22,14 @@
 		if (res.error) error = res.error.message;
 		else goto('/app');
 	};
+
+	const signInWithGoogle = async () => {
+		const res = await supabase.auth.signInWithOAuth({
+			provider: 'google'
+		});
+		if (res.error) error = res.error.message;
+		else goto('/app');
+	};
 </script>
 
 <svelte:window
@@ -49,6 +57,11 @@
 	{#if error}
 		<div class="text-red-700">{error}</div>
 	{/if}
-	<button class="block hover:underline mt-12" on:click={handleSignIn}>sign in</button>
+	<button class="block hover:underline mt-3" on:click={handleSignIn}>sign in</button>
+
 	<a class="block mt-3 hover:underline" href="/signup">don't have an account yet? sign up here</a>
+	<button
+		class="mt-3 p-2 bg-green-100 hover:bg-green-200 border border-green-700 text-green-700 transition-all w-full"
+		on:click={signInWithGoogle}>sign in with Google</button
+	>
 </div>
