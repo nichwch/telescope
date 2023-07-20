@@ -88,7 +88,7 @@
 				class="p-2 bg-orange-100 hover:bg-orange-200 transition-all border-r border-r-orange-200"
 				on:click={cancel}>cancel</button
 			>
-			<div class="flex-grow bg-texture" />
+			<div class="flex-grow bg-texture-orange" />
 		</div>
 	</div>
 {:else}

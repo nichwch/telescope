@@ -4,7 +4,8 @@ export default {
 	theme: {
 		extend: {
 			backgroundImage: {
-				texture: "url('/texture.svg')"
+				'texture-orange': "url('/texture_orange.svg')",
+				'texture-green': "url('/texture_green.svg')"
 			}
 		}
 	},

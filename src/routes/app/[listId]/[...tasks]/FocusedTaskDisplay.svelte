@@ -12,18 +12,12 @@
 	$: segments = history?.split('/');
 </script>
 
-<div class="border border-green-700 bg-green-100 text-green-800" in:fly>
-	<div class="px-2 py-0.5">
-		<a
-			href="/app/{listId}/{segments.slice(0, segments.length - 1).join('/')}"
-			class="text-sm opacity-80 underline"
-		>
-			back
-		</a>
+<div class="border border-green-700 bg-green-50 text-green-800 flex flex-col" in:fly>
+	<div class="p-2">
 		<div
 			contenteditable
 			role="textbox"
-			class="block name_textarea resize-none break-word overflow-x-hidden flex-grow px-4 focus:outline-none cursor-text"
+			class="block name_textarea resize-none break-word overflow-x-hidden flex-grow focus:outline-none cursor-text"
 			bind:innerText={focusedTask.name}
 		>
 			<!-- {focusedTask.name} -->
@@ -32,11 +26,20 @@
 			contenteditable
 			role="textbox"
 			class="block description_textarea resize-none
-	break-word overflow-x-hidden flex-grow px-4 focus:outline-none cursor-text"
+	break-word overflow-x-hidden flex-grow focus:outline-none cursor-text"
 			bind:innerText={focusedTask.description}
 		>
 			<!-- {focusedTask.description} -->
 		</div>
+	</div>
+	<div class="flex border-t border-t-green-700">
+		<a
+			href="/app/{listId}/{segments.slice(0, segments.length - 1).join('/')}"
+			class="p-2 bg-green-200 hover:bg-green-300 transition-all border-r border-r-green-700 text-sm opacity-80"
+		>
+			back
+		</a>
+		<div class="flex-grow bg-texture-green" />
 	</div>
 </div>
 
