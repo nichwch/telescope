@@ -34,6 +34,19 @@ export const cleanData = (arr: (TODO & { isDndShadowItem?: boolean })[]) => {
 	});
 };
 
+export type SimplifiedTODO = Omit<Partial<TODO>, 'children'> & { children?: SimplifiedTODO[] };
+export const stringifyTodos = (task: SimplifiedTODO, prefix = ''): string => {
+	return `${prefix}name: ${task?.name || 'untitled'}
+${prefix}description:${task?.description?.trim() || ''}
+${
+	task?.children
+		? prefix +
+		  'subtasks:\n' +
+		  task?.children?.map((child) => stringifyTodos(child, `${prefix}  `)).join('')
+		: ''
+}\n`;
+};
+
 export const FLIP_DURATION_MS = 300;
 
 export const NAME_TEXTAREA_CLASS = 'name_textarea';

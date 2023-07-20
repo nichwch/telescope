@@ -215,7 +215,7 @@
 
 			<TaskControls
 				strategic_goal={data.listContent?.[0].strategic_goal || ''}
-				{items}
+				{focusedItems}
 				{parentItems}
 				isSubtask={parentItems.length > 0}
 				showAIButton={topOrBottomSuggestions !== 'bottom'}
@@ -268,7 +268,7 @@
 				>
 					<TaskControls
 						strategic_goal={data.listContent?.[0].strategic_goal || ''}
-						{items}
+						{focusedItems}
 						{parentItems}
 						isSubtask={parentItems.length > 0}
 						showAIButton={topOrBottomSuggestions !== 'top'}

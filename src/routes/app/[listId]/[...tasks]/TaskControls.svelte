@@ -7,7 +7,7 @@
 	import { fly } from 'svelte/transition';
 
 	export let strategic_goal: string;
-	export let items: TODO[];
+	export let focusedItems: TODO[];
 	export let parentItems: TODO[];
 	export let isSubtask = false;
 	export let showAIButton = true;
@@ -26,9 +26,10 @@
 		prompting = false;
 		loadingAISuggestions = true;
 		aiSuggestions = await fetchAITaskSuggestions(
-			strategic_goal,
-			items,
-			parentItems[parentItems.length - 1] || []
+			strategic_goal.trim(),
+			focusedItems,
+			parentItems[parentItems.length - 1] || [],
+			prompt.trim()
 		);
 		loadingAISuggestions = false;
 	};
@@ -98,7 +99,7 @@
 		{#if showAIButton}
 			<button
 				class="text-orange-700 h-5 hover:underline"
-				on:click={() => ((prompting = true), dispatch('generate'))}
+				on:click={() => ((prompting = true), (prompt = ''), dispatch('generate'))}
 			>
 				+ generate new {isSubtask ? 'sub' : ''}tasks {isBottom ? 'at bottom' : ''}
 			</button>
