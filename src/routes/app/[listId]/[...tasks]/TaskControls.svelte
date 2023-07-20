@@ -63,7 +63,9 @@
 		}}
 	/>
 {:else if loadingAISuggestions}
+	<div class="mt-3" />
 	<LoadingRow />
+	<div class="mb-3" />
 {:else if prompting}
 	<div class="text-sm bg-orange-50 border border-orange-200 text-orange-500 my-2" in:fly>
 		<!-- svelte-ignore a11y-autofocus -->
