@@ -34,10 +34,16 @@
 	</div>
 	<div class="flex border-t border-t-green-700">
 		<a
-			href="/app/{listId}/{segments.slice(0, segments.length - 1).join('/')}"
+			href="."
 			class="p-2 bg-green-100 hover:bg-green-200 transition-all border-r border-r-green-700 text-sm"
 		>
 			back
+		</a>
+		<a
+			href="{$page.url}/chat"
+			class="p-2 bg-green-100 hover:bg-green-200 transition-all border-r border-r-green-700 text-sm"
+		>
+			ask AI for help
 		</a>
 		<div class="flex-grow bg-texture-green" />
 	</div>
