@@ -21,7 +21,7 @@ They are currently focusing on the following task: {cleaned_current_task}
 
 They have split the task into the following subtasks: {current_task_subtasks}
 
-List some subtasks this task could be broken down into. Do not repeat any tasks that are already listed. Make sure you addressing the current task 
+List some subtasks this task could be broken down into. Do not preface your response with anything, just give the subtasks, separated by commas. Do not repeat any tasks that are already listed. Make sure you addressing the current task 
 they are focusing on, not the entire todo list. Do not preface your response with anything, just give the subtasks. If there are no more suitable tasks, simply output nothing instead of repeating tasks. Aim to provide around 4-7 items. {formatInstructions}
 	`;
 
