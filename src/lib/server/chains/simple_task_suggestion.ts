@@ -46,7 +46,7 @@ ${finished_subtasks_str}`
 Help them break down this task into more subtasks.${
 		task_prompt
 			? `
-Here are more instructions on how to break down this task: ${task_prompt}`
+Here are more instructions on how to break down this task: ${task_prompt} Separate with commas.`
 			: ''
 	}
 Do not repeat any subtasks that are already listed. Aim to provide around 7-10 items. ${formatInstructions}
