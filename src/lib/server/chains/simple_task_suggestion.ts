@@ -29,7 +29,7 @@ Task description: ${current_task.description}
 			: ''
 	}`;
 
-	const prompt = `You are a personal assistant helping someone complete a project. Their overall goal is this: ${strategic_goal}
+	const prompt = `You are a project manager helping someone complete a project. Their overall goal is this: ${strategic_goal}
 ${current_task ? `They are currently focusing on the following task: ${current_task_str}` : ''}
 ${
 	unfinished_subtasks_str.length > 0
@@ -49,10 +49,7 @@ Help them break down this task into more subtasks.${
 Here are more instructions on how to break down this task: ${task_prompt}`
 			: ''
 	}
-Do not repeat any subtasks that are already listed.
-Do not preface your response with anything, just give the subtasks. 
-If there are no more suitable tasks, simply output nothing instead of repeating tasks. 
-Aim to provide around 7-10 items, separated by commas. ${formatInstructions}
+Do not repeat any subtasks that are already listed. Aim to provide around 7-10 items. ${formatInstructions}
 	`;
 
 	console.log(prompt);
