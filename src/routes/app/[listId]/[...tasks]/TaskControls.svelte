@@ -72,7 +72,6 @@
 {:else if prompting}
 	<div class="text-sm bg-orange-50 border border-orange-200 text-orange-500 my-2" in:fly>
 		<!-- svelte-ignore a11y-autofocus -->
-
 		<textarea
 			autofocus
 			bind:value={prompt}
