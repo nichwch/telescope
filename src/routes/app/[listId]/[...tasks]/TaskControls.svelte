@@ -25,6 +25,7 @@
 	const generateTODO = async () => {
 		prompting = false;
 		loadingAISuggestions = true;
+		aiSuggestions = null;
 		aiSuggestions = await fetchAITaskSuggestions(
 			strategic_goal.trim(),
 			focusedItems,
@@ -61,6 +62,8 @@
 			aiSuggestions = null;
 			dispatch('dismiss');
 		}}
+		on:retry={generateTODO}
+		on:change_prompt={() => ((prompting = true), (aiSuggestions = null), dispatch('generate'))}
 	/>
 {:else if loadingAISuggestions}
 	<div class="mt-3" />
