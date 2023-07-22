@@ -1,6 +1,4 @@
-Need to install the following packages:
-  supabase@1.77.9
-Ok to proceed? (y) export type Json =
+export type Json =
   | string
   | number
   | boolean
@@ -43,7 +41,7 @@ export interface Database {
       }
       tasks: {
         Row: {
-          ai_generatedd: boolean
+          ai_generated: boolean
           child_index: number
           created_at: string
           description: string
@@ -56,7 +54,7 @@ export interface Database {
           task_parent: string | null
         }
         Insert: {
-          ai_generatedd?: boolean
+          ai_generated?: boolean
           child_index: number
           created_at?: string
           description?: string
@@ -69,7 +67,7 @@ export interface Database {
           task_parent?: string | null
         }
         Update: {
-          ai_generatedd?: boolean
+          ai_generated?: boolean
           child_index?: number
           created_at?: string
           description?: string
