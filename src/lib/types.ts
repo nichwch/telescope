@@ -1,22 +1,7 @@
 import type { Database } from '../DatabaseDefinitions';
 
-export type TODO = {
-	id: string;
-	name: string;
-	done: boolean;
-	description: string;
-	children: TODO[];
-	aiGenerated?: boolean;
-};
-
-export type TODOMetadata = {
-	queuedDone?: boolean;
-};
-
-export type TODOWithMetadata = TODO & TODOMetadata;
-
-export type TODOList = Database['public']['Tables']['lists']['Row'] & {
-	tasks_blob: TODO[];
-};
-
 export type Task = Database['public']['Tables']['tasks']['Row'];
+
+// make optional fields optional before we flush the task to the database
+export type IntermediateTask = Partial<Task> &
+	Pick<Task, 'description' | 'done' | 'id' | 'name' | 'queued_done'>;

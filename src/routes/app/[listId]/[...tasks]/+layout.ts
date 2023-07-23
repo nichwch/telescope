@@ -14,7 +14,7 @@ export const load = async ({ params, parent }) => {
 	if (currentTaskID) {
 		items = (await supabase.from('tasks').select('*').eq('task_parent', currentTaskID))?.data || [];
 		currentTask =
-			(await supabase.from('tasks').select('*').eq('id', currentTaskID))?.data?.[0] || [];
+			(await supabase.from('tasks').select('*').eq('id', currentTaskID))?.data?.[0] || null;
 	} else {
 		items = (await supabase.from('tasks').select('*').eq('list_parent', listId))?.data || [];
 	}

@@ -1,22 +1,22 @@
 <script lang="ts">
 	import { page } from '$app/stores';
-	import type { TODO, TODOWithMetadata } from '$lib/types';
 	import { createEventDispatcher } from 'svelte';
 	import { focusedItemStore } from '../routes/app/[listId]/[...tasks]/FocusedItemStore';
 	import DragHandle from './Icons/DragHandle.svelte';
 	import { fly } from 'svelte/transition';
 	import { invalidateAll } from '$app/navigation';
 	import { NAME_TEXTAREA_CLASS } from '$lib';
+	import type { IntermediateTask } from '../lib/types';
 
-	export let item: TODOWithMetadata;
-	item.queuedDone = Boolean(item.queuedDone);
+	export let item: IntermediateTask;
+	item.queued_done = Boolean(item.queued_done);
 	let interval: NodeJS.Timeout;
 	$: {
-		if (item.queuedDone) {
+		if (item.queued_done) {
 			interval = setTimeout(() => {
 				item.done = true;
 			}, 1000);
-		} else if (!item.queuedDone) {
+		} else if (!item.queued_done) {
 			clearTimeout(interval);
 			item.done = false;
 		}
@@ -44,7 +44,7 @@
 		<div class="flex items-center">
 			<input
 				type="checkbox"
-				bind:checked={item.queuedDone}
+				bind:checked={item.queued_done}
 				class="rounded-full outline-none border border-gray-500 align-middle appearance-none h-4 w-4 bg-white checked:bg-green-500"
 			/>
 		</div>

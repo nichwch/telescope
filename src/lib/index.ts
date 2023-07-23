@@ -1,29 +1,9 @@
 import { nanoid } from 'nanoid';
-import type { TODO } from './types';
-
-export const updateAtPath = (list: TODO[], newList: TODO[], paths: string[]): TODO[] => {
-	const topLevelList = [...list];
-	// the rest of this approach does not generalize for empty paths
-	// so we hardcode it here
-	if (paths.length === 0) {
-		return newList;
-	}
-	let listPtr: Partial<TODO> & Pick<TODO, 'children'> = {
-		children: topLevelList
-	};
-	for (const path of paths) {
-		const currentItem = listPtr.children.find((item) => item.id === path);
-		if (currentItem) {
-			listPtr = currentItem;
-		}
-	}
-	listPtr.children = newList;
-	return topLevelList;
-};
+import type { Task } from './types';
 
 // remove dnd attributes and other data inconsistencies that crash the UI
-export const cleanData = (arr: (TODO & { isDndShadowItem?: boolean })[]) => {
-	return arr?.map((item: TODO & { isDndShadowItem?: boolean }) => {
+export const cleanData = (arr: (Task & { isDndShadowItem?: boolean })[]) => {
+	return arr?.map((item: Task & { isDndShadowItem?: boolean }) => {
 		const newItem = { ...item };
 		delete newItem.isDndShadowItem;
 		// address failure mode where id is set to id:dnd-shadow-placeholder-0000, might happen after mobile sessions
@@ -34,28 +14,15 @@ export const cleanData = (arr: (TODO & { isDndShadowItem?: boolean })[]) => {
 	});
 };
 
-export type SimplifiedTODO = Omit<Partial<TODO>, 'children'> & { children?: SimplifiedTODO[] };
-
-// delete children off a todo
-export const flattenTODO = (task: TODO) => {
-	// eslint-disable-next-line
-	const { children, ...rest } = task;
-	return rest;
-};
-export const stringifyTodos = (task: SimplifiedTODO, prefix = ''): string => {
+export const stringifyTodos = (task: Task, prefix = ''): string => {
 	const name = task?.name?.trim();
 	const description = task?.description?.trim();
 	const nameSnippet = name ? name : 'untitled task';
-	const descriptionSnippet = description ? `\n${prefix}description: ${description}` : '';
+	const descriptionSnippet = description
+		? `\n${prefix}description: ${description.replaceAll('\n', '')}`
+		: '';
 
-	return `${prefix}${nameSnippet}${descriptionSnippet}${
-		task?.children && task.children.length > 0
-			? '\n' +
-			  prefix +
-			  'subtasks:\n' +
-			  task?.children?.map((child) => stringifyTodos(child, `${prefix}  `)).join('')
-			: ''
-	}\n`;
+	return `${prefix}${nameSnippet}${descriptionSnippet}\n`;
 };
 
 export const FLIP_DURATION_MS = 300;

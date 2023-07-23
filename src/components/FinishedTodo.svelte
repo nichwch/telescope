@@ -1,12 +1,12 @@
 <script lang="ts">
 	import { page } from '$app/stores';
-	import type { TODO, TODOWithMetadata } from '$lib/types';
 	import { createEventDispatcher } from 'svelte';
 	import { focusedItemStore } from '../routes/app/[listId]/[...tasks]/FocusedItemStore';
 	import { fly } from 'svelte/transition';
+	import type { IntermediateTask } from '../lib/types';
 
-	export let item: TODOWithMetadata;
-	item.queuedDone = Boolean(item.queuedDone);
+	export let item: IntermediateTask;
+	item.queued_done = Boolean(item.queued_done);
 	export const delete_item = 'delete_item';
 	const dispatch = createEventDispatcher();
 </script>
@@ -32,7 +32,7 @@
 				checked={item.done}
 				on:click={() => {
 					item.done = false;
-					item.queuedDone = false;
+					item.queued_done = false;
 				}}
 				class="rounded-full outline-none border border-gray-500 align-middle appearance-none h-4 w-4 bg-white checked:bg-green-500"
 			/>

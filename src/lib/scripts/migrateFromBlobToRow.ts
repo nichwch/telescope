@@ -2,7 +2,26 @@ import { createClient } from '@supabase/supabase-js';
 import type { Database } from '../../DatabaseDefinitions';
 import { PUBLIC_SUPABASE_URL } from '$env/static/public';
 import { SUPABASE_SERVICE_ROLE_KEY } from '$env/static/private';
-import type { TODO, TODOList, TODOMetadata, TODOWithMetadata } from '../types';
+
+// these types are no longer used, and have been moved from types here for compatibility
+export type TODO = {
+	id: string;
+	name: string;
+	done: boolean;
+	description: string;
+	children: TODO[];
+	aiGenerated?: boolean;
+};
+
+export type TODOMetadata = {
+	queuedDone?: boolean;
+};
+
+export type TODOWithMetadata = TODO & TODOMetadata;
+
+export type TODOList = Database['public']['Tables']['lists']['Row'] & {
+	tasks_blob: TODO[];
+};
 
 // https://github.com/sveltejs/kit/discussions/9807
 console.log('Hello world from the script');

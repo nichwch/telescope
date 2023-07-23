@@ -3,12 +3,12 @@
 	import AiGeneratedTaskDisplay from './AIGeneratedTaskDisplay.svelte';
 	import LoadingRow from './LoadingRow.svelte';
 	import { fetchAITaskSuggestions } from '$lib/fetchers';
-	import type { TODO } from '$lib/types';
 	import { fly } from 'svelte/transition';
+	import type { IntermediateTask } from '$lib/types';
 
 	export let strategic_goal: string;
-	export let focusedItems: TODO[];
-	export let parentItems: TODO[];
+	export let focusedItems: IntermediateTask[];
+	export let focusedTask: IntermediateTask | null;
 	export let isSubtask = false;
 	export let showAIButton = true;
 	export let isBottom = false;
@@ -29,7 +29,7 @@
 		aiSuggestions = await fetchAITaskSuggestions(
 			strategic_goal.trim(),
 			focusedItems,
-			parentItems[parentItems.length - 1] || [],
+			focusedTask,
 			prompt.trim()
 		);
 		loadingAISuggestions = false;

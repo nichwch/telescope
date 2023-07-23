@@ -1,9 +1,9 @@
 <script lang="ts">
 	import { fly } from 'svelte/transition';
 	import { page } from '$app/stores';
-	import type { TODO } from '$lib/types';
+	import type { IntermediateTask } from '$lib/types';
 
-	export let focusedTask: TODO;
+	export let focusedTask: IntermediateTask;
 	const {
 		params: { listId }
 	} = $page;

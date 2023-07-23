@@ -1,9 +1,9 @@
-import type { TODO } from './types';
+import type { IntermediateTask } from './types';
 
 export const fetchAITaskSuggestions = async (
 	strategic_goal: string,
-	focused_tasks: TODO[],
-	current_task: TODO,
+	focused_tasks: IntermediateTask[],
+	current_task: IntermediateTask | null,
 	task_prompt: string
 ) => {
 	const res = await fetch('/api/suggest-tasks', {
