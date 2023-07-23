@@ -59,7 +59,7 @@ export interface Database {
           created_at?: string
           description?: string
           done?: boolean
-          id?: string
+          id: string
           list_parent?: string | null
           name?: string
           owner: string
