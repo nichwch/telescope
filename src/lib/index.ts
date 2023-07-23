@@ -7,6 +7,7 @@ export const cleanData = (arr: (Task & { isDndShadowItem?: boolean })[]) => {
 		const newItem = { ...item };
 		delete newItem.isDndShadowItem;
 		// address failure mode where id is set to id:dnd-shadow-placeholder-0000, might happen after mobile sessions
+		// TODO: this could be a big problem with row based tasks!!!!
 		if (newItem.id.includes('dnd-shadow-placeholder')) {
 			newItem.id = nanoid();
 		}

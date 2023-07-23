@@ -32,9 +32,7 @@
 	let scrollHeight = 0;
 	let topOrBottomSuggestions: 'top' | 'bottom' | null = null;
 
-	const updateList = async () => {
-		// maintain reference to top level object
-	};
+	const updateList = async () => {};
 
 	const updateInterval = setInterval(async () => {
 		// comparison is between cleaned data (to avoid being triggered by drags without drops)
