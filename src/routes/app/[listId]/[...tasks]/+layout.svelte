@@ -5,7 +5,7 @@
 	import { nanoid } from 'nanoid';
 	import { fade, fly } from 'svelte/transition';
 	import { page } from '$app/stores';
-	import type { TODO, TODOWithMetadata } from '$lib/types';
+	import type { TODO, TODOWithMetadata, Task } from '$lib/types';
 	import { onDestroy, onMount } from 'svelte';
 	import Todo from '../../../../components/Todo.svelte';
 	import { updateAtPath, cleanData, FLIP_DURATION_MS } from '$lib';
@@ -26,18 +26,11 @@
 
 	let items = (data.listContent?.[0].tasks_blob || []) as TODO[];
 	let isFlushing = false;
-	let focusedItems: TODOWithMetadata[] = items;
+	let focusedItems: Task[] = data.items;
 	let parentItems: TODO[] = [];
-	for (let nestedTask of taskArray || []) {
-		const foundTask = focusedItems.find((task) => task.id === nestedTask);
-		if (foundTask) {
-			parentItems.push(foundTask);
-			focusedItems = foundTask.children;
-		}
-	}
+	console.log(data);
 	let focusedTask = parentItems[parentItems.length - 1];
 	// wait until to cleanData to make sure parentItems are references to items
-	focusedItems = cleanData(focusedItems);
 
 	let lastFlushedItems: string = JSON.stringify([...focusedItems]);
 	let scrollY = 0;

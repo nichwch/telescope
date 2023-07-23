@@ -18,3 +18,5 @@ export type TODOWithMetadata = TODO & TODOMetadata;
 export type TODOList = Database['public']['Tables']['lists']['Row'] & {
 	tasks_blob: TODO[];
 };
+
+export type Task = Database['public']['Tables']['tasks']['Row'];

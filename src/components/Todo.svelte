@@ -76,13 +76,13 @@
 			>
 				focus on this task
 			</a>
-		{:else if item.children.length > 0}
+		{:else if item.children?.length > 0}
 			<a
 				class="ml-[14px] pl-4 text-sm w-auto hover:underline text-green-700"
 				href={`${$page.url}/${item.id}`}
 				on:click={() => invalidateAll()}
 			>
-				{item.children.length} subtask{item.children.length > 1 ? 's' : ''}
+				{item.children?.length} subtask{item.children?.length > 1 ? 's' : ''}
 			</a>
 		{/if}
 		{#if $focusedItemStore === item.id}

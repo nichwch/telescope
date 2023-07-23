@@ -37,14 +37,14 @@
 				class="rounded-full outline-none border border-gray-500 align-middle appearance-none h-4 w-4 bg-white checked:bg-green-500"
 			/>
 			<a
-				class:text-green-700={item.children.length > 0}
-				class:font-semibold={item.children.length > 0}
-				class:text-gray-500={item.children.length === 0}
+				class:text-green-700={item.children?.length > 0}
+				class:font-semibold={item.children?.length > 0}
+				class:text-gray-500={item.children?.length === 0}
 				class="w-6 text-center"
 				href={`${$page.url}/${item.id}`}
 			>
-				{#if item.children.length > 0}
-					{item.children.length}
+				{#if item.children?.length > 0}
+					{item.children?.length}
 				{:else}
 					+
 				{/if}
