@@ -17,7 +17,6 @@
 	import { focusedItemStore } from './FocusedItemStore';
 
 	export let data;
-	console.log(data);
 	const { supabase } = data;
 	const {
 		params: { listId, tasks }
@@ -39,6 +38,7 @@
 
 	const updateInterval = setInterval(async () => {
 		// comparison is between cleaned data (to avoid being triggered by drags without drops)
+		items = items;
 	}, 300);
 
 	onDestroy(() => {
