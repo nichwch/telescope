@@ -11,7 +11,7 @@
 		"lint": "prettier --plugin-search-dir . --check . && eslint .",
 		"format": "prettier --plugin-search-dir . --write .",
 		"typegen": "npx supabase gen types typescript --project-id 'fqnwwqeccukguysobflz' --schema public > src/DatabaseDefinitions.ts",
-		"migrateFromBlobToRow": "npx vite-node --options.transformMode.ssr='/.*/' src/lib/util/migrateFromBlobToRow.ts"
+		"migrateFromBlobToRow": "npx vite-node --options.transformMode.ssr='/.*/' src/lib/scripts/migrateFromBlobToRow.ts"
 	},
 	"devDependencies": {
 		"@sveltejs/adapter-auto": "^2.0.0",
