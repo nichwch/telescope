@@ -32,7 +32,7 @@ export const NAME_TEXTAREA_CLASS = 'name_textarea';
 
 export const diffLists = (
 	taskList: IntermediateTaskWithChildren[],
-	prevTaskList: string[]
+	prevTaskList: Map<string, string>
 ): {
 	updated: Task[];
 	created: Task[];
