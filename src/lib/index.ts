@@ -1,5 +1,5 @@
 import { nanoid } from 'nanoid';
-import type { Task } from './types';
+import type { IntermediateTaskWithChildren, Task } from './types';
 
 // remove dnd attributes and other data inconsistencies that crash the UI
 export const cleanData = (arr: (Task & { isDndShadowItem?: boolean })[]) => {
@@ -29,3 +29,18 @@ export const stringifyTodos = (task: Task, prefix = ''): string => {
 export const FLIP_DURATION_MS = 300;
 
 export const NAME_TEXTAREA_CLASS = 'name_textarea';
+
+export const diffLists = (
+	taskList: IntermediateTaskWithChildren[],
+	prevTaskList: string[]
+): {
+	updated: Task[];
+	created: Task[];
+	deleted: string[];
+} => {
+	return {
+		updated: [],
+		created: [],
+		deleted: []
+	};
+};
