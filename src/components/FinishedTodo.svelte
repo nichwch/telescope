@@ -3,9 +3,9 @@
 	import { createEventDispatcher } from 'svelte';
 	import { focusedItemStore } from '../routes/app/[listId]/[...tasks]/FocusedItemStore';
 	import { fly } from 'svelte/transition';
-	import type { IntermediateTask } from '../lib/types';
+	import type { IntermediateTaskWithChildren } from '../lib/types';
 
-	export let item: IntermediateTask;
+	export let item: IntermediateTaskWithChildren;
 	item.queued_done = Boolean(item.queued_done);
 	export const delete_item = 'delete_item';
 	const dispatch = createEventDispatcher();
@@ -37,14 +37,14 @@
 				class="rounded-full outline-none border border-gray-500 align-middle appearance-none h-4 w-4 bg-white checked:bg-green-500"
 			/>
 			<a
-				class:text-green-700={item.children?.length > 0}
-				class:font-semibold={item.children?.length > 0}
-				class:text-gray-500={item.children?.length === 0}
+				class:text-green-700={item.tasks && item.tasks.length > 0}
+				class:font-semibold={item.tasks && item.tasks.length > 0}
+				class:text-gray-500={item.tasks?.length === 0}
 				class="w-6 text-center"
 				href={`${$page.url}/${item.id}`}
 			>
-				{#if item.children?.length > 0}
-					{item.children?.length}
+				{#if item.tasks && item.tasks.length > 0}
+					{item.tasks?.length}
 				{:else}
 					+
 				{/if}

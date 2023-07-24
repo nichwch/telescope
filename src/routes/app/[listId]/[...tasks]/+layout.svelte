@@ -5,7 +5,7 @@
 	import { nanoid } from 'nanoid';
 	import { fade, fly } from 'svelte/transition';
 	import { page } from '$app/stores';
-	import type { IntermediateTask } from '$lib/types';
+	import type { IntermediateTask, IntermediateTaskWithChildren } from '$lib/types';
 	import { onDestroy, onMount } from 'svelte';
 	import Todo from '../../../../components/Todo.svelte';
 	import { FLIP_DURATION_MS } from '$lib';
@@ -25,7 +25,7 @@
 	const taskArray = tasks?.split('/').filter((str) => str.length > 0) || [];
 
 	let isFlushing = false;
-	let items: IntermediateTask[] = data.items;
+	let items: IntermediateTaskWithChildren[] = data.items;
 	let focusedTask: IntermediateTask | null = data.currentTask;
 
 	let scrollY = 0;
@@ -43,21 +43,23 @@
 		clearInterval(updateInterval);
 	});
 
-	const createNewTodoWId = (id: string): IntermediateTask => ({
+	const createNewTodoWId = (id: string): IntermediateTaskWithChildren => ({
 		id,
 		name: '',
 		done: false,
 		description: '',
-		queued_done: false
+		queued_done: false,
+		tasks: []
 	});
 
-	const createAIGeneratedNewTodoWName = (name: string): IntermediateTask => ({
+	const createAIGeneratedNewTodoWName = (name: string): IntermediateTaskWithChildren => ({
 		id: nanoid(),
 		name,
 		done: false,
 		description: '',
 		ai_generated: true,
-		queued_done: false
+		queued_done: false,
+		tasks: []
 	});
 
 	const createTODOAtTop = async () => {

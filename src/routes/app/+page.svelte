@@ -64,7 +64,7 @@
 									}}>delete</button
 								>
 							{/if}
-							<span class="ml-3 text-gray-500"> {list.tasks_blob?.length}</span>
+							<span class="ml-3 text-gray-500"> {list.tasks.length}</span>
 						</div>
 					</div>
 				{/each}

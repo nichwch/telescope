@@ -6,9 +6,9 @@
 	import { fly } from 'svelte/transition';
 	import { invalidateAll } from '$app/navigation';
 	import { NAME_TEXTAREA_CLASS } from '$lib';
-	import type { IntermediateTask } from '../lib/types';
+	import type { IntermediateTaskWithChildren } from '../lib/types';
 
-	export let item: IntermediateTask;
+	export let item: IntermediateTaskWithChildren;
 	item.queued_done = Boolean(item.queued_done);
 	let interval: NodeJS.Timeout;
 	$: {
@@ -76,13 +76,13 @@
 			>
 				focus on this task
 			</a>
-		{:else if item.children?.length > 0}
+		{:else if item.tasks && item.tasks.length > 0}
 			<a
 				class="ml-[14px] pl-4 text-sm w-auto hover:underline text-green-700"
 				href={`${$page.url}/${item.id}`}
 				on:click={() => invalidateAll()}
 			>
-				{item.children?.length} subtask{item.children?.length > 1 ? 's' : ''}
+				{item.tasks?.length} subtask{item.tasks.length > 1 ? 's' : ''}
 			</a>
 		{/if}
 		{#if $focusedItemStore === item.id}

@@ -1,4 +1,5 @@
 import { error } from '@sveltejs/kit';
+import type { TaskWithChildren } from '../../../../lib/types.js';
 
 export const load = async ({ params, parent }) => {
 	const { supabase, session } = await parent();
@@ -11,12 +12,15 @@ export const load = async ({ params, parent }) => {
 	let items = [];
 	let currentTask = null;
 	if (currentTaskID) {
-		items = (await supabase.from('tasks').select('*').eq('task_parent', currentTaskID))?.data || [];
+		items = ((await supabase.from('tasks').select('*, tasks (id)').eq('task_parent', currentTaskID))
+			?.data || []) as TaskWithChildren[];
 		currentTask =
 			(await supabase.from('tasks').select('*').eq('id', currentTaskID))?.data?.[0] || null;
 	} else {
-		items = (await supabase.from('tasks').select('*').eq('list_parent', listId))?.data || [];
+		items = ((await supabase.from('tasks').select('*, tasks (id)').eq('list_parent', listId))
+			?.data || []) as TaskWithChildren[];
 	}
+	console.log(items);
 	return {
 		items,
 		currentTask
