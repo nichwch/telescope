@@ -1,11 +1,13 @@
 import { nanoid } from 'nanoid';
-import type { IntermediateTaskWithChildren, Task } from './types';
+import type { IntermediateTask, IntermediateTaskWithChildren, Task } from './types';
 
 // remove dnd attributes and other data inconsistencies that crash the UI
-export const cleanData = (arr: (Task & { isDndShadowItem?: boolean })[]) => {
-	return arr?.map((item: Task & { isDndShadowItem?: boolean }) => {
-		const newItem = { ...item };
-		delete newItem.isDndShadowItem;
+export const cleanData = (
+	arr: (IntermediateTaskWithChildren & { isDndShadowItem?: boolean })[]
+) => {
+	return arr?.map((item: IntermediateTaskWithChildren & { isDndShadowItem?: boolean }) => {
+		// eslint-disable-next-line @typescript-eslint/no-unused-vars
+		const { tasks, isDndShadowItem, ...newItem } = item;
 		// address failure mode where id is set to id:dnd-shadow-placeholder-0000, might happen after mobile sessions
 		// TODO: this could be a big problem with row based tasks!!!!
 		if (newItem.id.includes('dnd-shadow-placeholder')) {
@@ -31,16 +33,39 @@ export const FLIP_DURATION_MS = 300;
 export const NAME_TEXTAREA_CLASS = 'name_textarea';
 
 export const diffLists = (
-	taskList: IntermediateTaskWithChildren[],
-	prevTaskList: Map<string, string>
+	taskList: IntermediateTask[],
+	prevTaskList: IntermediateTask[],
+	prevTaskMap: Map<string, IntermediateTask>
 ): {
-	updated: Task[];
-	created: Task[];
+	changed: IntermediateTask[];
 	deleted: string[];
+	currentMap: Map<string, IntermediateTask>;
 } => {
+	const currentMap: Map<string, IntermediateTask> = new Map();
+	const changed: IntermediateTask[] = [];
+	const deleted: string[] = [];
+	taskList.forEach((task) => currentMap.set(task.id, task));
+
+	// fill in changed
+	taskList.forEach((task) => {
+		const notInPreviousList = !prevTaskMap.has(task.id);
+		const differentInPreviousList =
+			JSON.stringify(prevTaskMap.get(task.id)) !== JSON.stringify(task);
+		if (notInPreviousList || differentInPreviousList) {
+			changed.push(task);
+		}
+	});
+
+	// fill in deleted
+	prevTaskList.forEach((task) => {
+		if (!currentMap.has(task.id)) {
+			deleted.push(task.id);
+		}
+	});
+
 	return {
-		updated: [],
-		created: [],
-		deleted: []
+		changed,
+		deleted,
+		currentMap
 	};
 };

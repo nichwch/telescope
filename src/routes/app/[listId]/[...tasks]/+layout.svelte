@@ -8,7 +8,7 @@
 	import type { IntermediateTask, IntermediateTaskWithChildren } from '$lib/types';
 	import { onDestroy, onMount } from 'svelte';
 	import Todo from '../../../../components/Todo.svelte';
-	import { FLIP_DURATION_MS } from '$lib';
+	import { FLIP_DURATION_MS, cleanData, diffLists } from '$lib';
 	import { tick } from 'svelte';
 	import TitleComponent from '../TitleComponent.svelte';
 	import FinishedTodo from '../../../../components/FinishedTodo.svelte';
@@ -26,18 +26,49 @@
 
 	let isFlushing = false;
 	let items: IntermediateTaskWithChildren[] = data.items;
+	let lastFlushedItems: IntermediateTask[] = cleanData(items);
 	let focusedTask: IntermediateTask | null = data.currentTask;
+	let prevTaskMap: Map<string, IntermediateTask> = new Map();
+	lastFlushedItems.forEach((task) => prevTaskMap.set(task.id, task));
 
 	let scrollY = 0;
 	let scrollHeight = 0;
 	let topOrBottomSuggestions: 'top' | 'bottom' | null = null;
 
-	const updateList = async () => {};
-
-	const updateInterval = setInterval(async () => {
+	const updateFunction = async () => {
+		// check for difference between last flushed items and current items
 		// comparison is between cleaned data (to avoid being triggered by drags without drops)
+		let itemsWithoutChildren: IntermediateTask[] = cleanData(items);
+		if (JSON.stringify(itemsWithoutChildren) === JSON.stringify(lastFlushedItems)) return;
+		// find differences between last flushed items and current items
+		// for each of the differences, flush to the server
+
+		/*
+		whitepill: I don't think you actually need a transaction here!
+		if a create fails, all updates on that task will fail. this is bad, but 
+		you can just refresh the page and it will be fine. 
+		if an update fails, subsequent updates to the same task will fill it in
+		if a delete fails, you just have the delete the task after updating again.
+
+		upserts can partially fix failed creates. if you update the task after you create it
+		and upsert it, and the first creation fails, the second update will create it instead 
+		of updating.
+
+		hm, how about out of order updates? we can fix this by waiting to flush updates again
+		after Promise.all()
+		*/
+		const { changed, deleted, currentMap } = diffLists(
+			itemsWithoutChildren,
+			lastFlushedItems,
+			prevTaskMap
+		);
+		console.log({ changed, deleted });
+
+		prevTaskMap = currentMap;
+		lastFlushedItems = itemsWithoutChildren;
 		items = items;
-	}, 300);
+	};
+	const updateInterval = setInterval(updateFunction, 300);
 
 	onDestroy(() => {
 		clearInterval(updateInterval);
