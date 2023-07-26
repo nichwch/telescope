@@ -37,22 +37,31 @@ export const diffLists = (
 	prevTaskList: IntermediateTask[],
 	prevTaskMap: Map<string, IntermediateTask>
 ): {
-	changed: IntermediateTask[];
+	changed: (IntermediateTask & { index: number })[];
 	deleted: string[];
-	currentMap: Map<string, IntermediateTask>;
+	currentMap: Map<string, IntermediateTask & { index: number }>;
 } => {
-	const currentMap: Map<string, IntermediateTask> = new Map();
-	const changed: IntermediateTask[] = [];
+	const currentMap: Map<
+		string,
+		IntermediateTask & {
+			index: number;
+		}
+	> = new Map();
+	const changed: (IntermediateTask & { index: number })[] = [];
 	const deleted: string[] = [];
-	taskList.forEach((task) => currentMap.set(task.id, task));
+	taskList.forEach((task, index) => currentMap.set(task.id, { ...task, index }));
 
 	// fill in changed
-	taskList.forEach((task) => {
+	taskList.forEach((task, index) => {
+		const taskWithIndex = {
+			...task,
+			index
+		};
 		const notInPreviousList = !prevTaskMap.has(task.id);
 		const differentInPreviousList =
-			JSON.stringify(prevTaskMap.get(task.id)) !== JSON.stringify(task);
+			JSON.stringify(prevTaskMap.get(task.id)) !== JSON.stringify(taskWithIndex);
 		if (notInPreviousList || differentInPreviousList) {
-			changed.push(task);
+			changed.push(taskWithIndex);
 		}
 	});
 

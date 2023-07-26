@@ -28,8 +28,8 @@
 	let items: IntermediateTaskWithChildren[] = data.items;
 	let lastFlushedItems: IntermediateTask[] = cleanData(items);
 	let focusedTask: IntermediateTask | null = data.currentTask;
-	let prevTaskMap: Map<string, IntermediateTask> = new Map();
-	lastFlushedItems.forEach((task) => prevTaskMap.set(task.id, task));
+	let prevTaskMap: Map<string, IntermediateTask & { index: number }> = new Map();
+	lastFlushedItems.forEach((task, index) => prevTaskMap.set(task.id, { ...task, index }));
 
 	let scrollY = 0;
 	let scrollHeight = 0;
