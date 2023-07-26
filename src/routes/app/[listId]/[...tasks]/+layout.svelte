@@ -5,7 +5,12 @@
 	import { nanoid } from 'nanoid';
 	import { fade, fly } from 'svelte/transition';
 	import { page } from '$app/stores';
-	import type { IntermediateTask, IntermediateTaskWithChildren } from '$lib/types';
+	import type {
+		IntermediateTask,
+		IntermediateTaskWithChildren,
+		IntermediateTaskWithIndex,
+		Task
+	} from '$lib/types';
 	import { onDestroy, onMount } from 'svelte';
 	import Todo from '../../../../components/Todo.svelte';
 	import { FLIP_DURATION_MS, cleanData, diffLists } from '$lib';
@@ -28,8 +33,10 @@
 	let items: IntermediateTaskWithChildren[] = data.items;
 	let lastFlushedItems: IntermediateTask[] = cleanData(items);
 	let focusedTask: IntermediateTask | null = data.currentTask;
-	let prevTaskMap: Map<string, IntermediateTask & { index: number }> = new Map();
-	lastFlushedItems.forEach((task, index) => prevTaskMap.set(task.id, { ...task, index }));
+	let prevTaskMap: Map<string, IntermediateTaskWithIndex> = new Map();
+	lastFlushedItems.forEach((task, index) =>
+		prevTaskMap.set(task.id, { ...task, child_index: index })
+	);
 
 	let scrollY = 0;
 	let scrollHeight = 0;
@@ -40,6 +47,7 @@
 		// comparison is between cleaned data (to avoid being triggered by drags without drops)
 		let itemsWithoutChildren: IntermediateTask[] = cleanData(items);
 		if (JSON.stringify(itemsWithoutChildren) === JSON.stringify(lastFlushedItems)) return;
+
 		// find differences between last flushed items and current items
 		// for each of the differences, flush to the server
 
@@ -54,6 +62,8 @@
 		and upsert it, and the first creation fails, the second update will create it instead 
 		of updating.
 
+		// ooo, ugly thing about upserts is that creation dates don't work...
+
 		hm, how about out of order updates? we can fix this by waiting to flush updates again
 		after Promise.all()
 		*/
@@ -63,7 +73,20 @@
 			prevTaskMap
 		);
 		console.log({ changed, deleted });
+		const changedRows: Task[] = changed.map((change) => {
+			return {
+				...change,
+				list_parent: focusedTask ? null : listId,
+				task_parent: focusedTask ? focusedTask.id : null,
+				owner: $page.data.session!.user.id,
+				created_at: new Date().toISOString()
+			};
+		});
 
+		const deleteOperations = deleted.map((rowId) =>
+			supabase.from('tasks').delete().match({ id: rowId })
+		);
+		await Promise.all([supabase.from('tasks').upsert(changedRows), ...deleteOperations]);
 		prevTaskMap = currentMap;
 		lastFlushedItems = itemsWithoutChildren;
 		items = items;
@@ -80,6 +103,7 @@
 		done: false,
 		description: '',
 		queued_done: false,
+		ai_generated: false,
 		tasks: []
 	});
 

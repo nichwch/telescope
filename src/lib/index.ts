@@ -1,5 +1,10 @@
 import { nanoid } from 'nanoid';
-import type { IntermediateTask, IntermediateTaskWithChildren, Task } from './types';
+import type {
+	IntermediateTask,
+	IntermediateTaskWithChildren,
+	IntermediateTaskWithIndex,
+	Task
+} from './types';
 
 // remove dnd attributes and other data inconsistencies that crash the UI
 export const cleanData = (
@@ -37,25 +42,20 @@ export const diffLists = (
 	prevTaskList: IntermediateTask[],
 	prevTaskMap: Map<string, IntermediateTask>
 ): {
-	changed: (IntermediateTask & { index: number })[];
+	changed: IntermediateTaskWithIndex[];
 	deleted: string[];
-	currentMap: Map<string, IntermediateTask & { index: number }>;
+	currentMap: Map<string, IntermediateTaskWithIndex>;
 } => {
-	const currentMap: Map<
-		string,
-		IntermediateTask & {
-			index: number;
-		}
-	> = new Map();
-	const changed: (IntermediateTask & { index: number })[] = [];
+	const currentMap: Map<string, IntermediateTaskWithIndex> = new Map();
+	const changed: IntermediateTaskWithIndex[] = [];
 	const deleted: string[] = [];
-	taskList.forEach((task, index) => currentMap.set(task.id, { ...task, index }));
+	taskList.forEach((task, index) => currentMap.set(task.id, { ...task, child_index: index }));
 
 	// fill in changed
 	taskList.forEach((task, index) => {
 		const taskWithIndex = {
 			...task,
-			index
+			child_index: index
 		};
 		const notInPreviousList = !prevTaskMap.has(task.id);
 		const differentInPreviousList =

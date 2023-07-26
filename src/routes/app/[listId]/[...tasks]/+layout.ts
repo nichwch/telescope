@@ -12,13 +12,23 @@ export const load = async ({ params, parent }) => {
 	let items = [];
 	let currentTask = null;
 	if (currentTaskID) {
-		items = ((await supabase.from('tasks').select('*, tasks (id)').eq('task_parent', currentTaskID))
-			?.data || []) as TaskWithChildren[];
+		items = ((
+			await supabase
+				.from('tasks')
+				.select('*, tasks (id)')
+				.order('child_index', { ascending: true })
+				.eq('task_parent', currentTaskID)
+		)?.data || []) as TaskWithChildren[];
 		currentTask =
 			(await supabase.from('tasks').select('*').eq('id', currentTaskID))?.data?.[0] || null;
 	} else {
-		items = ((await supabase.from('tasks').select('*, tasks (id)').eq('list_parent', listId))
-			?.data || []) as TaskWithChildren[];
+		items = ((
+			await supabase
+				.from('tasks')
+				.select('*, tasks (id)')
+				.order('child_index', { ascending: true })
+				.eq('list_parent', listId)
+		)?.data || []) as TaskWithChildren[];
 	}
 	console.log(items);
 	return {
