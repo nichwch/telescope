@@ -62,8 +62,6 @@
 		and upsert it, and the first creation fails, the second update will create it instead 
 		of updating.
 
-		// ooo, ugly thing about upserts is that creation dates don't work...
-
 		hm, how about out of order updates? we can fix this by waiting to flush updates again
 		after Promise.all()
 		*/
@@ -73,13 +71,14 @@
 			prevTaskMap
 		);
 		console.log({ changed, deleted });
-		const changedRows: Task[] = changed.map((change) => {
+		// created_at is filled in automatically by postgres with an automatic value
+		// this prevents upserts from incorrectly setting created_at to the last update date
+		const changedRows: Omit<Task, 'created_at'>[] = changed.map((change) => {
 			return {
 				...change,
 				list_parent: focusedTask ? null : listId,
 				task_parent: focusedTask ? focusedTask.id : null,
-				owner: $page.data.session!.user.id,
-				created_at: new Date().toISOString()
+				owner: $page.data.session!.user.id
 			};
 		});
 
