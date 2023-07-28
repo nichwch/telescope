@@ -84,7 +84,14 @@
 		const deleteOperations = deleted.map((rowId) =>
 			supabase.from('tasks').delete().match({ id: rowId })
 		);
-		await Promise.all([supabase.from('tasks').upsert(changedRows), ...deleteOperations]);
+		await Promise.all([
+			supabase.from('tasks').upsert(changedRows),
+			...deleteOperations,
+			supabase
+				.from('lists')
+				.update({ last_edited_date: new Date().toISOString() })
+				.match({ id: listId })
+		]);
 		prevTaskMap = currentMap;
 		lastFlushedItems = itemsWithoutChildren;
 		items = items;
