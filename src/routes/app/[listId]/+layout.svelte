@@ -22,19 +22,17 @@
 			return;
 		if (isFlushing) return;
 		isFlushing = true;
-		supabase
+		await supabase
 			.from('lists')
 			.update({
 				strategic_goal: strategic_goal_input,
 				name: name_input,
 				last_edited_date: new Date().toISOString()
 			})
-			.eq('id', $page.params.listId)
-			.then(() => {
-				isFlushing = false;
-				last_flushed_strategic_goal_input = strategic_goal_input;
-				last_flushed_name_input = name_input;
-			});
+			.eq('id', $page.params.listId);
+		isFlushing = false;
+		last_flushed_strategic_goal_input = strategic_goal_input;
+		last_flushed_name_input = name_input;
 	}, 300);
 
 	onDestroy(() => {
