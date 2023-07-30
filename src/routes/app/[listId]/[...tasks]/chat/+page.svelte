@@ -1,14 +1,29 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
+	import type { ChatCompletionRequestMessage } from 'openai';
 	import { fade } from 'svelte/transition';
+	import { submitChatMessage } from '../../../../../lib/fetchers.js';
 
 	export let data;
+
+	let currentMessage = '';
+	let messages: ChatCompletionRequestMessage[] = [];
+
+	const submitMessage = async () => {
+		messages = [...messages, { role: 'user', content: currentMessage }];
+
+		currentMessage = '';
+		const model_response = await submitChatMessage(messages);
+		messages = [...messages, model_response];
+	};
 </script>
 
 <svelte:window
 	on:keydown={(evt) => {
 		if (evt.key === 'Escape') {
 			goto('.');
+		} else if (evt.key === 'Enter') {
+			submitMessage();
 		}
 	}}
 />
@@ -27,33 +42,18 @@
 "
 >
 	<div class="block h-full px-[10%] pt-10 overflow-y-scroll">
-		<div class="py-10">Message</div>
-		<div class="py-10">Message</div>
-		<div class="py-10">Message</div>
-		<div class="py-10">Message</div>
-		<div class="py-10">Message</div>
-		<div class="py-10">Message</div>
-		<div class="py-10">Message</div>
-		<div class="py-10">Message</div>
-		<div class="py-10">Message</div>
-		<div class="py-10">Message</div>
-		<div class="py-10">Message</div>
-		<div class="py-10">Message</div>
-		<div class="py-10">Message</div>
-		<div class="py-10">Message</div>
-		<div class="py-10">Message</div>
-		<div class="py-10">Message</div>
-		<div class="py-10">Message</div>
-		<div class="py-10">Message</div>
-		<div class="py-10">Message</div>
-		<div class="py-10">Message</div>
-		<div class="py-10">Message</div>
+		{#each messages as message}
+			<div class="py-10">{message.content}</div>
+		{/each}
 	</div>
 	<div
 		class="absolute bottom-10 left-[10%] w-4/5 mx-auto flex border border-green-700 bg-green-100"
 	>
-		<input class="flex-grow p-2 bg-transparent border-r border-r-green-700" /><button
-			class="p-2 bg-green-100 hover:bg-green-200 transition-colors">send</button
+		<input
+			bind:value={currentMessage}
+			class="flex-grow p-2 bg-transparent border-r border-r-green-700"
+		/><button on:click={submitMessage} class="p-2 bg-green-100 hover:bg-green-200 transition-colors"
+			>send</button
 		>
 	</div>
 </dialog>

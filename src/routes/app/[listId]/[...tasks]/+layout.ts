@@ -30,7 +30,6 @@ export const load = async ({ params, parent }) => {
 				.eq('list_parent', listId)
 		)?.data || []) as TaskWithChildren[];
 	}
-	console.log(items);
 	return {
 		items,
 		currentTask

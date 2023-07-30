@@ -40,6 +40,7 @@
 		"@supabase/supabase-js": "^2.24.0",
 		"dotenv": "^16.3.1",
 		"langchain": "^0.0.102",
-		"nanoid": "^4.0.2"
+		"nanoid": "^4.0.2",
+		"openai": "^3.3.0"
 	}
 }
