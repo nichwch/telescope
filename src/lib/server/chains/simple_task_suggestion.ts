@@ -9,7 +9,8 @@ export async function simple_task_suggestion_chain(
 	current_task: Task | null,
 	unfinished_subtasks: Task[],
 	finished_subtasks: Task[],
-	task_prompt: string
+	task_prompt: string,
+	title: string | null
 ) {
 	const unfinished_subtasks_str = unfinished_subtasks.map((task) => stringifyTodos(task)).join('');
 	const finished_subtasks_str = finished_subtasks.map((task) => stringifyTodos(task)).join('');
@@ -25,7 +26,11 @@ Task description: ${current_task.description}
 		  }`
 		: null;
 
-	const prompt = `You are a project manager helping someone complete a project. Their overall goal is this: ${strategic_goal}
+	const title_clause = title ? `,named ${title}` : '';
+	const goal_clause =
+		strategic_goal.length > 0 ? `Their overall goal is this: ${strategic_goal} ` : '';
+
+	const prompt = `You are a project manager helping someone complete a project${title_clause}. ${goal_clause}
 ${current_task_str ? `They are currently focusing on the following task: ${current_task_str}` : ''}
 ${
 	unfinished_subtasks_str.length > 0

@@ -236,6 +236,7 @@
 				on:create_task={createTODOAtTop}
 				on:dismiss={() => (topOrBottomSuggestions = null)}
 				on:generate={() => (topOrBottomSuggestions = 'top')}
+				title={data.listContent?.[0].name}
 			/>
 		</div>
 
@@ -289,6 +290,7 @@
 						on:dismiss={() => (topOrBottomSuggestions = null)}
 						on:generate={() => (topOrBottomSuggestions = 'bottom')}
 						isBottom
+						title={data.listContent?.[0].name}
 					/>
 				</div>
 			{:else if topOrBottomSuggestions === null}

@@ -9,6 +9,7 @@ export const POST = (async ({ request }) => {
 	const focused_tasks = (json_body.focused_tasks || []) as Task[];
 	const current_task = json_body.current_task || null;
 	const task_prompt = json_body.task_prompt || '';
+	const title = json_body.title || null;
 
 	const finished_tasks = focused_tasks.filter((task: Task) => task.done);
 	const unfinished_tasks = focused_tasks.filter((task: Task) => !task.done);
@@ -18,7 +19,8 @@ export const POST = (async ({ request }) => {
 		current_task,
 		unfinished_tasks,
 		finished_tasks,
-		task_prompt
+		task_prompt,
+		title
 	);
 	return json(formatted_res);
 }) satisfies RequestHandler;

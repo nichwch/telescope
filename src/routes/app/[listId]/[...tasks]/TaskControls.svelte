@@ -12,6 +12,7 @@
 	export let isSubtask = false;
 	export let showAIButton = true;
 	export let isBottom = false;
+	export let title: string | null = null;
 	let aiSuggestions: string[] | null = null;
 	let loadingAISuggestions = false;
 	let prompting = false;
@@ -30,7 +31,8 @@
 			strategic_goal.trim(),
 			focusedItems,
 			focusedTask,
-			prompt.trim()
+			prompt.trim(),
+			title
 		);
 		loadingAISuggestions = false;
 	};
