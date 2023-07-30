@@ -41,7 +41,7 @@
 	border border-green-700 bg-green-50 text-green-800 p-0
 "
 >
-	<div class="block h-full px-[10%] pt-10 overflow-y-scroll">
+	<div class="block h-full px-[10%] pt-10 overflow-y-scroll pb-20">
 		{#each messages as message}
 			<div class="py-10">{message.content}</div>
 		{/each}
