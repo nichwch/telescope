@@ -46,7 +46,8 @@
 		// check for difference between last flushed items and current items
 		// comparison is between cleaned data (to avoid being triggered by drags without drops)
 		let itemsWithoutChildren: IntermediateTask[] = cleanData(items);
-		if (JSON.stringify(itemsWithoutChildren) === JSON.stringify(lastFlushedItems)) return;
+		if (JSON.stringify(itemsWithoutChildren) === JSON.stringify(lastFlushedItems) || isFlushing)
+			return;
 
 		// find differences between last flushed items and current items
 		// for each of the differences, flush to the server
@@ -65,6 +66,7 @@
 		hm, how about out of order updates? we can fix this by waiting to flush updates again
 		after Promise.all()
 		*/
+		isFlushing = true;
 		const { changed, deleted, currentMap } = diffLists(
 			itemsWithoutChildren,
 			lastFlushedItems,
@@ -95,6 +97,7 @@
 		prevTaskMap = currentMap;
 		lastFlushedItems = itemsWithoutChildren;
 		items = items;
+		isFlushing = false;
 	};
 	const updateInterval = setInterval(updateFunction, 300);
 
