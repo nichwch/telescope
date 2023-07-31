@@ -74,7 +74,7 @@
 		);
 		// created_at is filled in automatically by postgres with an automatic value
 		// this prevents upserts from incorrectly setting created_at to the last update date
-		const changedRows: Omit<Task, 'created_at'>[] = changed.map((change) => {
+		const changedRows: Omit<Task, 'created_at' | 'chats'>[] = changed.map((change) => {
 			return {
 				...change,
 				list_parent: focusedTask ? null : listId,
