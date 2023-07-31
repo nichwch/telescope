@@ -1,4 +1,3 @@
-import type { ChatCompletionRequestMessage } from 'openai';
 import type { IntermediateTask } from './types';
 
 export const fetchAITaskSuggestions = async (
@@ -16,18 +15,6 @@ export const fetchAITaskSuggestions = async (
 			current_task: current_task,
 			task_prompt: task_prompt,
 			title: title
-		})
-	});
-	return await res.json();
-};
-
-export const submitChatMessage = async (
-	messages: ChatCompletionRequestMessage[]
-): Promise<ChatCompletionRequestMessage> => {
-	const res = await fetch('/api/chat-with-task', {
-		method: 'POST',
-		body: JSON.stringify({
-			messages
 		})
 	});
 	return await res.json();

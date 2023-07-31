@@ -1,21 +1,14 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
-	import type { ChatCompletionRequestMessage } from 'openai';
 	import { fade } from 'svelte/transition';
-	import { submitChatMessage } from '../../../../../lib/fetchers.js';
+	import { useChat, type Message } from 'ai/svelte';
 
 	export let data;
 
-	let currentMessage = '';
-	let messages: ChatCompletionRequestMessage[] = [];
-
-	const submitMessage = async () => {
-		messages = [...messages, { role: 'user', content: currentMessage }];
-
-		currentMessage = '';
-		const model_response = await submitChatMessage(messages);
-		messages = [...messages, model_response];
-	};
+	const { input, handleSubmit, messages } = useChat({
+		api: '/api/chat',
+		initialMessages: (data.currentTask?.chats as any as Message[]) || []
+	});
 </script>
 
 <svelte:window
@@ -23,7 +16,7 @@
 		if (evt.key === 'Escape') {
 			goto('.');
 		} else if (evt.key === 'Enter') {
-			submitMessage();
+			handleSubmit(evt);
 		}
 	}}
 />
@@ -42,7 +35,7 @@
 "
 >
 	<div class="block h-full px-[10%] pt-10 overflow-y-scroll pb-20">
-		{#each messages as message}
+		{#each $messages as message}
 			<div class="py-10">{message.content}</div>
 		{/each}
 	</div>
@@ -50,9 +43,9 @@
 		class="absolute bottom-10 left-[10%] w-4/5 mx-auto flex border border-green-700 bg-green-100"
 	>
 		<input
-			bind:value={currentMessage}
+			bind:value={$input}
 			class="flex-grow p-2 bg-transparent border-r border-r-green-700"
-		/><button on:click={submitMessage} class="p-2 bg-green-100 hover:bg-green-200 transition-colors"
+		/><button on:click={handleSubmit} class="p-2 bg-green-100 hover:bg-green-200 transition-colors"
 			>send</button
 		>
 	</div>

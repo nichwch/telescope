@@ -1,6 +1,6 @@
 import { OpenAI } from 'langchain/llms/openai';
 import { OPENAI_API_KEY } from '$env/static/private';
-import { Configuration, OpenAIApi } from 'openai';
+import { Configuration, OpenAIApi } from 'openai-edge';
 
 export const model = new OpenAI({
 	openAIApiKey: OPENAI_API_KEY,
@@ -16,7 +16,8 @@ export const openai = new OpenAIApi(configuration);
 export const DEFAULT_MODEL_SETTINGS = {
 	model: 'gpt-3.5-turbo',
 	temperature: 1,
-	max_tokens: 256
+	max_tokens: 256,
+	stream: true
 	// top_p: 1,
 	// frequency_penalty: 0,
 	// presence_penalty: 0
