@@ -42,6 +42,7 @@ export interface Database {
       tasks: {
         Row: {
           ai_generated: boolean
+          chats: Json | null
           child_index: number
           created_at: string
           description: string
@@ -55,6 +56,7 @@ export interface Database {
         }
         Insert: {
           ai_generated?: boolean
+          chats?: Json | null
           child_index: number
           created_at?: string
           description?: string
@@ -68,6 +70,7 @@ export interface Database {
         }
         Update: {
           ai_generated?: boolean
+          chats?: Json | null
           child_index?: number
           created_at?: string
           description?: string
