@@ -1,7 +1,8 @@
 import { error } from '@sveltejs/kit';
 import type { TaskWithChildren } from '../../../../lib/types.js';
+import type { LayoutLoad } from './$types.js';
 
-export const load = async ({ params, parent }) => {
+export const load = (async ({ params, parent }) => {
 	const { supabase, session } = await parent();
 	if (!session?.user) {
 		throw error(401, 'Unauthorized');
@@ -34,4 +35,4 @@ export const load = async ({ params, parent }) => {
 		items,
 		currentTask
 	};
-};
+}) satisfies LayoutLoad;
