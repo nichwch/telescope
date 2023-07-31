@@ -1,15 +1,28 @@
 import { DEFAULT_MODEL_SETTINGS, openai } from '$lib/server/openai';
 import type { RequestHandler } from './$types';
-import { OpenAIStream, StreamingTextResponse } from 'ai';
+import { OpenAIStream, StreamingTextResponse, type Message } from 'ai';
 
-export const POST: RequestHandler = async ({ request }) => {
+export const POST: RequestHandler = async ({ request, locals }) => {
+	const { supabase } = locals;
 	// TODO: will need context of the task inserted as the first message.
 	const json_body = await request.json();
 	const response = await openai.createChatCompletion({
 		...DEFAULT_MODEL_SETTINGS,
 		messages: json_body.messages
 	});
-	const stream = OpenAIStream(response);
+	const stream = OpenAIStream(response, {
+		onCompletion: async (completion: string) => {
+			const newMessages: Message[] = [
+				...json_body.messages,
+				{ content: completion, role: 'assistant' }
+			];
+			console.log('new messages', newMessages);
+			await supabase
+				.from('tasks')
+				.update({ chats: newMessages as any })
+				.eq('id', json_body.task_id);
+		}
+	});
 	console.log(new StreamingTextResponse(stream));
 	return new StreamingTextResponse(stream);
 };

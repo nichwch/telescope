@@ -18,7 +18,4 @@ export const DEFAULT_MODEL_SETTINGS = {
 	temperature: 1,
 	max_tokens: 256,
 	stream: true
-	// top_p: 1,
-	// frequency_penalty: 0,
-	// presence_penalty: 0
 };

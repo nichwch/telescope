@@ -2,12 +2,28 @@
 	import { goto } from '$app/navigation';
 	import { fade } from 'svelte/transition';
 	import { useChat, type Message } from 'ai/svelte';
+	import ChatMessageComponent from './ChatMessageComponent.svelte';
 
 	export let data;
 
 	const { input, handleSubmit, messages } = useChat({
 		api: '/api/chat',
-		initialMessages: (data.currentTask?.chats as any as Message[]) || []
+		initialMessages: (data.currentTask?.chats as any as Message[]) || [
+			// a default system message to give context
+			{
+				role: 'system',
+				content: `The user is asking for help about the following task:
+======
+name: ${data.currentTask?.name}
+description: ${data.currentTask?.description}
+======
+
+Do your best to help them!`
+			}
+		],
+		body: {
+			task_id: data.currentTask?.id
+		}
 	});
 </script>
 
@@ -36,7 +52,7 @@
 >
 	<div class="block h-full px-[10%] pt-10 overflow-y-scroll pb-20">
 		{#each $messages as message}
-			<div class="py-10">{message.content}</div>
+			<ChatMessageComponent {message} />
 		{/each}
 	</div>
 	<div
