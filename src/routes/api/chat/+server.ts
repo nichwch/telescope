@@ -16,13 +16,11 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 				...json_body.messages,
 				{ content: completion, role: 'assistant' }
 			];
-			console.log('new messages', newMessages);
 			await supabase
 				.from('tasks')
 				.update({ chats: newMessages as any })
 				.eq('id', json_body.task_id);
 		}
 	});
-	console.log(new StreamingTextResponse(stream));
 	return new StreamingTextResponse(stream);
 };
