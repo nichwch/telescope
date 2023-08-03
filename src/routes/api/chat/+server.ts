@@ -12,10 +12,14 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 	});
 	const stream = OpenAIStream(response, {
 		onCompletion: async (completion: string) => {
+			/*
+			filter out the system message, because we update it every time the user opens
+			a chat
+			*/
 			const newMessages: Message[] = [
 				...json_body.messages,
 				{ content: completion, role: 'assistant' }
-			];
+			].filter((message) => message.role !== 'system');
 			await supabase
 				.from('tasks')
 				.update({ chats: newMessages as any })

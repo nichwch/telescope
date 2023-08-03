@@ -3,26 +3,37 @@
 	import { fade } from 'svelte/transition';
 	import { useChat, type Message } from 'ai/svelte';
 	import ChatMessageComponent from './ChatMessageComponent.svelte';
+	import { lastEditedStore } from './updateDateStores';
+	import { getTaskContext } from '$lib/getTaskContext';
 
 	export let data;
 
+	const taskContext = getTaskContext(
+		data.listContent?.[0]?.strategic_goal,
+		data.currentTask,
+		data.items.filter((item) => !item.done),
+		data.items.filter((item) => item.done),
+		data.listContent?.[0]?.name
+	);
+
+	const existingMessages = (data.currentTask?.chats as any as Message[]) || [];
+
 	const { input, handleSubmit, messages } = useChat({
 		api: '/api/chat',
-		initialMessages: (data.currentTask?.chats as any as Message[]) || [
-			// a default system message to give context
+		initialMessages: [
 			{
 				role: 'system',
-				content: `The user is asking for help about the following task:
-======
-name: ${data.currentTask?.name}
-description: ${data.currentTask?.description}
-======
-
-Do your best to help them!`
-			}
+				content: taskContext,
+				id: 'system_message'
+			},
+			...existingMessages
 		],
 		body: {
-			task_id: data.currentTask?.id
+			task_id: data.currentTask?.id,
+			strategic_goal: data.listContent?.[0]?.strategic_goal,
+			focused_tasks: data.items,
+			current_task: data.currentTask,
+			title: data.listContent?.[0]?.name
 		}
 	});
 </script>
@@ -61,8 +72,11 @@ Do your best to help them!`
 		<input
 			bind:value={$input}
 			class="flex-grow p-2 bg-transparent border-r border-r-green-700"
-		/><button on:click={handleSubmit} class="p-2 bg-green-100 hover:bg-green-200 transition-colors"
-			>send</button
+		/><button
+			on:click={(e) => {
+				handleSubmit(e);
+			}}
+			class="p-2 bg-green-100 hover:bg-green-200 transition-colors">send</button
 		>
 	</div>
 </dialog>
