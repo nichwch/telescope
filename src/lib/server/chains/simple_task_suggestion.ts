@@ -2,7 +2,7 @@ import { CommaSeparatedListOutputParser } from 'langchain/output_parsers';
 import { model } from '../openai';
 import { stringifyTodos } from '$lib';
 import type { Task } from '$lib/types';
-import { getTaskContext } from './task_context';
+import { getTaskContext } from './getTaskContext';
 
 // don't consider entire task tree
 export async function simple_task_suggestion_chain(
