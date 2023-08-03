@@ -2,6 +2,7 @@ import { CommaSeparatedListOutputParser } from 'langchain/output_parsers';
 import { model } from '../openai';
 import { stringifyTodos } from '$lib';
 import type { Task } from '$lib/types';
+import { getTaskContext } from './task_context';
 
 // don't consider entire task tree
 export async function simple_task_suggestion_chain(
@@ -12,38 +13,17 @@ export async function simple_task_suggestion_chain(
 	task_prompt: string,
 	title: string | null
 ) {
-	const unfinished_subtasks_str = unfinished_subtasks.map((task) => stringifyTodos(task)).join('');
-	const finished_subtasks_str = finished_subtasks.map((task) => stringifyTodos(task)).join('');
 	const parser = new CommaSeparatedListOutputParser();
 	const formatInstructions = parser.getFormatInstructions();
-	const current_task_str = current_task
-		? `${current_task.name}${
-				current_task.description
-					? `
-Task description: ${current_task.description}
---end task description--`
-					: ''
-		  }`
-		: null;
+	const taskContext = getTaskContext(
+		strategic_goal,
+		current_task,
+		unfinished_subtasks,
+		finished_subtasks,
+		title
+	);
 
-	const title_clause = title ? `,named ${title}` : '';
-	const goal_clause =
-		strategic_goal.length > 0 ? `Their overall goal is this: ${strategic_goal} ` : '';
-
-	const prompt = `You are a project manager helping someone complete a project${title_clause}. ${goal_clause}
-${current_task_str ? `They are currently focusing on the following task: ${current_task_str}` : ''}
-${
-	unfinished_subtasks_str.length > 0
-		? `They have split the task into the following subtasks: 
-${unfinished_subtasks_str}`
-		: ''
-}
-${
-	finished_subtasks_str.length > 0
-		? `They have already completed the following subtasks: 
-${finished_subtasks_str}`
-		: ''
-}
+	const prompt = `${taskContext}
 Help them break down this task into more subtasks.${
 		task_prompt
 			? `
