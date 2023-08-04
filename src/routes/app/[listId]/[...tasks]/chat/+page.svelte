@@ -72,7 +72,7 @@
 <dialog
 	in:fade
 	class="fixed block top-[8.333%] left-0 w-2/3 h-5/6 z-50
-	border border-green-700 bg-green-50 text-green-800 p-0
+	border border-green-700 bg-green-50 p-0
 "
 >
 	<div class="block h-full px-[10%] pt-10 overflow-y-scroll pb-20">
