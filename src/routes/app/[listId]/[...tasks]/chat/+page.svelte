@@ -75,7 +75,7 @@
 	border border-green-700 bg-green-50 p-0
 "
 >
-	<div class="block h-full px-[10%] pt-10 overflow-y-scroll pb-20">
+	<div class="block h-full px-[10%] pt-10 overflow-y-scroll pb-20 text-green-800">
 		{#each $messages as message}
 			<ChatMessageComponent {message} />
 		{/each}
