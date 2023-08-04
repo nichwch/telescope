@@ -4,15 +4,17 @@
 	import { useChat, type Message } from 'ai/svelte';
 	import ChatMessageComponent from './ChatMessageComponent.svelte';
 	import { lastEditedStore } from './updateDateStores';
-	import { getTaskContext } from '$lib/getTaskContext';
+	import { getRoleAndGoalContext, getTaskContext } from '$lib/getTaskContext';
 
 	export let data;
 
 	const taskContext = getTaskContext(
-		data.listContent?.[0]?.strategic_goal,
 		data.currentTask,
 		data.items.filter((item) => !item.done),
-		data.items.filter((item) => item.done),
+		data.items.filter((item) => item.done)
+	);
+	const roleAndGoalContext = getRoleAndGoalContext(
+		data.listContent?.[0]?.strategic_goal,
 		data.listContent?.[0]?.name
 	);
 
@@ -23,10 +25,22 @@
 		initialMessages: [
 			{
 				role: 'system',
-				content: taskContext,
-				id: 'system_message'
+				content: roleAndGoalContext,
+				id: 'roleAndGoalContext'
 			},
-			...existingMessages
+			...existingMessages,
+
+			{
+				role: 'system',
+				content: taskContext,
+				id: 'taskContext'
+			},
+			{
+				role: 'system',
+				content:
+					"Note that context may have changed since previous messages, so don't apologize for discrepancies.",
+				id: 'disclaimer'
+			}
 		],
 		body: {
 			task_id: data.currentTask?.id,

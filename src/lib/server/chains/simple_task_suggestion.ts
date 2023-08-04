@@ -1,7 +1,7 @@
 import { CommaSeparatedListOutputParser } from 'langchain/output_parsers';
 import { model } from '../openai';
 import type { Task } from '$lib/types';
-import { getTaskContext } from '../../getTaskContext';
+import { getRoleAndGoalContext, getTaskContext } from '../../getTaskContext';
 
 // don't consider entire task tree
 export async function simple_task_suggestion_chain(
@@ -14,15 +14,11 @@ export async function simple_task_suggestion_chain(
 ) {
 	const parser = new CommaSeparatedListOutputParser();
 	const formatInstructions = parser.getFormatInstructions();
-	const taskContext = getTaskContext(
-		strategic_goal,
-		current_task,
-		unfinished_subtasks,
-		finished_subtasks,
-		title
-	);
+	const roleContext = getRoleAndGoalContext(strategic_goal, title);
+	const taskContext = getTaskContext(current_task, unfinished_subtasks, finished_subtasks);
 
-	const prompt = `${taskContext}
+	const prompt = `${roleContext}
+${taskContext}
 Help them break down this task into more subtasks.${
 		task_prompt
 			? `
