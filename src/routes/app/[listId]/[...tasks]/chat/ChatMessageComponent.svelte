@@ -6,10 +6,7 @@
 	import remarkParse from 'remark-parse';
 	export let message: Message;
 	const parser = unified().use(remarkParse);
-
 	const tree = parser.parse(message.content);
-
-	console.log(message.content, tree.children);
 </script>
 
 {#if message.role !== 'system'}
