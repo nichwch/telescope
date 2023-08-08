@@ -1,0 +1,58 @@
+<script lang="ts">
+	import type { Content } from 'mdast';
+	export let node: Content;
+
+	const depth = 'depth' in node ? node.depth : null;
+	const ordered = 'ordered' in node ? node.ordered : null;
+
+	const tagMap = {
+		paragraph: 'p',
+		heading: `h${depth}`,
+
+		thematicBreak: 'hr',
+		blockquote: 'blockquote',
+		list: ordered ? 'oi' : 'ul',
+		listItem: 'li',
+		table: 'table',
+		tableRow: 'tr',
+		tableCell: 'td',
+		code: 'code',
+		emphasis: 'em',
+		strong: 'strong',
+		break: 'br',
+		text: 'span',
+		delete: 'strike',
+		// following not supported, included just for type safety
+		html: 'html',
+		yaml: 'div',
+		definition: 'div',
+		footnoteDefinition: 'div',
+		textDirective: 'div',
+		link: 'a',
+		linkReference: 'a',
+		inlineCode: 'code',
+		image: 'img',
+		imageReference: 'img',
+		footnote: 'div',
+		footnoteReference: 'div'
+	};
+	const tag: string = (node.type in tagMap && tagMap[node.type]!) || 'span';
+	console.log({ node });
+</script>
+
+<svelte:element this={tag}>
+	{#if 'value' in node}
+		{node.value}
+	{/if}
+	{#if 'children' in node}
+		{#each node.children as child}
+			<svelte:self node={child} />
+		{/each}
+	{/if}
+</svelte:element>
+
+<style>
+	:global(li > p) {
+		display: inline;
+	}
+</style>

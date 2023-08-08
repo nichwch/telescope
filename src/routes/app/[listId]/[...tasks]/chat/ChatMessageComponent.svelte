@@ -1,7 +1,7 @@
 <script lang="ts">
 	import type { Message } from 'ai';
 	import 'highlight.js/styles/github.css';
-	import MarkdownRenderer from './MarkdownTokenRenderer.svelte';
+	import MarkdownRenderer from './MarkdownASTRenderer.svelte';
 	import { unified } from 'unified';
 	import remarkParse from 'remark-parse';
 	export let message: Message;
@@ -9,7 +9,7 @@
 
 	const tree = parser.parse(message.content);
 
-	console.log(tree);
+	console.log(message.content, tree.children);
 </script>
 
 {#if message.role !== 'system'}
@@ -18,12 +18,8 @@
 			<span class="font-bold">you: </span>
 		{:else if message.role == 'assistant'}<span class="font-semibold">AI: </span>
 		{/if}
+		{#each tree.children as node}
+			<MarkdownRenderer {node} />
+		{/each}
 	</div>
 {/if}
-
-<style>
-	/* div.code {
-		padding: 0.25rem;
-		background-color: pink;
-	} */
-</style>
