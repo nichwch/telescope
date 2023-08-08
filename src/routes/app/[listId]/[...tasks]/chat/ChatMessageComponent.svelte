@@ -7,14 +7,12 @@
 
 	const md = new MarkdownIt({
 		highlight: function (str, lang) {
-			console.log({ str, lang });
 			if (lang && hljs.getLanguage(lang)) {
 				console.log('lang', lang);
 				try {
-					console.log(hljs.highlight(str, { language: lang }).value);
 					return hljs.highlight(str, { language: lang }).value;
 				} catch (error) {
-					console.log({ error });
+					console.error({ error });
 				}
 			}
 
