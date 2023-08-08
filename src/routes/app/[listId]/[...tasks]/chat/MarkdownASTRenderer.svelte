@@ -1,5 +1,6 @@
 <script lang="ts">
 	import type { Content } from 'mdast';
+	import CodeRenderer from './CodeRenderer.svelte';
 	export let node: Content;
 
 	const depth = 'depth' in node ? node.depth : null;
@@ -40,16 +41,20 @@
 	console.log({ node });
 </script>
 
-<svelte:element this={tag}>
-	{#if 'value' in node}
-		{node.value}
-	{/if}
-	{#if 'children' in node}
-		{#each node.children as child}
-			<svelte:self node={child} />
-		{/each}
-	{/if}
-</svelte:element>
+{#if node.type === 'code'}
+	<CodeRenderer {node} />
+{:else}
+	<svelte:element this={tag}>
+		{#if 'value' in node}
+			{node.value}
+		{/if}
+		{#if 'children' in node}
+			{#each node.children as child}
+				<svelte:self node={child} />
+			{/each}
+		{/if}
+	</svelte:element>
+{/if}
 
 <style>
 	:global(li > p) {
