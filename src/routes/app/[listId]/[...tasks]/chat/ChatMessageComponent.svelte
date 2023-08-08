@@ -21,6 +21,7 @@
 	});
 
 	$: htmlContent = md.render(message.content);
+	$: console.log('tokens', md.parse(message.content, {}));
 </script>
 
 {#if message.role !== 'system'}
