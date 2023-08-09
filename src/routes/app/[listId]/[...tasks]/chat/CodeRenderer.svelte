@@ -33,6 +33,6 @@
 		</button>
 	</div>
 	<pre class="p-4">
-<code class="block text-left">{@html highlightedCode}</code>
+<code class="whitespace-break-spaces">{@html highlightedCode}</code>
 </pre>
 </div>
