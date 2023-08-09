@@ -18,7 +18,7 @@
 	<div class="flex bg-green-300 border-b border-b-green-700 p-2">
 		<span>{node.lang}</span>
 		<button
-			class="ml-auto"
+			class="ml-auto hover:text-green-600"
 			on:click={() => {
 				navigator.clipboard.writeText(node.value).then(() => {
 					copied = true;
