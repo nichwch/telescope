@@ -5,6 +5,7 @@
 	import ChatMessageComponent from './ChatMessageComponent.svelte';
 	import { lastEditedStore } from './updateDateStores';
 	import { getRoleAndGoalContext, getTaskContext } from '$lib/getTaskContext';
+	import { tick } from 'svelte';
 
 	export let data;
 
@@ -19,12 +20,15 @@
 	);
 
 	const existingMessages = (data.currentTask?.chats as any as Message[]) || [];
+	let element: HTMLElement;
 	let loadingMessage = false;
 
 	const submitMessage = (evt: any) => {
 		if (loadingMessage) return;
 		loadingMessage = true;
 		handleSubmit(evt);
+		tick();
+		element.scroll({ top: element.scrollHeight, behavior: 'instant' });
 	};
 
 	const { input, handleSubmit, messages } = useChat({
@@ -58,6 +62,16 @@
 		},
 		onFinish: () => (loadingMessage = false)
 	});
+
+	const scrollToBottom = async () => {
+		if (!element) return;
+		element.scroll({ top: element.scrollHeight, behavior: 'smooth' });
+	};
+
+	$: length = $messages.length;
+	$: if (length && element) {
+		scrollToBottom();
+	}
 </script>
 
 <svelte:window
