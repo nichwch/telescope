@@ -38,7 +38,6 @@
 		footnoteReference: 'div'
 	};
 	const tag: string = (node.type in tagMap && tagMap[node.type]!) || 'span';
-	console.log({ node });
 </script>
 
 {#if node.type === 'code'}
