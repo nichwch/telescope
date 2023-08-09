@@ -19,6 +19,13 @@
 	);
 
 	const existingMessages = (data.currentTask?.chats as any as Message[]) || [];
+	let loadingMessage = false;
+
+	const submitMessage = (evt: any) => {
+		if (loadingMessage) return;
+		loadingMessage = true;
+		handleSubmit(evt);
+	};
 
 	const { input, handleSubmit, messages } = useChat({
 		api: '/api/chat',
@@ -48,7 +55,8 @@
 			focused_tasks: data.items,
 			current_task: data.currentTask,
 			title: data.listContent?.[0]?.name
-		}
+		},
+		onFinish: () => (loadingMessage = false)
 	});
 </script>
 
@@ -57,7 +65,7 @@
 		if (evt.key === 'Escape') {
 			goto('.');
 		} else if (evt.key === 'Enter') {
-			handleSubmit(evt);
+			submitMessage(evt);
 		}
 	}}
 />
@@ -75,12 +83,17 @@
 	border border-green-700 bg-green-50 p-0
 "
 >
-	<div class="block h-full px-[10%] pt-10 overflow-y-scroll pb-20 text-green-800">
-		{#each $messages as message}
-			{#key message.content}
-				<ChatMessageComponent {message} />
-			{/key}
-		{/each}
+	<div
+		class="h-full px-[10%] pt-10 overflow-y-scroll pb-20 text-green-800 flex flex-col-reverse"
+		bind:this={element}
+	>
+		<div>
+			{#each $messages as message}
+				{#key message.content}
+					<ChatMessageComponent {message} />
+				{/key}
+			{/each}
+		</div>
 	</div>
 	<div
 		class="absolute bottom-10 left-[10%] w-4/5 mx-auto flex border border-green-700 bg-green-100"
@@ -88,11 +101,8 @@
 		<input
 			bind:value={$input}
 			class="flex-grow p-2 bg-transparent border-r border-r-green-700"
-		/><button
-			on:click={(e) => {
-				handleSubmit(e);
-			}}
-			class="p-2 bg-green-100 hover:bg-green-200 transition-colors">send</button
+		/><button on:click={submitMessage} class="p-2 bg-green-100 hover:bg-green-200 transition-colors"
+			>send</button
 		>
 	</div>
 </dialog>
