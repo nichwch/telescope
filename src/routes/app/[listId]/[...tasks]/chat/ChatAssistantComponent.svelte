@@ -1,11 +1,10 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
-	import { fade } from 'svelte/transition';
 	import { useChat, type Message } from 'ai/svelte';
 	import ChatMessageComponent from './ChatMessageComponent.svelte';
-	import { lastEditedStore } from './updateDateStores';
 	import { getRoleAndGoalContext, getTaskContext } from '$lib/getTaskContext';
 	import { tick } from 'svelte';
+	import { itemStore } from '../itemStore';
 
 	export let data;
 
@@ -36,32 +35,25 @@
 		initialMessages: [
 			{
 				role: 'system',
-				content: roleAndGoalContext,
-				id: 'roleAndGoalContext'
+				content: `${roleAndGoalContext}
+${taskContext}
+Note that context may have changed since previous messages, so don't apologize for discrepancies.`,
+				id: 'context'
 			},
-			...existingMessages,
-
-			{
-				role: 'system',
-				content: taskContext,
-				id: 'taskContext'
-			},
-			{
-				role: 'system',
-				content:
-					"Note that context may have changed since previous messages, so don't apologize for discrepancies.",
-				id: 'disclaimer'
-			}
+			...existingMessages
 		],
 		body: {
 			task_id: data.currentTask?.id,
+			list_id: data.listId,
 			strategic_goal: data.listContent?.[0]?.strategic_goal,
-			focused_tasks: data.items,
+			focused_tasks: $itemStore,
 			current_task: data.currentTask,
 			title: data.listContent?.[0]?.name
 		},
 		onFinish: () => (loadingMessage = false)
 	});
+
+	$: console.log('from chat assistant component', $itemStore);
 
 	const scrollToBottom = async () => {
 		if (!element) return;

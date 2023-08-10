@@ -20,10 +20,17 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 				...json_body.messages,
 				{ content: completion, role: 'assistant' }
 			].filter((message) => message.role !== 'system');
-			await supabase
-				.from('tasks')
-				.update({ chats: newMessages as any })
-				.eq('id', json_body.task_id);
+			if (json_body.task_id) {
+				await supabase
+					.from('tasks')
+					.update({ chats: newMessages as any })
+					.eq('id', json_body.task_id);
+			} else if (json_body.list_id) {
+				await supabase
+					.from('lists')
+					.update({ chats: newMessages as any })
+					.eq('id', json_body.list_id);
+			}
 		}
 	});
 	return new StreamingTextResponse(stream);

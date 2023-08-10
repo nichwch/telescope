@@ -20,6 +20,8 @@
 	import TaskControls from './TaskControls.svelte';
 	import { NAME_TEXTAREA_CLASS } from '$lib';
 	import { focusedItemStore } from './FocusedItemStore';
+	import { writable } from 'svelte/store';
+	import { itemStore } from './itemStore';
 
 	export let data;
 	const { supabase } = data;
@@ -37,6 +39,8 @@
 	lastFlushedItems.forEach((task, index) =>
 		prevTaskMap.set(task.id, { ...task, child_index: index })
 	);
+
+	$: itemStore.set(items);
 
 	let scrollY = 0;
 	let scrollHeight = 0;
