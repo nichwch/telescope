@@ -1,4 +1,6 @@
-export type Json =
+Need to install the following packages:
+  supabase@1.83.7
+Ok to proceed? (y) export type Json =
   | string
   | number
   | boolean
@@ -11,6 +13,7 @@ export interface Database {
     Tables: {
       lists: {
         Row: {
+          chats: Json | null
           created_date: string | null
           id: string
           last_edited_date: string | null
@@ -20,6 +23,7 @@ export interface Database {
           tasks_blob: Json
         }
         Insert: {
+          chats?: Json | null
           created_date?: string | null
           id?: string
           last_edited_date?: string | null
@@ -29,6 +33,7 @@ export interface Database {
           tasks_blob?: Json
         }
         Update: {
+          chats?: Json | null
           created_date?: string | null
           id?: string
           last_edited_date?: string | null
