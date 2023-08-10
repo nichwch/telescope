@@ -2,6 +2,7 @@
 	import { fade } from 'svelte/transition';
 	import { page } from '$app/stores';
 	import { onDestroy } from 'svelte';
+	import ChatAssistantComponent from './[...tasks]/chat/ChatAssistantComponent.svelte';
 	export let data;
 	const { supabase } = data;
 	let strategic_goal_input = $page.data.listContent?.[0].strategic_goal || '';
@@ -36,7 +37,7 @@
 </script>
 
 <div
-	class="w-full px-5 md:w-[50vw] lg:w-[40vw] md:pr-80 md:px-0 md:mx-auto pb-5 md:pb-20 md:box-content relative"
+	class=" w-full px-5 md:w-[50vw] lg:w-[40vw] md:pr-80 md:px-0 md:mx-auto pb-5 md:pb-20 md:box-content relative"
 >
 	{#key $page.params.tasks}
 		<slot />
@@ -54,7 +55,9 @@
 					placeholder="describe your large-level goals for this project..."
 				/>
 			</div>
-			<div class="mt-2 flex-grow w-80" />
+			<div class="mt-2 h-full flex-grow w-80">
+				<ChatAssistantComponent {data} />
+			</div>
 		</div>
 	</div>
 </div>
