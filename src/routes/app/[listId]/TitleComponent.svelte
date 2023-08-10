@@ -38,12 +38,6 @@
 		clearInterval(updateInterval);
 	});
 
-	const strategyChangeHandler = (
-		e: Event & { currentTarget: EventTarget & HTMLTextAreaElement }
-	) => {
-		strategic_goal_input = (e?.target as HTMLTextAreaElement)?.value || '';
-	};
-
 	const nameChangeHandler = (e: Event & { currentTarget: EventTarget & HTMLInputElement }) => {
 		name_input = (e?.target as HTMLInputElement)?.value || '';
 	};

@@ -1,6 +1,4 @@
 <script lang="ts">
-	import TitleComponent from './TitleComponent.svelte';
-
 	import { fade } from 'svelte/transition';
 	import { page } from '$app/stores';
 	import { onDestroy } from 'svelte';
@@ -9,30 +7,21 @@
 	let strategic_goal_input = $page.data.listContent?.[0].strategic_goal || '';
 	let last_flushed_strategic_goal_input = strategic_goal_input;
 
-	let name_input = $page.data.listContent?.[0].name || '';
-	let last_flushed_name_input = name_input;
-
 	let isFlushing = false;
 
 	const updateInterval = setInterval(async () => {
-		if (
-			strategic_goal_input === last_flushed_strategic_goal_input &&
-			name_input === last_flushed_name_input
-		)
-			return;
+		if (strategic_goal_input === last_flushed_strategic_goal_input) return;
 		if (isFlushing) return;
 		isFlushing = true;
 		await supabase
 			.from('lists')
 			.update({
 				strategic_goal: strategic_goal_input,
-				name: name_input,
 				last_edited_date: new Date().toISOString()
 			})
 			.eq('id', $page.params.listId);
 		isFlushing = false;
 		last_flushed_strategic_goal_input = strategic_goal_input;
-		last_flushed_name_input = name_input;
 	}, 300);
 
 	onDestroy(() => {
@@ -44,13 +33,8 @@
 	) => {
 		strategic_goal_input = (e?.target as HTMLTextAreaElement)?.value || '';
 	};
-
-	const nameChangeHandler = (e: Event & { currentTarget: EventTarget & HTMLInputElement }) => {
-		name_input = (e?.target as HTMLInputElement)?.value || '';
-	};
 </script>
 
-<!-- TODO show actual name, allow editing -->
 <div
 	class="w-full px-5 md:w-[50vw] lg:w-[40vw] md:pr-80 md:px-0 md:mx-auto pb-5 md:pb-20 md:box-content relative"
 >
