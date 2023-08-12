@@ -2,22 +2,14 @@
 	import { goto } from '$app/navigation';
 	import { useChat, type Message } from 'ai/svelte';
 	import ChatMessageComponent from './ChatMessageComponent.svelte';
-	import { getRoleAndGoalContext, getTaskContext } from '$lib/getTaskContext';
 	import { tick } from 'svelte';
 	import { itemStore } from '../itemStore';
 	import { page } from '$app/stores';
-	import type { Task } from '../../../../../lib/types';
 	import { currentTaskStore } from '../currentTaskStore';
 
 	export let existingMessages: any[] = [];
 	export let title = '';
 	export let strategic_goal: string = '';
-	const taskContext = getTaskContext(
-		$currentTaskStore,
-		$itemStore?.filter((item: any) => !item.done) || [],
-		$itemStore.items?.filter((item: any) => item.done) || []
-	);
-	const roleAndGoalContext = getRoleAndGoalContext(strategic_goal, title);
 
 	let element: HTMLElement;
 	let loadingMessage = false;
@@ -30,23 +22,10 @@
 		element.scroll({ top: element.scrollHeight, behavior: 'instant' });
 	};
 
-	const initialMessages = [
-		{
-			role: 'system',
-			content: `${roleAndGoalContext}
-${taskContext}
-Note that context may have changed since previous messages, so don't apologize for discrepancies.`,
-			id: 'context'
-		},
-		...existingMessages
-	];
-
-	$: console.log({ roleAndGoalContext, CT: $currentTaskStore, taskContext, initialMessages });
-
 	const { input, handleSubmit, messages } = useChat({
 		api: '/api/chat',
 		//TODO: need to find way to dynamically modify this, without remounting component!
-		initialMessages,
+		initialMessages: existingMessages,
 		body: {
 			task_id: $page.params.tasks[$page.params.tasks.length - 1],
 			list_id: $page.params.listId,

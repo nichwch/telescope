@@ -1,4 +1,5 @@
 import { DEFAULT_MODEL_SETTINGS, openai } from '$lib/server/openai';
+import { getRoleAndGoalContext, getTaskContext } from '$lib/getTaskContext';
 import type { RequestHandler } from './$types';
 import { OpenAIStream, StreamingTextResponse, type Message } from 'ai';
 
@@ -7,9 +8,27 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 	// TODO: will need context of the task inserted as the first message.
 	const json_body = await request.json();
 	console.dir(json_body, null);
+	const { strategic_goal, title, focused_items, current_task } = json_body;
+
+	const taskContext = getTaskContext(
+		current_task,
+		focused_items?.filter((item: any) => !item.done) || [],
+		focused_items.items?.filter((item: any) => item.done) || []
+	);
+	const roleAndGoalContext = getRoleAndGoalContext(strategic_goal, title);
+
 	const response = await openai.createChatCompletion({
 		...DEFAULT_MODEL_SETTINGS,
-		messages: json_body.messages
+		messages: [
+			{
+				role: 'system',
+				content: `${roleAndGoalContext}
+${taskContext}
+Note that context may have changed since previous messages, so don't apologize for discrepancies.`,
+				id: 'context'
+			},
+			...json_body.messages
+		]
 	});
 	const stream = OpenAIStream(response, {
 		onCompletion: async (completion: string) => {
