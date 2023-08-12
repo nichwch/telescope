@@ -45,6 +45,7 @@ Note that context may have changed since previous messages, so don't apologize f
 
 	const { input, handleSubmit, messages } = useChat({
 		api: '/api/chat',
+		//TODO: need to find way to dynamically modify this, without remounting component!
 		initialMessages,
 		body: {
 			task_id: $page.params.tasks[$page.params.tasks.length - 1],
