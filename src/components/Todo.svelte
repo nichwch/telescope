@@ -1,12 +1,12 @@
 <script lang="ts">
 	import { page } from '$app/stores';
 	import { createEventDispatcher } from 'svelte';
-	import { focusedItemStore } from '../routes/app/[listId]/[...tasks]/FocusedItemStore';
-	import DragHandle from './Icons/DragHandle.svelte';
 	import { fly } from 'svelte/transition';
 	import { invalidateAll } from '$app/navigation';
 	import { NAME_TEXTAREA_CLASS } from '$lib';
 	import type { IntermediateTaskWithChildren } from '../lib/types';
+	import { focusedItemStore } from '../routes/app/[listId]/[...tasks]/FocusedItemStore';
+	import DragHandle from './Icons/DragHandle.svelte';
 
 	export let item: IntermediateTaskWithChildren;
 	item.queued_done = Boolean(item.queued_done);
@@ -55,7 +55,7 @@
 			contenteditable
 			id="description input {item.id}"
 			role="textbox"
-			class="ml-[14px] description_textarea inline-block resize-none
+			class="description_textarea inline-block resize-none
 	break-word overflow-x-hidden flex-grow px-4 focus:outline-none cursor-text
 	text-gray-500"
 			bind:innerText={item.description}

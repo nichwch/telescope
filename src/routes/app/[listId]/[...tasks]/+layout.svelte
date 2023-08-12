@@ -20,7 +20,6 @@
 	import TaskControls from './TaskControls.svelte';
 	import { NAME_TEXTAREA_CLASS } from '$lib';
 	import { focusedItemStore } from './FocusedItemStore';
-	import { writable } from 'svelte/store';
 	import { itemStore } from './itemStore';
 
 	export let data;

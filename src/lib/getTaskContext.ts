@@ -1,17 +1,16 @@
-import type { Task } from '$lib/types';
+import type { IntermediateTask, Task } from '$lib/types';
 import { stringifyTodos } from '$lib';
 
 /*
 Returns a system message that will provide context to the LLM on 
 */
 export const getTaskContext = (
-	current_task: Task | null,
+	current_task: IntermediateTask | null,
 	unfinished_subtasks: Task[],
 	finished_subtasks: Task[]
 ): string => {
 	const unfinished_subtasks_str = unfinished_subtasks.map((task) => stringifyTodos(task)).join('');
 	const finished_subtasks_str = finished_subtasks.map((task) => stringifyTodos(task)).join('');
-
 	const current_task_str = current_task
 		? `${current_task.name}${
 				current_task.description

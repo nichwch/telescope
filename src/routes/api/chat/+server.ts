@@ -6,6 +6,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 	const { supabase } = locals;
 	// TODO: will need context of the task inserted as the first message.
 	const json_body = await request.json();
+	console.dir(json_body, null);
 	const response = await openai.createChatCompletion({
 		...DEFAULT_MODEL_SETTINGS,
 		messages: json_body.messages

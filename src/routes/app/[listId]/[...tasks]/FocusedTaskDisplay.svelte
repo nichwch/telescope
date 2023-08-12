@@ -3,6 +3,7 @@
 	import { page } from '$app/stores';
 	import type { IntermediateTask } from '$lib/types';
 	import { onDestroy } from 'svelte';
+	import { currentTaskStore } from './currentTaskStore';
 
 	export let focusedTask: IntermediateTask;
 	const {
@@ -15,6 +16,11 @@
 	let name = focusedTask.name;
 	let lastFlushedName = name;
 	let flushing = false;
+	$: currentTaskStore.set({
+		...focusedTask,
+		description,
+		name
+	});
 
 	$: history = $page.params.tasks;
 	$: segments = history?.split('/');

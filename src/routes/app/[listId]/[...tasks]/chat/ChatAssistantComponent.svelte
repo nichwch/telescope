@@ -5,20 +5,20 @@
 	import { getRoleAndGoalContext, getTaskContext } from '$lib/getTaskContext';
 	import { tick } from 'svelte';
 	import { itemStore } from '../itemStore';
+	import { page } from '$app/stores';
+	import type { Task } from '../../../../../lib/types';
+	import { currentTaskStore } from '../currentTaskStore';
 
-	export let data;
-
+	export let existingMessages: any[] = [];
+	export let title = '';
+	export let strategic_goal: string = '';
 	const taskContext = getTaskContext(
-		data.currentTask,
-		data.items?.filter((item: any) => !item.done) || [],
-		data.items?.filter((item: any) => item.done) || []
+		$currentTaskStore,
+		$itemStore?.filter((item: any) => !item.done) || [],
+		$itemStore.items?.filter((item: any) => item.done) || []
 	);
-	const roleAndGoalContext = getRoleAndGoalContext(
-		data.listContent?.[0]?.strategic_goal,
-		data.listContent?.[0]?.name
-	);
+	const roleAndGoalContext = getRoleAndGoalContext(strategic_goal, title);
 
-	const existingMessages = (data.currentTask?.chats as any as Message[]) || [];
 	let element: HTMLElement;
 	let loadingMessage = false;
 
@@ -30,30 +30,32 @@
 		element.scroll({ top: element.scrollHeight, behavior: 'instant' });
 	};
 
-	const { input, handleSubmit, messages } = useChat({
-		api: '/api/chat',
-		initialMessages: [
-			{
-				role: 'system',
-				content: `${roleAndGoalContext}
+	const initialMessages = [
+		{
+			role: 'system',
+			content: `${roleAndGoalContext}
 ${taskContext}
 Note that context may have changed since previous messages, so don't apologize for discrepancies.`,
-				id: 'context'
-			},
-			...existingMessages
-		],
+			id: 'context'
+		},
+		...existingMessages
+	];
+
+	$: console.log({ roleAndGoalContext, CT: $currentTaskStore, taskContext, initialMessages });
+
+	const { input, handleSubmit, messages } = useChat({
+		api: '/api/chat',
+		initialMessages,
 		body: {
-			task_id: data.currentTask?.id,
-			list_id: data.listId,
-			strategic_goal: data.listContent?.[0]?.strategic_goal,
+			task_id: $page.params.tasks[$page.params.tasks.length - 1],
+			list_id: $page.params.listId,
+			strategic_goal: strategic_goal,
 			focused_tasks: $itemStore,
-			current_task: data.currentTask,
-			title: data.listContent?.[0]?.name
+			current_task: $currentTaskStore,
+			title
 		},
 		onFinish: () => (loadingMessage = false)
 	});
-
-	$: console.log('from chat assistant component', $itemStore);
 
 	const scrollToBottom = async () => {
 		if (!element) return;
