@@ -27,7 +27,7 @@
 		//TODO: need to find way to dynamically modify this, without remounting component!
 		initialMessages: existingMessages,
 		body: {
-			task_id: $page.params.tasks[$page.params.tasks.length - 1],
+			task_id: $page.params.tasks?.[$page.params.tasks.length - 1],
 			list_id: $page.params.listId,
 			strategic_goal: strategic_goal,
 			focused_tasks: $itemStore,
