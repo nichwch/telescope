@@ -13,22 +13,21 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 	const taskContext = getTaskContext(
 		current_task,
 		focused_items?.filter((item: any) => !item.done) || [],
-		focused_items.items?.filter((item: any) => item.done) || []
+		focused_items?.filter((item: any) => item.done) || []
 	);
 	const roleAndGoalContext = getRoleAndGoalContext(strategic_goal, title);
-
+	const messagesAndContext = [
+		{
+			role: 'system',
+			content: `${roleAndGoalContext}
+${taskContext}
+Note that context may have changed since previous messages, so don't apologize for discrepancies.`
+		},
+		...json_body.messages
+	];
 	const response = await openai.createChatCompletion({
 		...DEFAULT_MODEL_SETTINGS,
-		messages: [
-			{
-				role: 'system',
-				content: `${roleAndGoalContext}
-${taskContext}
-Note that context may have changed since previous messages, so don't apologize for discrepancies.`,
-				id: 'context'
-			},
-			...json_body.messages
-		]
+		messages: messagesAndContext
 	});
 	const stream = OpenAIStream(response, {
 		onCompletion: async (completion: string) => {
