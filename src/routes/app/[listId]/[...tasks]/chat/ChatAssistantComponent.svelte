@@ -6,7 +6,6 @@
 	import { itemStore } from '../itemStore';
 	import { page } from '$app/stores';
 	import { currentTaskStore } from '../currentTaskStore';
-	import type { Readable } from 'svelte/store';
 
 	export let existingMessages: any[] = [];
 	export let title = '';
