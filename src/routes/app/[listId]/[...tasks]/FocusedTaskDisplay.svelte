@@ -26,7 +26,8 @@
 	$: segments = history?.split('/');
 
 	const updateFunction = async () => {
-		if (lastFlushedDescription === description && lastFlushedName === name && flushing) return;
+		if (lastFlushedDescription === description && lastFlushedName === name) return;
+		if (flushing) return;
 		flushing = true;
 		await supabase.from('tasks').update({ description, name }).match({ id: focusedTask.id });
 		flushing = false;
