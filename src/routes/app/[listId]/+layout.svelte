@@ -44,7 +44,7 @@
 </script>
 
 <div
-	transition:fade
+	in:fade
 	class=" w-full px-5 md:w-[50vw] lg:w-[40vw] md:pr-80 md:px-0 md:mx-auto pb-5 md:pb-20 md:box-content relative"
 >
 	{#key $page.params.tasks}
