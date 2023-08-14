@@ -8,13 +8,14 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 	// TODO: will need context of the task inserted as the first message.
 	const json_body = await request.json();
 	console.dir(json_body, null);
-	const { strategic_goal, title, focused_items, current_task } = json_body;
+	const { strategic_goal, title, focused_tasks, current_task } = json_body;
 
 	const taskContext = getTaskContext(
 		current_task,
-		focused_items?.filter((item: any) => !item.done) || [],
-		focused_items?.filter((item: any) => item.done) || []
+		focused_tasks?.filter((item: any) => !item.done) || [],
+		focused_tasks?.filter((item: any) => item.done) || []
 	);
+	console.log(taskContext, focused_tasks);
 	const roleAndGoalContext = getRoleAndGoalContext(strategic_goal, title);
 	const messagesAndContext = [
 		{
