@@ -7,24 +7,25 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 	const { supabase } = locals;
 	// TODO: will need context of the task inserted as the first message.
 	const json_body = await request.json();
-	console.dir(json_body, null);
+	// console.dir(json_body, null);
 	const { strategic_goal, title, focused_tasks, current_task } = json_body;
-
 	const taskContext = getTaskContext(
 		current_task,
 		focused_tasks?.filter((item: any) => !item.done) || [],
 		focused_tasks?.filter((item: any) => item.done) || []
 	);
-	console.log(taskContext, focused_tasks);
 	const roleAndGoalContext = getRoleAndGoalContext(strategic_goal, title);
 	const messagesAndContext = [
 		{
 			role: 'system',
-			content: `${roleAndGoalContext}
-${taskContext}
-Note that context may have changed since previous messages, so don't apologize for discrepancies.`
+			content: roleAndGoalContext
 		},
-		...json_body.messages
+		...json_body.messages,
+		{
+			role: 'system',
+			content: `${taskContext}
+Note that context may have changed since previous messages, so don't apologize for discrepancies.`
+		}
 	];
 	const response = await openai.createChatCompletion({
 		...DEFAULT_MODEL_SETTINGS,

@@ -6,6 +6,7 @@
 	import { itemStore } from '../itemStore';
 	import { page } from '$app/stores';
 	import { currentTaskStore } from '../currentTaskStore';
+	import type { Readable } from 'svelte/store';
 
 	export let existingMessages: any[] = [];
 	export let title = '';
@@ -17,7 +18,18 @@
 	const submitMessage = (evt: any) => {
 		if (loadingMessage) return;
 		loadingMessage = true;
-		handleSubmit(evt);
+		handleSubmit(evt, {
+			options: {
+				body: {
+					task_id: $page.params.tasks?.[$page.params.tasks.length - 1],
+					list_id: $page.params.listId,
+					strategic_goal: strategic_goal,
+					focused_tasks: $itemStore,
+					current_task: $currentTaskStore,
+					title
+				}
+			}
+		});
 		tick();
 		element.scroll({ top: element.scrollHeight, behavior: 'instant' });
 	};

@@ -48,5 +48,5 @@ export const getRoleAndGoalContext = (
 			? `Their overall goal is this: ${strategic_goal} `
 			: '';
 
-	return `You are a project manager helping someone complete a project${title_clause}. ${goal_clause}`;
+	return `You are a project manager helping someone complete a project${title_clause}. ${goal_clause}. Be concise.`;
 };
