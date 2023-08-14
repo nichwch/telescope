@@ -3,7 +3,7 @@
 	import { createEventDispatcher } from 'svelte';
 	import { fly } from 'svelte/transition';
 	import { invalidateAll } from '$app/navigation';
-	import { NAME_TEXTAREA_CLASS } from '$lib';
+	import { NAME_TEXTAREA_CLASS, taskColors } from '$lib';
 	import type { IntermediateTaskWithChildren } from '../lib/types';
 	import { focusedItemStore } from '../routes/app/[listId]/[...tasks]/FocusedItemStore';
 	import DragHandle from './Icons/DragHandle.svelte';
@@ -91,6 +91,59 @@
 				class="ml-3 text-red-700 hover:underline text-sm w-auto"
 				on:click={() => dispatch('delete_item', { id: item.id })}>delete</button
 			>
+		{/if}
+		{#if $focusedItemStore === item.id}
+			<label
+				class="ml-3 text-sm w-auto p-0.5"
+				class:bg-red-500={item.color === 'red'}
+				class:bg-orange-500={item.color === 'orange'}
+				class:bg-amber-500={item.color === 'amber'}
+				class:bg-yellow-500={item.color === 'yellow'}
+				class:bg-lime-500={item.color === 'lime'}
+				class:bg-green-500={item.color === 'green'}
+				class:bg-emerald-500={item.color === 'emerald'}
+				class:bg-teal-500={item.color === 'teal'}
+				class:bg-cyan-500={item.color === 'cyan'}
+				class:bg-sky-500={item.color === 'sky'}
+				class:bg-blue-500={item.color === 'blue'}
+				class:bg-indigo-500={item.color === 'indigo'}
+				class:bg-violet-500={item.color === 'violet'}
+				class:bg-purple-500={item.color === 'purple'}
+				class:bg-fuchsia-500={item.color === 'fuchsia'}
+				class:bg-pink-500={item.color === 'pink'}
+				class:bg-rose-500={item.color === 'rose'}
+			>
+				select color
+				<select bind:value={item.color}>
+					<option value={null}>none</option>
+					{#each taskColors as color}
+						<option value={color}>
+							{color}
+						</option>
+					{/each}
+				</select>
+			</label>
+		{:else}
+			<div
+				class="ml-3 text-sm w-5 h-3 inline-block"
+				class:bg-red-500={item.color === 'red'}
+				class:bg-orange-500={item.color === 'orange'}
+				class:bg-amber-500={item.color === 'amber'}
+				class:bg-yellow-500={item.color === 'yellow'}
+				class:bg-lime-500={item.color === 'lime'}
+				class:bg-green-500={item.color === 'green'}
+				class:bg-emerald-500={item.color === 'emerald'}
+				class:bg-teal-500={item.color === 'teal'}
+				class:bg-cyan-500={item.color === 'cyan'}
+				class:bg-sky-500={item.color === 'sky'}
+				class:bg-blue-500={item.color === 'blue'}
+				class:bg-indigo-500={item.color === 'indigo'}
+				class:bg-violet-500={item.color === 'violet'}
+				class:bg-purple-500={item.color === 'purple'}
+				class:bg-fuchsia-500={item.color === 'fuchsia'}
+				class:bg-pink-500={item.color === 'pink'}
+				class:bg-rose-500={item.color === 'rose'}
+			/>
 		{/if}
 	</div>
 </div>
