@@ -47,6 +47,7 @@ export interface Database {
           ai_generated: boolean
           chats: Json | null
           child_index: number
+          color: string | null
           created_at: string
           description: string
           done: boolean
@@ -61,6 +62,7 @@ export interface Database {
           ai_generated?: boolean
           chats?: Json | null
           child_index: number
+          color?: string | null
           created_at?: string
           description?: string
           done?: boolean
@@ -75,6 +77,7 @@ export interface Database {
           ai_generated?: boolean
           chats?: Json | null
           child_index?: number
+          color?: string | null
           created_at?: string
           description?: string
           done?: boolean
