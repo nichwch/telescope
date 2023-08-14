@@ -24,7 +24,6 @@ export type TODOList = Database['public']['Tables']['lists']['Row'] & {
 };
 
 // https://github.com/sveltejs/kit/discussions/9807
-console.log('Hello world from the script');
 
 const supabase = createClient<Database>(PUBLIC_SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
 
@@ -37,7 +36,6 @@ const insertTask = async (
 	task_parent: string | null,
 	owner: string
 ) => {
-	console.log('task', task);
 	const res = await supabase
 		.from('tasks')
 		.insert({
@@ -53,8 +51,7 @@ const insertTask = async (
 			queued_done: task.queuedDone
 		})
 		.select('*');
-	console.log('res', res);
-	console.log('children #', task.children.length);
+
 	await Promise.all(
 		task.children.map((child, index) => insertTask(child, index, null, task.id, owner)) || []
 	);
@@ -71,5 +68,3 @@ Promise.all(
 		);
 	})
 );
-
-console.log('FINISHED');
