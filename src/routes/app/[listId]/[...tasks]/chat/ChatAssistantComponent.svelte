@@ -17,10 +17,11 @@
 	const submitMessage = (evt: any) => {
 		if (loadingMessage) return;
 		loadingMessage = true;
+		let segments = $page.params.tasks?.split('/');
 		handleSubmit(evt, {
 			options: {
 				body: {
-					task_id: $page.params.tasks?.[$page.params.tasks.length - 1],
+					task_id: segments?.[segments.length - 1],
 					list_id: $page.params.listId,
 					strategic_goal: strategic_goal,
 					focused_tasks: $itemStore,
@@ -33,12 +34,13 @@
 		element.scroll({ top: element.scrollHeight, behavior: 'instant' });
 	};
 
+	let segments = $page.params.tasks?.split('/');
 	const { input, handleSubmit, messages } = useChat({
 		api: '/api/chat',
 		//TODO: need to find way to dynamically modify this, without remounting component!
 		initialMessages: existingMessages,
 		body: {
-			task_id: $page.params.tasks?.[$page.params.tasks.length - 1],
+			task_id: segments?.[segments.length - 1],
 			list_id: $page.params.listId,
 			strategic_goal: strategic_goal,
 			focused_tasks: $itemStore,
