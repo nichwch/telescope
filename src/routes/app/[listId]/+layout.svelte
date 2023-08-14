@@ -16,7 +16,7 @@
 	$: focused_task_chats = $currentTaskStore?.chats as any as Message[];
 	$: current_chats =
 		$page.params.tasks && $page.params.tasks.length > 0 ? focused_task_chats : list_chats;
-
+	$: console.log({ current_chats });
 	const updateInterval = setInterval(async () => {
 		if (strategic_goal_input === last_flushed_strategic_goal_input) return;
 		if (isFlushing) return;
@@ -65,11 +65,13 @@
 			</div>
 			<div class="mt-2 h-full flex-grow w-80">
 				{#key $page.params.tasks}
-					<ChatAssistantComponent
-						existingMessages={current_chats || []}
-						title={data.listContent?.[0].name || ''}
-						strategic_goal={strategic_goal_input}
-					/>
+					{#key current_chats}
+						<ChatAssistantComponent
+							existingMessages={current_chats || []}
+							title={data.listContent?.[0].name || ''}
+							strategic_goal={strategic_goal_input}
+						/>
+					{/key}
 				{/key}
 			</div>
 		</div>
