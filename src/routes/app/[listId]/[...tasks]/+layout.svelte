@@ -191,6 +191,12 @@
 		}
 	}
 
+	function handleClick(evt: MouseEvent) {
+		const target = evt.target as Element;
+		const closestTodoAncestor = target?.closest('.todo');
+		if (!closestTodoAncestor) focusedItemStore.set(null);
+	}
+
 	let focusedElement: string | undefined = undefined;
 	function transformDraggedElement(element: HTMLElement | undefined) {
 		element?.classList.add('border', 'border-black');
@@ -213,7 +219,12 @@
 </script>
 
 <!-- <svelte:document bind:offsetHeight={outerHeight} /> -->
-<svelte:window bind:scrollY on:resize={() => updateScrollHeight()} on:keydown={handleEnter} />
+<svelte:window
+	bind:scrollY
+	on:resize={() => updateScrollHeight()}
+	on:keydown={handleEnter}
+	on:click={handleClick}
+/>
 <slot />
 <div class="h-full flex-grow flex flex-col">
 	<div class="h-full flex flex-col">

@@ -26,7 +26,8 @@
 	const dispatch = createEventDispatcher();
 </script>
 
-<div class="flex flex-col pb-4 border-b border-b-gray-300 mb-3 bg-white">
+<!-- todo class is used to detect clicking away, to reset focusedItemStore -->
+<div class="todo flex flex-col pb-4 border-b border-b-gray-300 mb-3 bg-white">
 	<div class="flex items-center">
 		<DragHandle />
 		<span
