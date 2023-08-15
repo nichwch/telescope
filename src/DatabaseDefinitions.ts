@@ -1,4 +1,6 @@
-export type Json =
+Need to install the following packages:
+  supabase@1.86.1
+Ok to proceed? (y) export type Json =
   | string
   | number
   | boolean
@@ -9,6 +11,21 @@ export type Json =
 export interface Database {
   public: {
     Tables: {
+      accounts: {
+        Row: {
+          subscription: string
+          user_id: string
+        }
+        Insert: {
+          subscription?: string
+          user_id: string
+        }
+        Update: {
+          subscription?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       lists: {
         Row: {
           chats: Json | null
