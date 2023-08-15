@@ -9,6 +9,7 @@
 		IntermediateTask,
 		IntermediateTaskWithChildren,
 		IntermediateTaskWithIndex,
+		SubscriptionType,
 		Task
 	} from '$lib/types';
 	import { onDestroy, onMount } from 'svelte';
@@ -216,6 +217,7 @@
 	onMount(() => updateScrollHeight());
 	$: finishedTasks = items.filter((item) => item.done);
 	$: isFocusedTask = $page.params.tasks && $page.params.tasks.length > 0;
+	const subscription = (data.accountStatus?.[0]?.subscription as SubscriptionType) || 'free';
 </script>
 
 <!-- <svelte:document bind:offsetHeight={outerHeight} /> -->
@@ -274,6 +276,7 @@
 					{#each items.filter((item) => !item.done) as item (item.id)}
 						<div animate:flip={{ duration: FLIP_DURATION_MS }} in:fly>
 							<Todo
+								accountStatus={subscription}
 								{item}
 								on:delete_item={(e) => (items = items.filter((task) => task.id !== e.detail.id))}
 							/>

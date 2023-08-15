@@ -1,3 +1,5 @@
+import type { Actions } from '@sveltejs/kit';
+
 export const actions = {
 	default: async ({ locals }) => {
 		const { supabase } = locals;
@@ -7,4 +9,4 @@ export const actions = {
 			return { res };
 		}
 	}
-};
+} satisfies Actions;

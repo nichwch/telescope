@@ -6,6 +6,7 @@ export const load = async ({ parent }) => {
 	if (!session?.user) {
 		throw error(401, 'Unauthorized');
 	}
+
 	const { data: lists } = await supabase
 		.from('lists')
 		.select('*, tasks(id)')

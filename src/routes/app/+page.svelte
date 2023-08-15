@@ -5,6 +5,7 @@
 	import { flip } from 'svelte/animate';
 	import { FLIP_DURATION_MS } from '../../lib/index.js';
 	import AccountInformationComponent from './AccountInformationComponent.svelte';
+	import type { SubscriptionType } from '../../lib/types.js';
 
 	export let data;
 	let { supabase } = data;
@@ -18,6 +19,7 @@
 	};
 
 	let scrollY = 0;
+	let subscriptionType = (data.accountStatus?.[0]?.subscription as SubscriptionType) || 'free';
 </script>
 
 <!-- <div class="max-w-4xl mx-5 lg:mx-auto py-5 md:py-20 flex flex-col h-full" /> -->
@@ -83,7 +85,7 @@
 				<h1 class="text-gray-500 h-5">settings</h1>
 			</div>
 			<button class="hover:underline block text-left" on:click={handleSignOut}>sign out</button>
-			<AccountInformationComponent status="free" />
+			<AccountInformationComponent {subscriptionType} />
 		</div>
 	</div>
 </div>

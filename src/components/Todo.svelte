@@ -4,11 +4,12 @@
 	import { fly } from 'svelte/transition';
 	import { invalidateAll } from '$app/navigation';
 	import { NAME_TEXTAREA_CLASS, taskColors } from '$lib';
-	import type { IntermediateTaskWithChildren } from '../lib/types';
+	import type { IntermediateTaskWithChildren, SubscriptionType } from '$lib/types';
 	import { focusedItemStore } from '../routes/app/[listId]/[...tasks]/FocusedItemStore';
 	import DragHandle from './Icons/DragHandle.svelte';
 
 	export let item: IntermediateTaskWithChildren;
+	export let accountStatus: SubscriptionType;
 	item.queued_done = Boolean(item.queued_done);
 	let interval: NodeJS.Timeout;
 	$: {
@@ -24,6 +25,7 @@
 
 	export const delete_item = 'delete_item';
 	const dispatch = createEventDispatcher();
+	const userIsPremium = accountStatus === 'plus' || accountStatus === 'pro';
 </script>
 
 <!-- todo class is used to detect clicking away, to reset focusedItemStore -->
@@ -93,7 +95,7 @@
 				on:click={() => dispatch('delete_item', { id: item.id })}>delete</button
 			>
 		{/if}
-		{#if $focusedItemStore === item.id}
+		{#if $focusedItemStore === item.id && userIsPremium}
 			<label
 				class="ml-3 text-sm w-auto p-0.5"
 				class:bg-red-200={item.color === 'red'}
@@ -121,7 +123,7 @@
 					{/each}
 				</select>
 			</label>
-		{:else}
+		{:else if userIsPremium}
 			<div
 				class="text-sm w-auto px-0.5 inline-block"
 				class:bg-red-200={item.color === 'red'}

@@ -1,8 +1,10 @@
 <script lang="ts">
-	export let status: 'free' | 'plus' | 'pro';
+	import type { SubscriptionType } from '$lib/types';
+
+	export let subscriptionType: SubscriptionType;
 </script>
 
-<div>current plan: {status}</div>
-{#if status === 'free'}
+<div>current plan: {subscriptionType}</div>
+{#if subscriptionType === 'free'}
 	<div>upgrade</div>
 {/if}

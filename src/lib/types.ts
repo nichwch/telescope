@@ -16,3 +16,5 @@ export type IntermediateTask = Partial<Task> &
 
 export type IntermediateTaskWithIndex = IntermediateTask & Pick<Task, 'child_index'>;
 export type IntermediateTaskWithChildren = IntermediateTask & Children;
+
+export type SubscriptionType = 'free' | 'plus' | 'pro';
