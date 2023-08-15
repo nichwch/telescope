@@ -16,7 +16,6 @@
 	$: focused_task_chats = $currentTaskStore?.chats as any as Message[];
 	$: current_chats =
 		$page.params.tasks && $page.params.tasks.length > 0 ? focused_task_chats : list_chats;
-	$: console.log({ current_chats });
 	const updateInterval = setInterval(async () => {
 		if (strategic_goal_input === last_flushed_strategic_goal_input) return;
 		if (isFlushing) return;

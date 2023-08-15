@@ -41,37 +41,20 @@
 	});
 </script>
 
-<div class="border border-green-700 bg-green-50 text-green-800 flex flex-col" in:fly>
-	<div class="p-2">
-		<div
-			contenteditable
-			role="textbox"
-			class="block name_textarea resize-none break-word overflow-x-hidden flex-grow focus:outline-none cursor-text"
-			bind:innerText={name}
-		/>
-		<div
-			contenteditable
-			role="textbox"
-			class="block description_textarea resize-none
+<div class="border border-green-700 bg-green-50 text-green-800 p-2" in:fly>
+	<div
+		contenteditable
+		role="textbox"
+		class="block name_textarea resize-none break-word overflow-x-hidden flex-grow focus:outline-none cursor-text"
+		bind:innerText={name}
+	/>
+	<div
+		contenteditable
+		role="textbox"
+		class="block description_textarea resize-none
 	break-word overflow-x-hidden flex-grow focus:outline-none cursor-text"
-			bind:innerText={description}
-		/>
-	</div>
-	<div class="flex border-t border-t-green-700">
-		<a
-			href="."
-			class="p-2 bg-green-100 hover:bg-green-200 transition-all border-r border-r-green-700 text-sm"
-		>
-			back
-		</a>
-		<a
-			href="{$page.url}/chat"
-			class="p-2 bg-green-100 hover:bg-green-200 transition-all border-r border-r-green-700 text-sm"
-		>
-			ask AI for help
-		</a>
-		<div class="flex-grow bg-texture-green" />
-	</div>
+		bind:innerText={description}
+	/>
 </div>
 
 <style>

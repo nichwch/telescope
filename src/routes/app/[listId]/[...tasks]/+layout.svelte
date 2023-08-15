@@ -208,6 +208,7 @@
 	};
 	onMount(() => updateScrollHeight());
 	$: finishedTasks = items.filter((item) => item.done);
+	$: isFocusedTask = $page.params.tasks && $page.params.tasks.length > 0;
 </script>
 
 <!-- <svelte:document bind:offsetHeight={outerHeight} /> -->
@@ -220,7 +221,9 @@
 			class:border-b-gray-300={scrollY > 75}
 			class="sticky top-0 bg-white mt-5 md:mt-20 pt-2 transition-all"
 		>
-			<a href="/app" class="underline block text-gray-500 text-sm">back to menu</a>
+			<a href={isFocusedTask ? '.' : '/app'} class="underline block text-gray-500 text-sm"
+				>{isFocusedTask ? 'back' : 'back to menu'}</a
+			>
 			<TitleComponent {data} />
 
 			<!-- Focused Task display -->
