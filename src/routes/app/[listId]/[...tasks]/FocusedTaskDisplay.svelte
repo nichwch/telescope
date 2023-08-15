@@ -23,7 +23,6 @@
 	});
 
 	$: history = $page.params.tasks;
-	$: segments = history?.split('/');
 
 	const updateFunction = async () => {
 		if (lastFlushedDescription === description && lastFlushedName === name) return;
