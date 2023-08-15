@@ -82,19 +82,19 @@ export const diffLists = (
 export const taskColors = [
 	'red',
 	'orange',
-	'amber',
+	// 'amber',
 	'yellow',
-	'lime',
+	// 'lime',
 	'green',
-	'emerald',
-	'teal',
-	'cyan',
-	'sky',
+	// 'emerald',
+	// 'teal',
+	// 'cyan',
+	// 'sky',
 	'blue',
-	'indigo',
-	'violet',
-	'purple',
-	'fuchsia',
-	'pink',
-	'rose'
+	// 'indigo',
+	// 'violet',
+	// 'purple',
+	// 'fuchsia',
+	'pink'
+	// 'rose'
 ];
