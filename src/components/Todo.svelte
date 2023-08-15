@@ -95,23 +95,20 @@
 		{#if $focusedItemStore === item.id}
 			<label
 				class="ml-3 text-sm w-auto p-0.5"
-				class:bg-red-500={item.color === 'red'}
-				class:bg-orange-500={item.color === 'orange'}
-				class:bg-amber-500={item.color === 'amber'}
-				class:bg-yellow-500={item.color === 'yellow'}
-				class:bg-lime-500={item.color === 'lime'}
-				class:bg-green-500={item.color === 'green'}
-				class:bg-emerald-500={item.color === 'emerald'}
-				class:bg-teal-500={item.color === 'teal'}
-				class:bg-cyan-500={item.color === 'cyan'}
-				class:bg-sky-500={item.color === 'sky'}
-				class:bg-blue-500={item.color === 'blue'}
-				class:bg-indigo-500={item.color === 'indigo'}
-				class:bg-violet-500={item.color === 'violet'}
-				class:bg-purple-500={item.color === 'purple'}
-				class:bg-fuchsia-500={item.color === 'fuchsia'}
-				class:bg-pink-500={item.color === 'pink'}
-				class:bg-rose-500={item.color === 'rose'}
+				class:bg-red-200={item.color === 'red'}
+				class:text-red-900={item.color === 'red'}
+				class:bg-orange-200={item.color === 'orange'}
+				class:text-orange-900={item.color === 'orange'}
+				class:bg-yellow-200={item.color === 'yellow'}
+				class:text-yellow-900={item.color === 'yellow'}
+				class:bg-green-200={item.color === 'green'}
+				class:text-green-900={item.color === 'green'}
+				class:bg-blue-200={item.color === 'blue'}
+				class:text-blue-900={item.color === 'blue'}
+				class:bg-purple-200={item.color === 'purple'}
+				class:text-purple-900={item.color === 'purple'}
+				class:bg-pink-200={item.color === 'pink'}
+				class:text-pink-900={item.color === 'pink'}
 			>
 				select color
 				<select bind:value={item.color}>
@@ -130,36 +127,16 @@
 				class:text-red-900={item.color === 'red'}
 				class:bg-orange-200={item.color === 'orange'}
 				class:text-orange-900={item.color === 'orange'}
-				class:bg-amber-200={item.color === 'amber'}
-				class:text-amber-900={item.color === 'amber'}
 				class:bg-yellow-200={item.color === 'yellow'}
 				class:text-yellow-900={item.color === 'yellow'}
-				class:bg-lime-200={item.color === 'lime'}
-				class:text-lime-900={item.color === 'lime'}
 				class:bg-green-200={item.color === 'green'}
 				class:text-green-900={item.color === 'green'}
-				class:bg-emerald-200={item.color === 'emerald'}
-				class:text-emerald-900={item.color === 'emerald'}
-				class:bg-teal-200={item.color === 'teal'}
-				class:text-teal-900={item.color === 'teal'}
-				class:bg-cyan-200={item.color === 'cyan'}
-				class:text-cyan-900={item.color === 'cyan'}
-				class:bg-sky-200={item.color === 'sky'}
-				class:text-sky-900={item.color === 'sky'}
 				class:bg-blue-200={item.color === 'blue'}
 				class:text-blue-900={item.color === 'blue'}
-				class:bg-indigo-200={item.color === 'indigo'}
-				class:text-indigo-900={item.color === 'indigo'}
-				class:bg-violet-200={item.color === 'violet'}
-				class:text-violet-900={item.color === 'violet'}
 				class:bg-purple-200={item.color === 'purple'}
 				class:text-purple-900={item.color === 'purple'}
-				class:bg-fuchsia-200={item.color === 'fuchsia'}
-				class:text-fuchsia-900={item.color === 'fuchsia'}
 				class:bg-pink-200={item.color === 'pink'}
 				class:text-pink-900={item.color === 'pink'}
-				class:bg-rose-200={item.color === 'rose'}
-				class:text-rose-900={item.color === 'rose'}
 			>
 				{item.color || ''}
 			</div>
