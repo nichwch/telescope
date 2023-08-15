@@ -82,7 +82,8 @@
 				...change,
 				list_parent: focusedTask ? null : listId,
 				task_parent: focusedTask ? focusedTask.id : null,
-				owner: $page.data.session!.user.id
+				owner: $page.data.session!.user.id,
+				color: change.color || null
 			};
 		});
 
