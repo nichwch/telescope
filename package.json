@@ -46,6 +46,7 @@
 		"nanoid": "^4.0.2",
 		"openai-edge": "^1.2.2",
 		"remark-parse": "^10.0.2",
+		"stripe": "^12.18.0",
 		"unified": "^10.1.2"
 	}
 }
