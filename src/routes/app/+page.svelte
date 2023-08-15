@@ -4,6 +4,7 @@
 	import { enhance } from '$app/forms';
 	import { flip } from 'svelte/animate';
 	import { FLIP_DURATION_MS } from '../../lib/index.js';
+	import AccountInformationComponent from './AccountInformationComponent.svelte';
 
 	export let data;
 	let { supabase } = data;
@@ -82,6 +83,7 @@
 				<h1 class="text-gray-500 h-5">settings</h1>
 			</div>
 			<button class="hover:underline block text-left" on:click={handleSignOut}>sign out</button>
+			<AccountInformationComponent status="free" />
 		</div>
 	</div>
 </div>
