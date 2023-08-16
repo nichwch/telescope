@@ -22,6 +22,7 @@
 	import { NAME_TEXTAREA_CLASS } from '$lib';
 	import { focusedItemStore } from './FocusedItemStore';
 	import { itemStore } from './itemStore';
+	import TaskStatsComponent from './TaskStatsComponent.svelte';
 
 	export let data;
 	const { supabase } = data;
@@ -299,20 +300,7 @@
 					class:border-t-gray-300={scrollHeight - scrollY > 75}
 					class="sticky bottom-0 bg-white py-2 transition-all"
 				>
-					<TaskControls
-						strategic_goal={data.listContent?.[0].strategic_goal || ''}
-						focusedItems={items}
-						{focusedTask}
-						isSubtask={taskArray.length > 0}
-						showAIButton={topOrBottomSuggestions !== 'top'}
-						on:add_ai_task={addGeneratedTodoAtBottom}
-						on:add_all={addAllGeneratedTodosAtBottom}
-						on:create_task={createTODOAtBottom}
-						on:dismiss={() => (topOrBottomSuggestions = null)}
-						on:generate={() => (topOrBottomSuggestions = 'bottom')}
-						isBottom
-						title={data.listContent?.[0].name}
-					/>
+					<TaskStatsComponent {items} />
 				</div>
 			{:else if topOrBottomSuggestions === null}
 				<div in:fade class="p-4 pl-0 w-full">
