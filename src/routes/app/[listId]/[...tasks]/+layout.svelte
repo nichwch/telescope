@@ -219,6 +219,7 @@
 	$: finishedTasks = items.filter((item) => item.done);
 	$: isFocusedTask = $page.params.tasks && $page.params.tasks.length > 0;
 	const subscription = (data.accountStatus?.[0]?.subscription as SubscriptionType) || 'free';
+	const userIsPremium = subscription === 'plus' || subscription === 'pro';
 </script>
 
 <!-- <svelte:document bind:offsetHeight={outerHeight} /> -->
@@ -277,7 +278,7 @@
 					{#each items.filter((item) => !item.done) as item (item.id)}
 						<div animate:flip={{ duration: FLIP_DURATION_MS }} in:fly>
 							<Todo
-								accountStatus={subscription}
+								{userIsPremium}
 								{item}
 								on:delete_item={(e) => (items = items.filter((task) => task.id !== e.detail.id))}
 							/>
@@ -300,7 +301,7 @@
 					class:border-t-gray-300={scrollHeight - scrollY > 75}
 					class="sticky bottom-0 bg-white py-2 transition-all"
 				>
-					<TaskStatsComponent {items} />
+					<TaskStatsComponent {items} {userIsPremium} />
 				</div>
 			{:else if topOrBottomSuggestions === null}
 				<div in:fade class="p-4 pl-0 w-full">

@@ -9,7 +9,7 @@
 	import DragHandle from './Icons/DragHandle.svelte';
 
 	export let item: IntermediateTaskWithChildren;
-	export let accountStatus: SubscriptionType;
+	export let userIsPremium: boolean;
 	item.queued_done = Boolean(item.queued_done);
 	let interval: NodeJS.Timeout;
 	$: {
@@ -25,7 +25,6 @@
 
 	export const delete_item = 'delete_item';
 	const dispatch = createEventDispatcher();
-	const userIsPremium = accountStatus === 'plus' || accountStatus === 'pro';
 </script>
 
 <!-- todo class is used to detect clicking away, to reset focusedItemStore -->
