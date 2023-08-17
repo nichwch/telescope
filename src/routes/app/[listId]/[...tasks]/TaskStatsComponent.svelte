@@ -12,7 +12,8 @@
 		colorMap = {};
 		items.forEach((item) => {
 			let color = item.color;
-			if (!color) return;
+			// only count unfinished items
+			if (!color || item.done) return;
 			if (colorMap[color]) {
 				colorMap[color]++;
 			} else {
@@ -28,7 +29,7 @@
 {#if userIsPremium}
 	{#each colorArray as { color, count }}
 		<div
-			class="inline-block px-0.5 w-4 ml-2 text-center"
+			class="inline-block px-0.5 ml-2 text-center"
 			class:bg-red-200={color === 'red'}
 			class:text-red-900={color === 'red'}
 			class:bg-orange-200={color === 'orange'}
