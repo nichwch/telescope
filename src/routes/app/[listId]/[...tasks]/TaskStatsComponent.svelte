@@ -5,8 +5,8 @@
 	export let userIsPremium: boolean;
 
 	let colorMap: Record<string, number> = {};
-	let totalTaskLength = items.length;
-	let finishedTaskLength = items.filter((item) => item.done).length;
+	$: totalTaskLength = items.length;
+	$: finishedTaskLength = items.filter((item) => item.done).length;
 
 	$: {
 		colorMap = {};
