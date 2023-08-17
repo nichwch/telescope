@@ -6,6 +6,7 @@
 	import { FLIP_DURATION_MS } from '../../lib/index.js';
 	import AccountInformationComponent from './AccountInformationComponent.svelte';
 	import type { SubscriptionType } from '../../lib/types.js';
+	import { backgroundColorStore } from './backgroundColorStore.js';
 
 	export let data;
 	let { supabase } = data;
@@ -30,7 +31,15 @@
 	<div
 		class:border-b={scrollY > 75}
 		class:border-b-gray-300={scrollY > 75}
-		class="sticky top-0 bg-white mt-5 md:mt-20 pt-2 transition-all"
+		class="sticky top-0 mt-5 md:mt-20 pt-2 transition-all"
+		class:bg-white={$backgroundColorStore === null}
+		class:bg-red-50={$backgroundColorStore === 'red'}
+		class:bg-orange-50={$backgroundColorStore === 'orange'}
+		class:bg-yellow-50={$backgroundColorStore === 'yellow'}
+		class:bg-green-50={$backgroundColorStore === 'green'}
+		class:bg-blue-50={$backgroundColorStore === 'blue'}
+		class:bg-purple-100={$backgroundColorStore === 'purple'}
+		class:bg-pink-50={$backgroundColorStore === 'pink'}
 	>
 		<div class=" text-sm text-gray-500">all lists</div>
 		<form method="POST" action="/app" class="py-1 text-sm text-green-700" use:enhance>
@@ -44,10 +53,18 @@
 				{#each data?.lists || [] as list (list.id)}
 					<div
 						animate:flip={{ duration: FLIP_DURATION_MS }}
-						class="flex items-center border-b border-b-gray-200 hover:bg-gray-50 py-1"
+						class="flex items-center border-b border-b-gray-200 hover:brightness-95 py-1"
 						on:mouseover={() => (hoveredList = list.id)}
 						on:mouseleave={() => (hoveredList = null)}
 						on:focus={() => (hoveredList = list.id)}
+						class:bg-white={$backgroundColorStore === null}
+						class:bg-red-50={$backgroundColorStore === 'red'}
+						class:bg-orange-50={$backgroundColorStore === 'orange'}
+						class:bg-yellow-50={$backgroundColorStore === 'yellow'}
+						class:bg-green-50={$backgroundColorStore === 'green'}
+						class:bg-blue-50={$backgroundColorStore === 'blue'}
+						class:bg-purple-100={$backgroundColorStore === 'purple'}
+						class:bg-pink-50={$backgroundColorStore === 'pink'}
 					>
 						<a class="block hover:underline" href="/app/{list.id}">{list.name || 'untitled'}</a>
 						<div class="ml-auto flex items-center">

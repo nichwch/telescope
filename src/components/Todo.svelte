@@ -7,6 +7,7 @@
 	import type { IntermediateTaskWithChildren, SubscriptionType } from '$lib/types';
 	import { focusedItemStore } from '../routes/app/[listId]/[...tasks]/FocusedItemStore';
 	import DragHandle from './Icons/DragHandle.svelte';
+	import { backgroundColorStore } from '../routes/app/backgroundColorStore';
 
 	export let item: IntermediateTaskWithChildren;
 	export let userIsPremium: boolean;
@@ -28,7 +29,17 @@
 </script>
 
 <!-- todo class is used to detect clicking away, to reset focusedItemStore -->
-<div class="todo flex flex-col pb-4 border-b border-b-gray-300 mb-3 bg-white">
+<div
+	class="todo flex flex-col pb-4 border-b border-b-gray-300 mb-3"
+	class:bg-white={$backgroundColorStore === null}
+	class:bg-red-50={$backgroundColorStore === 'red'}
+	class:bg-orange-50={$backgroundColorStore === 'orange'}
+	class:bg-yellow-50={$backgroundColorStore === 'yellow'}
+	class:bg-green-50={$backgroundColorStore === 'green'}
+	class:bg-blue-50={$backgroundColorStore === 'blue'}
+	class:bg-purple-100={$backgroundColorStore === 'purple'}
+	class:bg-pink-50={$backgroundColorStore === 'pink'}
+>
 	<div class="flex items-center">
 		<DragHandle />
 		<span
@@ -47,7 +58,15 @@
 			<input
 				type="checkbox"
 				bind:checked={item.queued_done}
-				class="rounded-full outline-none border border-gray-500 align-middle appearance-none h-4 w-4 bg-white checked:bg-green-500"
+				class="rounded-full outline-none border border-gray-500 align-middle appearance-none h-4 w-4 checked:bg-green-500"
+				class:bg-white={$backgroundColorStore === null}
+				class:bg-red-50={$backgroundColorStore === 'red'}
+				class:bg-orange-50={$backgroundColorStore === 'orange'}
+				class:bg-yellow-50={$backgroundColorStore === 'yellow'}
+				class:bg-green-50={$backgroundColorStore === 'green'}
+				class:bg-blue-50={$backgroundColorStore === 'blue'}
+				class:bg-purple-100={$backgroundColorStore === 'purple'}
+				class:bg-pink-50={$backgroundColorStore === 'pink'}
 			/>
 		</div>
 	</div>

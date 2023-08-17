@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { page } from '$app/stores';
 	import { onDestroy } from 'svelte';
+	import { backgroundColorStore } from '../backgroundColorStore';
 	export let data;
 	const { supabase } = data;
 	let strategic_goal_input = $page.data.listContent?.[0].strategic_goal || '';
@@ -48,4 +49,12 @@
 	on:input={nameChangeHandler}
 	class="w-full mb-3 focus:outline-none"
 	placeholder="untitled list"
+	class:bg-white={$backgroundColorStore === null}
+	class:bg-red-50={$backgroundColorStore === 'red'}
+	class:bg-orange-50={$backgroundColorStore === 'orange'}
+	class:bg-yellow-50={$backgroundColorStore === 'yellow'}
+	class:bg-green-50={$backgroundColorStore === 'green'}
+	class:bg-blue-50={$backgroundColorStore === 'blue'}
+	class:bg-purple-100={$backgroundColorStore === 'purple'}
+	class:bg-pink-50={$backgroundColorStore === 'pink'}
 />
