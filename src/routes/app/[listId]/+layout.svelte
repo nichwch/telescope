@@ -5,7 +5,7 @@
 	import ChatAssistantComponent from './[...tasks]/chat/ChatAssistantComponent.svelte';
 	import type { Message } from 'ai';
 	import { currentTaskStore } from './[...tasks]/currentTaskStore';
-	import { backgroundColorStore } from '../backgroundColorStore';
+	import { themeStore } from '../themeStore';
 	export let data;
 	const { supabase } = data;
 	let strategic_goal_input = $page.data.listContent?.[0].strategic_goal || '';
@@ -13,6 +13,7 @@
 
 	let isFlushing = false;
 
+	themeStore.set(data.accountSettings?.[0]?.theme || null);
 	$: list_chats = data.listContent?.[0].chats as any as Message[];
 	$: focused_task_chats = $currentTaskStore?.chats as any as Message[];
 	$: current_chats =
@@ -61,14 +62,14 @@
 					on:input={strategyChangeHandler}
 					class="flex-grow w-full block resize-none focus:outline-none"
 					placeholder="describe your large-level goals for this project..."
-					class:bg-white={$backgroundColorStore === null}
-					class:bg-red-50={$backgroundColorStore === 'red'}
-					class:bg-orange-50={$backgroundColorStore === 'orange'}
-					class:bg-yellow-50={$backgroundColorStore === 'yellow'}
-					class:bg-green-50={$backgroundColorStore === 'green'}
-					class:bg-blue-50={$backgroundColorStore === 'blue'}
-					class:bg-purple-100={$backgroundColorStore === 'purple'}
-					class:bg-pink-50={$backgroundColorStore === 'pink'}
+					class:bg-white={$themeStore === null}
+					class:bg-red-50={$themeStore === 'red'}
+					class:bg-orange-50={$themeStore === 'orange'}
+					class:bg-yellow-50={$themeStore === 'yellow'}
+					class:bg-green-50={$themeStore === 'green'}
+					class:bg-blue-50={$themeStore === 'blue'}
+					class:bg-purple-100={$themeStore === 'purple'}
+					class:bg-pink-50={$themeStore === 'pink'}
 				/>
 			</div>
 			<div class="mt-2 h-full flex-grow w-80">

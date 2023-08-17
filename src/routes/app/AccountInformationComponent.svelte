@@ -1,11 +1,22 @@
 <script lang="ts">
 	import type { SubscriptionType } from '$lib/types';
+	import type { SupabaseClient } from '@supabase/supabase-js';
 	import { taskColors } from '../../lib';
-	import { backgroundColorStore } from './backgroundColorStore';
+	import { themeStore } from './themeStore';
 
+	export let supabase: SupabaseClient;
+	export let user_id: string | undefined;
 	export let subscriptionType: SubscriptionType;
-	$: if (subscriptionType === 'free') {
-		$backgroundColorStore = null;
+	$: if (subscriptionType === 'free') $themeStore = null;
+
+	$: if (user_id) {
+		console.log('updating theme', $themeStore);
+		supabase
+			.from('account_settings')
+			.upsert({ theme: $themeStore, user_id })
+			.then((res) => {
+				console.log({ res });
+			});
 	}
 </script>
 
@@ -15,23 +26,23 @@
 {/if}
 {#if subscriptionType === 'pro' || subscriptionType === 'plus'}
 	<label
-		class:bg-red-200={$backgroundColorStore === 'red'}
-		class:text-red-900={$backgroundColorStore === 'red'}
-		class:bg-orange-200={$backgroundColorStore === 'orange'}
-		class:text-orange-900={$backgroundColorStore === 'orange'}
-		class:bg-yellow-200={$backgroundColorStore === 'yellow'}
-		class:text-yellow-900={$backgroundColorStore === 'yellow'}
-		class:bg-green-200={$backgroundColorStore === 'green'}
-		class:text-green-900={$backgroundColorStore === 'green'}
-		class:bg-blue-200={$backgroundColorStore === 'blue'}
-		class:text-blue-900={$backgroundColorStore === 'blue'}
-		class:bg-purple-200={$backgroundColorStore === 'purple'}
-		class:text-purple-900={$backgroundColorStore === 'purple'}
-		class:bg-pink-200={$backgroundColorStore === 'pink'}
-		class:text-pink-900={$backgroundColorStore === 'pink'}
+		class:bg-red-200={$themeStore === 'red'}
+		class:text-red-900={$themeStore === 'red'}
+		class:bg-orange-200={$themeStore === 'orange'}
+		class:text-orange-900={$themeStore === 'orange'}
+		class:bg-yellow-200={$themeStore === 'yellow'}
+		class:text-yellow-900={$themeStore === 'yellow'}
+		class:bg-green-200={$themeStore === 'green'}
+		class:text-green-900={$themeStore === 'green'}
+		class:bg-blue-200={$themeStore === 'blue'}
+		class:text-blue-900={$themeStore === 'blue'}
+		class:bg-purple-200={$themeStore === 'purple'}
+		class:text-purple-900={$themeStore === 'purple'}
+		class:bg-pink-200={$themeStore === 'pink'}
+		class:text-pink-900={$themeStore === 'pink'}
 	>
 		pick a background color:
-		<select bind:value={$backgroundColorStore}>
+		<select bind:value={$themeStore}>
 			<option value={null}>none</option>
 			{#each taskColors as color}
 				<option value={color}>{color}</option>

@@ -6,10 +6,10 @@
 	import { FLIP_DURATION_MS } from '../../lib/index.js';
 	import AccountInformationComponent from './AccountInformationComponent.svelte';
 	import type { SubscriptionType } from '../../lib/types.js';
-	import { backgroundColorStore } from './backgroundColorStore.js';
+	import { themeStore } from './themeStore.js';
 
 	export let data;
-	let { supabase } = data;
+	let { supabase, session } = data;
 	$: ({ supabase } = data);
 
 	let hoveredList: string | null = null;
@@ -21,6 +21,7 @@
 
 	let scrollY = 0;
 	let subscriptionType = (data.accountStatus?.[0]?.subscription as SubscriptionType) || 'free';
+	themeStore.set(data.accountSettings?.[0]?.theme || null);
 </script>
 
 <!-- <div class="max-w-4xl mx-5 lg:mx-auto py-5 md:py-20 flex flex-col h-full" /> -->
@@ -32,14 +33,14 @@
 		class:border-b={scrollY > 75}
 		class:border-b-gray-300={scrollY > 75}
 		class="sticky top-0 mt-5 md:mt-20 pt-2 transition-all"
-		class:bg-white={$backgroundColorStore === null}
-		class:bg-red-50={$backgroundColorStore === 'red'}
-		class:bg-orange-50={$backgroundColorStore === 'orange'}
-		class:bg-yellow-50={$backgroundColorStore === 'yellow'}
-		class:bg-green-50={$backgroundColorStore === 'green'}
-		class:bg-blue-50={$backgroundColorStore === 'blue'}
-		class:bg-purple-100={$backgroundColorStore === 'purple'}
-		class:bg-pink-50={$backgroundColorStore === 'pink'}
+		class:bg-white={$themeStore === null}
+		class:bg-red-50={$themeStore === 'red'}
+		class:bg-orange-50={$themeStore === 'orange'}
+		class:bg-yellow-50={$themeStore === 'yellow'}
+		class:bg-green-50={$themeStore === 'green'}
+		class:bg-blue-50={$themeStore === 'blue'}
+		class:bg-purple-100={$themeStore === 'purple'}
+		class:bg-pink-50={$themeStore === 'pink'}
 	>
 		<div class=" text-sm text-gray-500">all lists</div>
 		<form method="POST" action="/app" class="py-1 text-sm text-green-700" use:enhance>
@@ -57,14 +58,14 @@
 						on:mouseover={() => (hoveredList = list.id)}
 						on:mouseleave={() => (hoveredList = null)}
 						on:focus={() => (hoveredList = list.id)}
-						class:bg-white={$backgroundColorStore === null}
-						class:bg-red-50={$backgroundColorStore === 'red'}
-						class:bg-orange-50={$backgroundColorStore === 'orange'}
-						class:bg-yellow-50={$backgroundColorStore === 'yellow'}
-						class:bg-green-50={$backgroundColorStore === 'green'}
-						class:bg-blue-50={$backgroundColorStore === 'blue'}
-						class:bg-purple-100={$backgroundColorStore === 'purple'}
-						class:bg-pink-50={$backgroundColorStore === 'pink'}
+						class:bg-white={$themeStore === null}
+						class:bg-red-50={$themeStore === 'red'}
+						class:bg-orange-50={$themeStore === 'orange'}
+						class:bg-yellow-50={$themeStore === 'yellow'}
+						class:bg-green-50={$themeStore === 'green'}
+						class:bg-blue-50={$themeStore === 'blue'}
+						class:bg-purple-100={$themeStore === 'purple'}
+						class:bg-pink-50={$themeStore === 'pink'}
 					>
 						<a class="block hover:underline" href="/app/{list.id}">{list.name || 'untitled'}</a>
 						<div class="ml-auto flex items-center">
@@ -102,7 +103,7 @@
 				<h1 class="text-gray-500 h-5">settings</h1>
 			</div>
 			<button class="hover:underline block text-left" on:click={handleSignOut}>sign out</button>
-			<AccountInformationComponent {subscriptionType} />
+			<AccountInformationComponent {subscriptionType} {supabase} user_id={session?.user.id} />
 		</div>
 	</div>
 </div>

@@ -3,7 +3,7 @@
 	import '../app.css';
 	import { invalidate } from '$app/navigation';
 	import { onMount } from 'svelte';
-	import { backgroundColorStore } from './app/backgroundColorStore';
+	import { themeStore } from './app/themeStore';
 
 	export let data;
 
@@ -25,14 +25,14 @@
 
 <div
 	class="min-h-screen flex flex-col"
-	class:bg-white={$backgroundColorStore === null}
-	class:bg-red-50={$backgroundColorStore === 'red'}
-	class:bg-orange-50={$backgroundColorStore === 'orange'}
-	class:bg-yellow-50={$backgroundColorStore === 'yellow'}
-	class:bg-green-50={$backgroundColorStore === 'green'}
-	class:bg-blue-50={$backgroundColorStore === 'blue'}
-	class:bg-purple-100={$backgroundColorStore === 'purple'}
-	class:bg-pink-50={$backgroundColorStore === 'pink'}
+	class:bg-white={$themeStore === null}
+	class:bg-red-50={$themeStore === 'red'}
+	class:bg-orange-50={$themeStore === 'orange'}
+	class:bg-yellow-50={$themeStore === 'yellow'}
+	class:bg-green-50={$themeStore === 'green'}
+	class:bg-blue-50={$themeStore === 'blue'}
+	class:bg-purple-100={$themeStore === 'purple'}
+	class:bg-pink-50={$themeStore === 'pink'}
 >
 	<slot />
 </div>

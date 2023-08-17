@@ -4,7 +4,7 @@
 	import { focusedItemStore } from '../routes/app/[listId]/[...tasks]/FocusedItemStore';
 	import { fly } from 'svelte/transition';
 	import type { IntermediateTaskWithChildren } from '../lib/types';
-	import { backgroundColorStore } from '../routes/app/backgroundColorStore';
+	import { themeStore } from '../routes/app/themeStore';
 
 	export let item: IntermediateTaskWithChildren;
 	item.queued_done = Boolean(item.queued_done);
@@ -14,14 +14,14 @@
 
 <div
 	class="flex flex-col pb-4 border-b border-b-gray-300 mb-3 opacity-50"
-	class:bg-white={$backgroundColorStore === null}
-	class:bg-red-50={$backgroundColorStore === 'red'}
-	class:bg-orange-50={$backgroundColorStore === 'orange'}
-	class:bg-yellow-50={$backgroundColorStore === 'yellow'}
-	class:bg-green-50={$backgroundColorStore === 'green'}
-	class:bg-blue-50={$backgroundColorStore === 'blue'}
-	class:bg-purple-100={$backgroundColorStore === 'purple'}
-	class:bg-pink-50={$backgroundColorStore === 'pink'}
+	class:bg-white={$themeStore === null}
+	class:bg-red-50={$themeStore === 'red'}
+	class:bg-orange-50={$themeStore === 'orange'}
+	class:bg-yellow-50={$themeStore === 'yellow'}
+	class:bg-green-50={$themeStore === 'green'}
+	class:bg-blue-50={$themeStore === 'blue'}
+	class:bg-purple-100={$themeStore === 'purple'}
+	class:bg-pink-50={$themeStore === 'pink'}
 >
 	<div class="flex items-center">
 		<!-- <DragHandle /> -->
@@ -46,14 +46,14 @@
 					item.queued_done = false;
 				}}
 				class="rounded-full outline-none border border-gray-500 align-middle appearance-none h-4 w-4 checked:bg-green-500"
-				class:bg-white={$backgroundColorStore === null}
-				class:bg-red-50={$backgroundColorStore === 'red'}
-				class:bg-orange-50={$backgroundColorStore === 'orange'}
-				class:bg-yellow-50={$backgroundColorStore === 'yellow'}
-				class:bg-green-50={$backgroundColorStore === 'green'}
-				class:bg-blue-50={$backgroundColorStore === 'blue'}
-				class:bg-purple-100={$backgroundColorStore === 'purple'}
-				class:bg-pink-50={$backgroundColorStore === 'pink'}
+				class:bg-white={$themeStore === null}
+				class:bg-red-50={$themeStore === 'red'}
+				class:bg-orange-50={$themeStore === 'orange'}
+				class:bg-yellow-50={$themeStore === 'yellow'}
+				class:bg-green-50={$themeStore === 'green'}
+				class:bg-blue-50={$themeStore === 'blue'}
+				class:bg-purple-100={$themeStore === 'purple'}
+				class:bg-pink-50={$themeStore === 'pink'}
 			/>
 			<a
 				class:text-green-700={item.tasks && item.tasks.length > 0}

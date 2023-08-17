@@ -7,9 +7,10 @@ export const load = (async ({ parent, locals }) => {
 	if (!session?.user) {
 		throw error(401, 'Unauthorized');
 	}
-	const { data: accountStatus } = await supabase
-		.from('accounts')
-		.select('*')
-		.eq('user_id', session.user.id);
-	return { accountStatus };
+
+	const [{ data: accountStatus }, { data: accountSettings }] = await Promise.all([
+		supabase.from('accounts').select('*').eq('user_id', session.user.id),
+		supabase.from('account_settings').select('*').eq('user_id', session.user.id)
+	]);
+	return { accountStatus, accountSettings };
 }) satisfies LayoutServerLoad;
