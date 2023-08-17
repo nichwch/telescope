@@ -22,7 +22,9 @@
 		});
 	}
 
-	$: colorArray = Object.entries(colorMap).map(([color, count]) => ({ color, count }));
+	$: colorArray = Object.entries(colorMap)
+		.map(([color, count]) => ({ color, count }))
+		.sort((a, b) => b.count - a.count);
 </script>
 
 {finishedTaskLength} done / {totalTaskLength}
