@@ -1,7 +1,8 @@
 // src/routes/profile/+page.ts
 import { error } from '@sveltejs/kit';
+import type { PageLoad } from './$types';
 
-export const load = async ({ parent }) => {
+export const load = (async ({ parent }) => {
 	const { supabase, session } = await parent();
 	if (!session?.user) {
 		throw error(401, 'Unauthorized');
@@ -15,4 +16,4 @@ export const load = async ({ parent }) => {
 		user: session?.user,
 		lists
 	};
-};
+}) satisfies PageLoad;

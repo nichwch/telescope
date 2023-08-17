@@ -13,7 +13,6 @@
 
 	let isFlushing = false;
 
-	themeStore.set(data.accountSettings?.[0]?.theme || null);
 	$: list_chats = data.listContent?.[0].chats as any as Message[];
 	$: focused_task_chats = $currentTaskStore?.chats as any as Message[];
 	$: current_chats =

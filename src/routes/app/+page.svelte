@@ -21,7 +21,6 @@
 
 	let scrollY = 0;
 	let subscriptionType = (data.accountStatus?.[0]?.subscription as SubscriptionType) || 'free';
-	themeStore.set(data.accountSettings?.[0]?.theme || null);
 </script>
 
 <!-- <div class="max-w-4xl mx-5 lg:mx-auto py-5 md:py-20 flex flex-col h-full" /> -->

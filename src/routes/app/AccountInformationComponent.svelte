@@ -7,17 +7,8 @@
 	export let supabase: SupabaseClient;
 	export let user_id: string | undefined;
 	export let subscriptionType: SubscriptionType;
-	$: if (subscriptionType === 'free') $themeStore = null;
 
-	$: if (user_id) {
-		console.log('updating theme', $themeStore);
-		supabase
-			.from('account_settings')
-			.upsert({ theme: $themeStore, user_id })
-			.then((res) => {
-				console.log({ res });
-			});
-	}
+	$: if (user_id) supabase.from('account_settings').upsert({ theme: $themeStore, user_id });
 </script>
 
 <div>current plan: {subscriptionType}</div>
