@@ -14,6 +14,7 @@
 	{#if dev}
 		<h2>test upgrade button</h2>
 		<stripe-buy-button
+			client-reference-id={user_id}
 			buy-button-id="buy_btn_1NgZ1eIApHiFZdHmFBsLPT6V"
 			publishable-key="pk_test_8Nfce6efMabb1MxsyetTZJKU00Kx9UcrBW"
 		/>
