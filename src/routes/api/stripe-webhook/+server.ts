@@ -10,17 +10,19 @@ const stripe = new Stripe(STRIPE_API_KEY, {
 });
 const supabase = createClient<Database>(PUBLIC_SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
 
-const PRO_ID = '';
-const PLUS_ID = '';
+const PRO_ID_MONTHLY = 'price_1NfWqZIApHiFZdHm3AM1pUku';
+const PRO_ID_ANNUAL = 'price_1NfWqZIApHiFZdHmkmWisKzi';
+const PLUS_ID_MONTHLY = 'price_1NfWqTIApHiFZdHmiqaP8oUr';
+const PLUS_ID_ANNUAL = 'price_1NfWqTIApHiFZdHmDufzPXjO';
 
 export const POST: RequestHandler = async ({ request }) => {
-	const json_body = await request.json();
+	const text_body = await request.text();
 	let event;
 	if (WH_SEC) {
 		// Get the signature sent by Stripe
 		const signature = request.headers.get('stripe-signature');
 		try {
-			event = stripe.webhooks.constructEvent(json_body, signature!, WH_SEC);
+			event = stripe.webhooks.constructEvent(text_body, signature!, WH_SEC);
 		} catch (err) {
 			console.log(`⚠️  Webhook signature verification failed.`, err);
 			throw error(400);
@@ -29,19 +31,20 @@ export const POST: RequestHandler = async ({ request }) => {
 	if (!event) throw error(400);
 	console.log('webhook hit!');
 	// console.dir(json_body, { depth: null });
-	console.log(event);
 	// Handle the event
 	switch (event.type) {
-		case 'subscription_schedule.created': {
-			const paymentIntent = event.data.object;
+		case 'checkout.session.completed': {
+			console.log('subscription created!!');
+
+			console.log(event.data.object);
 			// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 			// @ts-ignore
 			const user_id = event.data.object.customer! as string;
 			// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 			// @ts-ignore
-			const id = event.data.object.items?.[0].id;
-			const plan = id === PRO_ID ? 'pro' : id === PLUS_ID ? 'plus' : 'free';
-			console.log(id, plan);
+			const id = event.data.object.plan.id;
+			const plan = id === PRO_ID_MONTHLY ? 'pro' : id === PLUS_ID_MONTHLY ? 'plus' : 'free';
+			console.log('data', id, plan, user_id);
 			await supabase.from('accounts').update({ subscription: plan }).eq('user_id', user_id);
 			// Then define and call a method to handle the successful payment intent.
 			// handlePaymentIntentSucceeded(paymentIntent);
