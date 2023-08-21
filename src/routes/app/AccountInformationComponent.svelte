@@ -14,7 +14,9 @@
 
 <div>current plan: {subscriptionType}</div>
 {#if subscriptionType === 'free'}
-	<div>upgrade</div>
+	<div>
+		<a href="/app/upgrade">upgrade</a>
+	</div>
 {/if}
 {#if subscriptionType === 'pro' || subscriptionType === 'plus'}
 	<label
