@@ -66,12 +66,39 @@ export const POST: RequestHandler = async ({ request }) => {
 			console.log('computed plan', plan);
 			console.log('data', id, plan, user_id);
 
+			await supabase.from('accounts').upsert({ subscription: plan, customer_id, user_id });
+			// Then define and call a method to handle the successful payment intent.
+			// handlePaymentIntentSucceeded(paymentIntent);
+			break;
+		}
+
+		case 'customer.subscription.deleted':
+		case 'customer.subscription.paused': {
+			console.log('subscription deleted');
+			// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+			// @ts-ignore
+			const customer_id = event.data.object.customer as string;
+			await supabase
+				.from('accounts')
+				.update({ subscription: 'free', customer_id })
+				.eq('customer_id', customer_id);
+
+			break;
+		}
+		case 'customer.subscription.resumed': {
+			console.log('subscription resumed');
+			// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+			// @ts-ignore
+			const customer_id = event.data.object.customer as string;
+			// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+			// @ts-ignore
+			const priceId = event.data.object.items.data[0].price.id;
+			const plan = getPlanFromId(priceId);
 			await supabase
 				.from('accounts')
 				.update({ subscription: plan, customer_id })
-				.eq('user_id', user_id);
-			// Then define and call a method to handle the successful payment intent.
-			// handlePaymentIntentSucceeded(paymentIntent);
+				.eq('customer_id', customer_id);
+
 			break;
 		}
 		default:
