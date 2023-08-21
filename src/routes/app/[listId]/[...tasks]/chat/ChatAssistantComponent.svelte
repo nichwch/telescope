@@ -59,6 +59,12 @@
 	$: if (length && element) {
 		scrollToBottom();
 	}
+
+	const scrollHandler = (evt: Event) => {
+		scrollY = (evt?.target as Element)?.scrollTop || 0;
+	};
+
+	let scrollY = 0;
 </script>
 
 <svelte:window
@@ -73,8 +79,11 @@
 
 <div class="h-full flex flex-col">
 	<div
-		class="h-full overflow-y-scroll pb-20 text-green-800 flex flex-col-reverse"
+		class="h-full overflow-y-scroll pb-20 text-green-800 flex transition-all"
+		class:border-t={scrollY > 0}
+		class:border-t-gray-300={scrollY === 0}
 		bind:this={element}
+		on:scroll={scrollHandler}
 	>
 		<div>
 			{#each $messages as message}
