@@ -90,7 +90,9 @@
 		{/if}
 	</div>
 	<div
-		class="h-full overflow-y-scroll pb-20 text-green-800 flex transition-all border-t border-t-gray-300"
+		class="h-full overflow-y-scroll pb-20 text-green-800 flex transition-all"
+		class:border-t={scrollY > 0}
+		class:border-t-gray-300={scrollY > 0}
 		bind:this={element}
 		on:scroll={scrollHandler}
 	>
