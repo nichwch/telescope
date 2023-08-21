@@ -300,7 +300,7 @@
 						<h1 class="text-gray-500 text-sm">finished tasks</h1>
 						{#each finishedTasks as finishedTask (finishedTask.id)}
 							<div animate:flip={{ duration: FLIP_DURATION_MS }} in:fly>
-								<FinishedTodo item={finishedTask} />
+								<FinishedTodo item={finishedTask} {userIsPremium} />
 							</div>
 						{/each}
 					</div>

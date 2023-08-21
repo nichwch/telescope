@@ -5,15 +5,18 @@
 	import { fly } from 'svelte/transition';
 	import type { IntermediateTaskWithChildren } from '../lib/types';
 	import { themeStore } from '../routes/app/themeStore';
+	import { taskColors } from '../lib';
 
 	export let item: IntermediateTaskWithChildren;
+	export let userIsPremium: boolean;
 	item.queued_done = Boolean(item.queued_done);
 	export const delete_item = 'delete_item';
 	const dispatch = createEventDispatcher();
 </script>
 
+<!-- todo class is used to detect clicking away, to reset focusedItemStore -->
 <div
-	class="flex flex-col pb-4 border-b border-b-gray-300 mb-3 opacity-50"
+	class="todo flex flex-col pb-4 border-b border-b-gray-300 mb-3 opacity-50"
 	class:bg-white={$themeStore === null}
 	class:bg-red-50={$themeStore === 'red'}
 	class:bg-orange-50={$themeStore === 'orange'}
@@ -87,15 +90,64 @@
 			{item.description}
 		</span>
 	{/if}
-	{#if $focusedItemStore === item.id}
-		<div>
+	<div class="pl-4">
+		{#if $focusedItemStore === item.id}
 			<button
 				in:fly
-				class="pl-4 text-red-700 hover:underline text-sm w-auto"
+				class=" text-red-700 hover:underline text-sm w-auto"
 				on:click={() => dispatch('delete_item', { id: item.id })}>delete</button
 			>
-		</div>
-	{/if}
+		{/if}
+		{#if $focusedItemStore === item.id && userIsPremium}
+			<label
+				class="text-sm w-auto p-0.5"
+				class:bg-red-200={item.color === 'red'}
+				class:text-red-900={item.color === 'red'}
+				class:bg-orange-200={item.color === 'orange'}
+				class:text-orange-900={item.color === 'orange'}
+				class:bg-yellow-200={item.color === 'yellow'}
+				class:text-yellow-900={item.color === 'yellow'}
+				class:bg-green-200={item.color === 'green'}
+				class:text-green-900={item.color === 'green'}
+				class:bg-blue-200={item.color === 'blue'}
+				class:text-blue-900={item.color === 'blue'}
+				class:bg-purple-200={item.color === 'purple'}
+				class:text-purple-900={item.color === 'purple'}
+				class:bg-pink-200={item.color === 'pink'}
+				class:text-pink-900={item.color === 'pink'}
+			>
+				select color
+				<select bind:value={item.color}>
+					<option value={null}>none</option>
+					{#each taskColors as color}
+						<option value={color}>
+							{color}
+						</option>
+					{/each}
+				</select>
+			</label>
+		{:else if userIsPremium}
+			<div
+				class="text-sm w-auto px-0.5 inline-block"
+				class:bg-red-200={item.color === 'red'}
+				class:text-red-900={item.color === 'red'}
+				class:bg-orange-200={item.color === 'orange'}
+				class:text-orange-900={item.color === 'orange'}
+				class:bg-yellow-200={item.color === 'yellow'}
+				class:text-yellow-900={item.color === 'yellow'}
+				class:bg-green-200={item.color === 'green'}
+				class:text-green-900={item.color === 'green'}
+				class:bg-blue-200={item.color === 'blue'}
+				class:text-blue-900={item.color === 'blue'}
+				class:bg-purple-200={item.color === 'purple'}
+				class:text-purple-900={item.color === 'purple'}
+				class:bg-pink-200={item.color === 'pink'}
+				class:text-pink-900={item.color === 'pink'}
+			>
+				{item.color || ''}
+			</div>
+		{/if}
+	</div>
 </div>
 
 <style>
