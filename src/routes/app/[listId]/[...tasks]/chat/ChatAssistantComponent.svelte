@@ -102,6 +102,11 @@
 					<ChatMessageComponent {message} />
 				{/key}
 			{/each}
+			{#if $messages.length === 0}
+				<div class="text-gray-500">
+					No messages yet. Type something below to ask the assistant for help.
+				</div>
+			{/if}
 		</div>
 	</div>
 	<div class=" w-4/5 mx-auto flex border border-green-700 bg-green-100">
