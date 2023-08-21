@@ -20,12 +20,12 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 			role: 'system',
 			content: roleAndGoalContext
 		},
-		...json_body.messages,
 		{
 			role: 'system',
 			content: `${taskContext}
 Note that context may have changed since previous messages, so don't apologize for discrepancies.`
-		}
+		},
+		...json_body.messages
 	];
 	const response = await openai.createChatCompletion({
 		...DEFAULT_MODEL_SETTINGS,
