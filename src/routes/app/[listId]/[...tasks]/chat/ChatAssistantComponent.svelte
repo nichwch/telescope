@@ -35,7 +35,7 @@
 	};
 
 	let segments = $page.params.tasks?.split('/');
-	const { input, handleSubmit, messages } = useChat({
+	const { input, handleSubmit, messages, setMessages } = useChat({
 		api: '/api/chat',
 		//TODO: need to find way to dynamically modify this, without remounting component!
 		initialMessages: existingMessages,
@@ -78,10 +78,19 @@
 />
 
 <div class="h-full flex flex-col">
+	<div>
+		<h2 class="text-gray-500 inline-block">assistant</h2>
+		{#if $messages.length > 0}
+			<button
+				class="text-red-800 opacity-75 float-right"
+				on:click={() => {
+					if (window.confirm('Are you sure? This cannot be undone')) setMessages([]);
+				}}>clear messages</button
+			>
+		{/if}
+	</div>
 	<div
-		class="h-full overflow-y-scroll pb-20 text-green-800 flex transition-all"
-		class:border-t={scrollY > 0}
-		class:border-t-gray-300={scrollY === 0}
+		class="h-full overflow-y-scroll pb-20 text-green-800 flex transition-all border-t border-t-gray-300"
 		bind:this={element}
 		on:scroll={scrollHandler}
 	>
