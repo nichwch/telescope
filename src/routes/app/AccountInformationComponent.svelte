@@ -3,6 +3,7 @@
 	import type { SupabaseClient } from '@supabase/supabase-js';
 	import { taskColors } from '../../lib';
 	import { themeStore } from './themeStore';
+	import { dev } from '$app/environment';
 
 	export let supabase: SupabaseClient;
 	export let user_id: string | undefined;
@@ -40,4 +41,11 @@
 			{/each}
 		</select>
 	</label>
+	<div>
+		{#if dev}
+			<a href="https://billing.stripe.com/p/login/test_4gw28M6JH0wk9Xi7ss">manage subscription</a>
+		{:else}
+			<a href="https://billing.stripe.com/p/login/5kA6pweSOb7t7gA9AA">manage subscription</a>
+		{/if}
+	</div>
 {/if}
